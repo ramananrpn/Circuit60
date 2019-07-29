@@ -39,10 +39,11 @@
     a.active {
         font-weight: bold !important;
         color: white;
+        margin-left: 20px;
     }
     a:hover
     {
-        color: #0d0d0d;
+        color: white;
     }
     .zone{
         font-weight: lighter;
@@ -84,7 +85,7 @@
         <nav class="text-center navbar navbar-expand-lg fixed navbar-light warning-color navbar-custom white-text" >
 
                         <div class="nav nav-text mr-auto ">
-                            <a class="nav-item black-text  ml-4"><i class="far fa-arrow-alt-circle-left"></i></a>
+                            <a class="nav-item black-text  ml-4" href="/adminDashboard"><img src="../img/left.svg" class="img-fluid" style="width: 25px"></a>
                             <!--Template Name Dropdown -->
                             <span class="nav-item dropdown" style="margin-top: -10px"  >
                                 <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
@@ -121,9 +122,11 @@
                     for(int zoneCount = 1 ; zoneCount<=Integer.parseInt(val) ; zoneCount++){
 
                 %>
-                    <li class="nav-item ">
+                    <li class="nav-item">
                         <a class="nav-link zone "  href="<c:out value="${url}"/>?zoneId=zone<%=zoneCount%>" onclick="changeActive(event)" id="zone<%=zoneCount%>">
                             Zone <%if(zoneCount<10){%><%=0%><%}%><%=zoneCount%>
+                        <%--Active element arrow--%>
+<%--                            <img class="d-flex flex-row-reverse" src="../img/white-arrow.svg">--%>
                         </a>
                         <%if(zoneCount!=Integer.parseInt(val)){%>
                         <hr class="opacity-20">
@@ -190,9 +193,9 @@
 
 <%--Function get called on page load to make corresponding zone active--%>
     function changeActiveOnload(){
-        var paramZone = new URLSearchParams(window.location.search).get("zoneId");
-        // alert(paramZone );
-        var zone = document.getElementById(paramZone);
+        var activeZone = "<c:out value="${zoneId}"/>";
+        <%--alert(<c:out value="${zoneId}"/> );--%>
+        var zone = document.getElementById(activeZone);
         zone.classList.remove('zone');
         zone.classList.add('active');
     }

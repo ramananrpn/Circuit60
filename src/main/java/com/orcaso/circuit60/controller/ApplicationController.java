@@ -1,9 +1,10 @@
 package com.orcaso.circuit60.controller;
-import com.orcaso.circuit60.dao.impl.GymDAOImpl;
 import com.orcaso.circuit60.model.Gym;
 import com.orcaso.circuit60.model.Templates;
 import com.orcaso.circuit60.repository.GymRepository;
 import com.orcaso.circuit60.repository.TemplateRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Controller;
@@ -16,10 +17,12 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 
+
 @SpringBootApplication
 @Controller
 public class ApplicationController {
 
+    Logger logger = LoggerFactory.getLogger(ApplicationController.class);
     @Autowired
     private GymRepository gymRepository;
 
@@ -27,8 +30,26 @@ public class ApplicationController {
     private TemplateRepository templateRepository;
     Templates templateObj;
 
+
+    //    Get Gym Object
+    public Gym getGym(HttpServletRequest request){
+        Gym gym = new Gym();
+        gym.setGymId(request.getSession().getAttribute("gymId").toString());
+        return gym;
+    }
+
+    //    Authentication check
+    public boolean validUser(HttpServletRequest request){
+        if(request.getSession().getAttribute("gymId")!=null)
+            return true;
+        return false;
+    }
     @RequestMapping("/")
-    public String index(){
+    public String index(HttpServletRequest request){
+        if(validUser(request)){
+            return "redirect:/adminDashboard";
+        }
+        else
         return "home";
     }
 
@@ -38,25 +59,30 @@ public class ApplicationController {
 //    public String checkAdmin(HttpServletRequest request) {
         Gym admin = gymRepository.findByGymId(gym.getGymId());
         if(admin!=null && admin.getPassword().equals(gym.getPassword())){
+//            setting session attribute - gymId
+            logger.info("Login Successfull");
             request.getSession().setAttribute("gymId" , admin.getGymId() );
-//            Retrieve Template
-            List<Templates> templates = templateRepository.findAllByGymId(admin);
-            System.out.println("templateList : " +templates);
-            model.addAttribute("templateList" , templates);
-            return "adminDashboard";
-//            return "redirect:/";
+
+//            Redirecting to /adminDashboard
+            return "redirect:/adminDashboard";
         }
         else{
-            System.out.println("Failure");
+            logger.info("Login Failed");
             return "redirect:/";
         }
-//        return "template" ;
     }
 
+//    Display all templates - adminDashboard
     @RequestMapping("/adminDashboard")
-    public String dashboard(){
-
-        return "adminDashboard";
+    public String adminDashboard(HttpServletRequest request , Model model){
+        if(validUser(request)){
+            //            Retrieve Template
+            List<Templates> templates = templateRepository.findAllByGymId(getGym(request));
+            logger.info("templateList of current user - " +templates);
+            model.addAttribute("templateList" , templates);
+            return "adminDashboard";
+        }
+        return "redirect:/";
     }
 
 //    Create Template
@@ -64,7 +90,7 @@ public class ApplicationController {
     public String addTemplate(Templates template,Model model){
         System.out.println("GymId= " + template.getGymId());
         templateRepository.save(template);
-        System.out.println("save successfull");
+        logger.info("Template "+ template.getTemplateName() +" - saved successfully ");
         //            Retrieve Template
         List<Templates> templates = templateRepository.findAllByGymId(template.getGymId());
         System.out.println("templateList : " +templates);
@@ -75,14 +101,21 @@ public class ApplicationController {
 //    Zone Add exercise dashboard
     @RequestMapping("/templateDashboard/{templateName}")
     public String templateDashboard(@PathVariable("templateName") String templateName , Model model,HttpServletRequest request){
-        if(request.getSession().getAttribute("gymId")!=null){
+        if(validUser(request)){
             System.out.println("Selected template Name = "+templateName);
             model.addAttribute("templateName" , templateName);
-            Gym gym = new Gym();
-            gym.setGymId(request.getSession().getAttribute("gymId").toString());
-            List<Templates> templates = templateRepository.findTemplatesByGymId(gym);
+            List<Templates> templates = templateRepository.findTemplatesByGymId(getGym(request));
             System.out.println("Templates Fetched with gymId " + templates);
             model.addAttribute("templateList" , templates);
+//            getting zoneId from request
+            String zoneId =  request.getParameter("zoneId");
+            logger.info("Received zone ID - " + zoneId);
+            if(zoneId==null){
+                zoneId = "zone1";
+                logger.info("Zone Id is null , so adding default zone 1");
+            }
+            model.addAttribute("zoneId" , zoneId);
+            logger.info("Active zone ID - " + zoneId);
             return "templateDashboard";
         }
         return "redirect:/invalidUser";
