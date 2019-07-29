@@ -1,4 +1,5 @@
 package com.orcaso.circuit60.controller;
+
 import com.orcaso.circuit60.model.Gym;
 import com.orcaso.circuit60.model.Templates;
 import com.orcaso.circuit60.repository.GymRepository;
@@ -15,8 +16,6 @@ import org.springframework.ui.Model;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-
-
 
 @SpringBootApplication
 @Controller
@@ -56,7 +55,6 @@ public class ApplicationController {
 
     @PostMapping("/adminLogin")
     public String checkAdmin(Gym gym , Model model,HttpServletRequest request) {
-//    public String checkAdmin(HttpServletRequest request) {
         Gym admin = gymRepository.findByGymId(gym.getGymId());
         if(admin!=null && admin.getPassword().equals(gym.getPassword())){
 //            setting session attribute - gymId
@@ -76,7 +74,7 @@ public class ApplicationController {
     @RequestMapping("/adminDashboard")
     public String adminDashboard(HttpServletRequest request , Model model){
         if(validUser(request)){
-            //            Retrieve Template
+            //      Retrieve Template
             List<Templates> templates = templateRepository.findAllByGymId(getGym(request));
             logger.info("templateList of current user - " +templates);
             model.addAttribute("templateList" , templates);
@@ -87,15 +85,10 @@ public class ApplicationController {
 
 //    Create Template
     @PostMapping("/adminDashboard")
-    public String addTemplate(Templates template,Model model){
-        System.out.println("GymId= " + template.getGymId());
+    public String addTemplate(Templates template){
         templateRepository.save(template);
         logger.info("Template "+ template.getTemplateName() +" - saved successfully ");
-        //            Retrieve Template
-        List<Templates> templates = templateRepository.findAllByGymId(template.getGymId());
-        System.out.println("templateList : " +templates);
-        model.addAttribute("templateList" , templates);
-        return "adminDashboard";
+        return "redirect:/adminDashboard";
     }
 
 //    Zone Add exercise dashboard
@@ -107,24 +100,20 @@ public class ApplicationController {
             List<Templates> templates = templateRepository.findTemplatesByGymId(getGym(request));
             System.out.println("Templates Fetched with gymId " + templates);
             model.addAttribute("templateList" , templates);
-//            getting zoneId from request
-            String zoneId =  request.getParameter("zoneId");
-            logger.info("Received zone ID - " + zoneId);
-            if(zoneId==null){
-                zoneId = "zone1";
-                logger.info("Zone Id is null , so adding default zone 1");
-            }
-            model.addAttribute("zoneId" , zoneId);
-            logger.info("Active zone ID - " + zoneId);
+            model = addZoneId(request, model);
             return "templateDashboard";
         }
         return "redirect:/invalidUser";
     }
 
 //    Select Exercise Dashboard
-    @RequestMapping("/selectExcercise")
-    public String selectExcercise(){
-        return "selectExercise";
+    @RequestMapping("/selectExercise")
+    public String selectExcercise(HttpServletRequest request , Model model){
+        if(validUser(request)) {
+            model = addZoneId(request, model);
+            return "selectExercise";
+        }
+        return "redirect:/invalidUser";
     }
 
 //   ERROR
@@ -132,5 +121,20 @@ public class ApplicationController {
     public String error(){
         return "error";
     }
+
+//    Retrieve zoneId from request and add model Attribute
+    public Model addZoneId(HttpServletRequest request , Model model){
+        //            getting zoneId from request
+        String zoneId =  request.getParameter("zoneId");
+        logger.info("Received zone ID - " + zoneId);
+        if(zoneId==null){
+            zoneId = "zone1";
+            logger.info("Zone Id is null , so adding default zone 1");
+        }
+        model.addAttribute("zoneId" , zoneId);
+        logger.info("Active zone ID - " + zoneId);
+        return model;
+    }
+
 
 }

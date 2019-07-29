@@ -1,11 +1,22 @@
-<%@ page import="java.io.File" %>
-<%@ page import="java.util.ResourceBundle" %><%--
-  Created by IntelliJ IDEA.
-  User: veena
+<%--
+  User: Ramanan
   Date: 2019-07-22
   Time: 14:27
   To change this template use File | Settings | File Templates.
 --%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="java.io.File" %>
+<%@ page import="java.util.ResourceBundle" %>
+<%@ page import="org.apache.commons.logging.Log" %>
+<%@ page import="org.apache.commons.logging.LogFactory" %>
+
+<%
+//    Get a reference to the logger for this class
+    Log logger = LogFactory.getLog( this.getClass() );
+//   Getting Resource File
+    ResourceBundle resource = ResourceBundle.getBundle("application-settings");
+%>
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -21,11 +32,13 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <!-- Material Design Bootstrap -->
     <link href="css/mdb.min.css" rel="stylesheet">
-    <!-- Your custom styles (optional) -->
+    <!-- custom styles  -->
     <link href="css/style.css" rel="stylesheet">
-    <%--Sortable--%>
+
+    <%--Sortable to make draggable components (selected exercise need to be sorted)--%>
     <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
     <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+
 </head>
 <style>
     .Rectangle-21 {
@@ -107,57 +120,86 @@
     <section class="col-md-1">
         <div class="Rectangle-21 navbar">
             <ul class="nav white-text text-center center-block" style="margin-top: -50px">
-                <li class="nav-item zone">
+                <li class="nav-item d-flex float-left zone" >
                     <a>Favourites</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active">Chest</a><hr>
-                </li>
-                <li class="nav-item zone">
-                    <a class="nav-link ">Biceps</a><hr>
-                </li>
-                <li class="nav-item zone">
-                    <a class="nav-link ">Triceps</a><hr>
-                </li>
-                <li class="nav-item zone">
-                    <a class="nav-link ">Fat</a><hr>
-                </li>
-                <li class="nav-item zone">
-                    <a class="nav-link ">Shoulder</a><hr>
-                </li>
-                <li class="nav-item zone">
-                    <a class="nav-link ">Leg</a><hr>
-                </li>
-                <li class="nav-item zone">
-                    <a class="nav-link ">Abs</a><hr>
-                </li>
-                <li class="nav-item zone">
-                    <a class="nav-link ">Fit</a>
-                </li>
+                </li><br>
+                <%--        Getting exercise category from property File        --%>
+                <%
+                    String[] exerciseCategory = resource.getString("exercise.categories").split(";");
+                    logger.info("Exercise Categories retrieved from property file - " + exerciseCategory[0]);
+                %>
+                <%for(String exerciseCategoryName : exerciseCategory){%>
+                    <li class="nav-item zone">
+                        <a class="nav-link ">
+                            <%=exerciseCategoryName%>
+                        </a><hr>
+                    </li>
+                <%}%>
+
+<%--                <li class="nav-item zone">--%>
+<%--                    <a class="nav-link ">Biceps</a><hr>--%>
+<%--                </li>--%>
+<%--                <li class="nav-item zone">--%>
+<%--                    <a class="nav-link ">Triceps</a><hr>--%>
+<%--                </li>--%>
+<%--                <li class="nav-item zone">--%>
+<%--                    <a class="nav-link ">Fat</a><hr>--%>
+<%--                </li>--%>
+<%--                <li class="nav-item zone">--%>
+<%--                    <a class="nav-link ">Shoulder</a><hr>--%>
+<%--                </li>--%>
+<%--                <li class="nav-item zone">--%>
+<%--                    <a class="nav-link ">Leg</a><hr>--%>
+<%--                </li>--%>
+<%--                <li class="nav-item zone">--%>
+<%--                    <a class="nav-link ">Abs</a><hr>--%>
+<%--                </li>--%>
+<%--                <li class="nav-item zone">--%>
+<%--                    <a class="nav-link ">Fit</a>--%>
+<%--                </li>--%>
             </ul>
         </div>
     </section>
     <section class="view col-md-10 container "  >
             <div class="row">
                 <div class="col-md-6 row d-flex justify-content-center" style="font-size: 24px">
-                    <span class="mt-2">
+                    <a class="mt-2" href="/adminDashboard">
                         <img src="img/left.svg" class="img-fluid" style="width: 25px">
-                    </span>
+                    </a>
                     <%--       Getting zone excercise ocunt value from property file         --%>
-                    <% ResourceBundle resource = ResourceBundle.getBundle("application-settings");
-                        String val = resource.getString("zone.exercise.count");
-                        %>
+                    <%
+                        String exerciseCount = resource.getString("zone.exercise.count");
+                    %>
+                    <%--    setting var in script  for exercise Count  --%>
+                    <script>
+                        var allowedNumberOfExerciseToSelect = "<%=exerciseCount%>";
+                    </script>
+                    <%--  --%>
                     <span class="ml-3">
-                        <p >Select upto <%=val%> exercises for</p>
+                        <p >Select upto <%=exerciseCount%> exercises for</p>
                     </span> &nbsp;
                     <span>
                         <b>
-                            <!-- Dropdown -->
-                                <a class="dropdown-toggle mr-4"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Zone 1</a>
-
-                                <span class="dropdown-menu">
-                                  <a class="dropdown-item" href="#">Action</a>
-                                </span>
+                            <!-- Zone DropDown -->
+                            <a class="dropdown-toggle mr-4"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">${zoneId}</a>
+                            <span class="dropdown-menu">
+                                <%--       Getting zone count value from property file         --%>
+                                <%
+                                    String zoneCountValue = resource.getString("zone.count");
+                                    logger.info("zoneCountValue in selectExercise.jsp - " + zoneCountValue);
+                                    for(int zoneCount = 1 ; zoneCount<=Integer.parseInt(zoneCountValue) ; zoneCount++){
+                                %>
+                                      <a class="dropdown-item"
+                                         <% if(!request.getParameter("zoneId").equals("zone"+zoneCount)){%>}
+                                         href="/selectExercise?zoneId=zone<%=zoneCount%>"
+                                         <%}%>
+                                      >
+                                           Zone <%if (zoneCount < 10) {%><%=0%><%}%><%=zoneCount%>
+                                      </a>
+                                <%
+                                    }
+                                %>
+                            </span>
                         </b>
                     </span>
 
@@ -223,28 +265,30 @@
     </section>
 </div>
 
+<!-- SCRIPTS -->
 <script>
     function myFunction(a) {
         // alert("ram");
+        // alert(allowedNumberOfExerciseToSelect);
         var count = document.querySelectorAll(".select-border").length;
-        if(count>=4&&!(a.classList.contains("select-border"))){
-            alert("Sorry! you can select only 4 Exercises");
+        if(count>=allowedNumberOfExerciseToSelect && !(a.classList.contains("select-border"))){
+            alert("Sorry! you can select only "+allowedNumberOfExerciseToSelect+" Exercises");
         }
         else{
             a.classList.toggle("select-border");
-            // alert("ahaan");
         }
-        // alert("yes");
         a.stopPropagation? a.stopPropagation() : a.cancelBubble = true;
     }
     function success(id) {
         alert(id);
     }
 </script>
+
+<%--Script to make selected exercise box re-arrangeble--%>
 <script>
     $("#sortable").sortable();
 </script>
-<!-- SCRIPTS -->
+
 <!-- JQuery -->
 <script type="text/javascript" src="../../js/jquery-3.4.1.min.js"></script>
 <!-- Bootstrap tooltips -->

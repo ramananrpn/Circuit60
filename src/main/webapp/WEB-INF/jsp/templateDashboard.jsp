@@ -104,26 +104,29 @@
                             </span>
                         </div>
             <div class="ml-auto">
-                <button type="button" class="btn-sm btn-white btn-rounded" style="width: 150px">Add Excercise</button>
+                <button type="button" class="btn-sm btn-white btn-rounded" style="width: 150px" onclick="location.href='/selectExercise?zoneId=${zoneId}'" >
+                Add Excercise
+                </button>
                 <a><img src="../img/settings.svg" class="img-fluid"></a>
             </div>
         </nav>
     </div>
 </header>
-<div class="view text-center container-fluid" style="z-index: 1">
-    <div class="row ml-3 jumbotron-fluid">
-        <span class="card navbar Rectangle-9 white-text d-flex justify-content-center ml-5" >
+<div class="view text-center container-fluid" style="">
+    <div class="row ml-3 jumbotron-fluid flex-center">
+        <span class="col-md-2 col-sm-2 card navbar Rectangle-9 white-text d-flex justify-content-center " >
             <ul class="nav navbar-nav" id="zone-navigation" >
                 <c:set var = "url" scope = "session" value = "/templateDashboard/${templateName}"/>
 <%--       Getting zone count value from property file         --%>
-                <% ResourceBundle resource = ResourceBundle.getBundle("application-settings");
+                <%
+                    ResourceBundle resource = ResourceBundle.getBundle("application-settings");
                    String val = resource.getString("zone.count");
 //                   System.out.println(val);
                     for(int zoneCount = 1 ; zoneCount<=Integer.parseInt(val) ; zoneCount++){
 
                 %>
                     <li class="nav-item">
-                        <a class="nav-link zone "  href="<c:out value="${url}"/>?zoneId=zone<%=zoneCount%>" onclick="changeActive(event)" id="zone<%=zoneCount%>">
+                        <a class="nav-link zone " style="margin-top: -20px"  href="<c:out value="${url}"/>?zoneId=zone<%=zoneCount%>" onclick="changeActive(event)" id="zone<%=zoneCount%>">
                             Zone <%if(zoneCount<10){%><%=0%><%}%><%=zoneCount%>
                         <%--Active element arrow--%>
 <%--                            <img class="d-flex flex-row-reverse" src="../img/white-arrow.svg">--%>
@@ -152,12 +155,18 @@
 <%--                </li>--%>
             </ul>
         </span>
-        <span class="card base-r1 mt-3" style="margin-left: -30px;z-index: 1">
-            <div class="row flex-center" style="">
+        <span class="col-md-9 col-sm-5 card base-r1 "  style="margin-left: -30px;z-index: 2">
+            <div class=" flex-center" style="">
                     <div class="text-center">
-                         <a type="button" onclick="show()"><img src="../img/gym.svg" style="width: 40px;height: 40px;"></a>
+                        <%--        Gym Dumbell add exercise LOGO    --%>
+                         <a type="button" href="/selectExercise?zoneId=${zoneId}">
+                             <img src="../img/gym.svg" style="width: 40px;height: 40px;">
+                         </a>
                         <br>
-                        <button type="button" class="set-btn-outline btn-rounded waves-effect" style="width: 180px;border: solid 1px #0d0d0d" >Add Exercise</button>
+                        <%--     Add Exercise Button   --%>
+                        <button type="button" onclick="location.href='/selectExercise?zoneId=${zoneId}'" class="set-btn-outline btn-rounded waves-effect" style="width: 180px;border: solid 1px #0d0d0d" >
+                            Add Exercise
+                        </button>
                     </div>
             </div>
         </span>

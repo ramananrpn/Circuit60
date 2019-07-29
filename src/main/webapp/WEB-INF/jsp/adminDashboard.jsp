@@ -116,7 +116,6 @@
         </div>
             <%
                 int count=1;
-                System.out.println("yes--- " + request.getAttribute("templateList"));
             %>
 <%--            <p>HELLO ${templateList}</p>--%>
 
