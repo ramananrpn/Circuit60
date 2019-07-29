@@ -1,0 +1,181 @@
+.Rectangle-35 {
+    width: 100%;
+    height: 100%;
+    opacity: 0.85;
+    -webkit-backdrop-filter: blur(5.8px);
+    backdrop-filter: blur(5.8px);
+    background-image: linear-gradient(119deg, #ffe943, #c9138a);
+}
+.Rectangle-37 {
+    width: 420px;
+    height: 65px;
+    border-radius: 32px;
+    background-color: #f8ebe9;
+}
+.Logo {
+    width: 239.7px;
+    height: 41.6px;
+    object-fit: contain;
+    background-color: #ffffff;
+}
+.Information {
+    width: 93px;
+    height: 23px;
+    font-family: Poppins;
+    font-size: 16px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.56;
+    letter-spacing: normal;
+    text-align: left;
+    color: #862b2b;
+}
+.Gym-ID {
+    width: 65px;
+    height: 25px;
+    font-family: Poppins;
+    font-size: 18px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.5;
+    letter-spacing: normal;
+    text-align: left;
+    color: #727272;
+}
+
+.action-athlete-barbell-841130 {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    opacity: 0.64;
+    -webkit-filter: blur(2.2px);
+    filter: blur(2.2px);
+}
+.Logo {
+    width: 239.7px;
+    height: 41.6px;
+    object-fit: contain;
+    background-color: #ffffff;
+}
+
+.admin-Dashboard-Empty {
+    width: 1366px;
+    height: 768px;
+    background-color: #f2f5fa;
+}
+.hide-block-display{
+    display:none;
+}
+.hide-block-visibility{
+    visibility:hidden
+}
+.form-rounded {
+    border-radius: 1rem;
+}
+.btn-rounded{
+    border-radius: 40px;
+    background-color: #5e31e9;
+    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+}
+.set-text-white{
+    font-size: 14px;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.5;
+    letter-spacing: normal;
+    text-align: center;
+    color: #ffffff;
+}
+.set-text-violet{
+    font-size: 14px;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.5;
+    letter-spacing: normal;
+    text-align: center;
+    color: #5e31e9;
+}
+.set-btn-outline{
+    border-radius: 22px;
+    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+    border: solid 1px #5e31e9;
+    background-color: white;
+}
+.Rectangle-1378 {
+    width: 250px;
+    height: 180px;
+    border-radius: 20px;
+    background-color: #5e31e9;
+}
+.Rectangle-1379 {
+    width: 220px;
+    height: 160px;
+    border-radius: 20px;
+    background-color: #ffffff;
+
+}
+.Path-12197 {
+    width: 35px;
+    height: 35px;
+    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+    border-radius: 10px;
+    background-color: #ffffff;
+}
+.navbar-custom{
+    width: 100%;
+    height: 80px;
+    border-radius: 20px;
+    background-color: #ff9f00;
+}
+.nav-text{
+    width: 293px;
+    height: 33px;
+    font-size: 24px;
+    font-weight: 600;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.46;
+    letter-spacing: normal;
+    text-align: left;
+    color: #ffffff;
+}
+.navbar {
+    z-index: 1;
+}
+.Add-Template {
+    height: 25px;
+    font-size: 15px;
+    font-weight: 600;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.5;
+    letter-spacing: normal;
+    text-align: left;
+    color: #ffffff;
+}
+.center-block{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+.top-navbar{
+    box-shadow: 0 5px 18px 0 rgba(0, 0, 0, 0.15);
+    border-radius: 20px;
+    background-color: #f2f5fa;
+    z-index: 1;
+}
+.Rectangle-9 {
+    width: 220px;
+    height: 519px;
+    border-radius: 20px;
+    background-color: #5e31e9;
+}
+.base-r1 {
+    width: 1096px;
+    height: 479px;
+    border-radius: 20px;
+    border: solid 1px rgba(94, 49, 233, 0.25);
+    background-color: #ffffff;
+}
