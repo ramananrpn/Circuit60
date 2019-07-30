@@ -130,7 +130,7 @@
                 %>
         <%--   Template Details Card     --%>
         <!-- Grid column -->
-        <a class="col-lg-2 col-md-2 mt-5 ml-4" href="/templateDashboard/${template.templateName}">
+        <a class="col-lg-2 col-md-2 mt-5 ml-4" href="/templateDashboard/${template.templateId}">
             <div class="text-center Rectangle-1378 " >
                 <div class="row " >
                     <div class="flex-center">

@@ -89,12 +89,12 @@
                             <!--Template Name Dropdown -->
                             <span class="nav-item dropdown" style="margin-top: -10px"  >
                                 <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
-                                   aria-haspopup="true" aria-expanded="false">${templateName}</a>
+                                   aria-haspopup="true" aria-expanded="false">${template.getTemplateName()}</a>
                                 <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
                                     <c:forEach items="${templateList}" var="template">
                                         <%--      href condition to place redirection URL if its not current template in dropdown            --%>
                                     <a class="dropdown-item" href="<c:if test="${templateName!=template.templateName}">
-                                                                            /templateDashboard/${template.templateName}
+                                                                            /templateDashboard/${template.templateId}
                                                                    </c:if>">
                                         <%--  Displaying Template Name --%>
                                         ${template.templateName}
@@ -116,7 +116,7 @@
     <div class="row ml-3 jumbotron-fluid flex-center">
         <span class="col-md-2 col-sm-2 card navbar Rectangle-9 white-text d-flex justify-content-center " >
             <ul class="nav navbar-nav" id="zone-navigation" >
-                <c:set var = "url" scope = "session" value = "/templateDashboard/${templateName}"/>
+                <c:set var = "url" scope = "session" value = "/templateDashboard/${template.getTemplateId()}"/>
 <%--       Getting zone count value from property file         --%>
                 <%
                     ResourceBundle resource = ResourceBundle.getBundle("application-settings");

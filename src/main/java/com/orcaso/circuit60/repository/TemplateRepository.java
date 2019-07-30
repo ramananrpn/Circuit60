@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface TemplateRepository extends CrudRepository<Templates , String> {
-    List<Templates> findAllByGymId(Gym gym);
-    List<Templates> findTemplatesByGymId(Gym gymId);
+public interface TemplateRepository extends CrudRepository<Templates , Long> {
+    Templates findTemplatesByTemplateId(Long templateId);
 }

@@ -16,12 +16,12 @@ public class Templates {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long templateId;
 
-    @ManyToOne
-    @JoinColumn(name = "gym_id")
-    private Gym gymId;
 
     @Column(name = "template_name")
     private String templateName;
+
+    @Column(name="active",columnDefinition = "Integer default 0")
+    private int active;
 
     @Column(name="created_date",nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -35,7 +35,6 @@ public class Templates {
 
 //    Getters & Setters
 
-
     public long getTemplateId() {
         return templateId;
     }
@@ -44,20 +43,20 @@ public class Templates {
         this.templateId = templateId;
     }
 
-    public Gym getGymId() {
-        return gymId;
-    }
-
-    public void setGymId(Gym gymId) {
-        this.gymId = gymId;
-    }
-
     public String getTemplateName() {
         return templateName;
     }
 
     public void setTemplateName(String templateName) {
         this.templateName = templateName;
+    }
+
+    public int getActive() {
+        return active;
+    }
+
+    public void setActive(int active) {
+        this.active = active;
     }
 
     public Date getCreatedAt() {
@@ -80,7 +79,6 @@ public class Templates {
     public String toString() {
         return "Templates{" +
                 "templateId=" + templateId +
-                ", gymId=" + gymId +
                 ", templateName='" + templateName + '\'' +
                 '}';
     }

@@ -163,7 +163,7 @@
     <section class="view col-md-10 container "  >
             <div class="row">
                 <div class="col-md-6 row d-flex justify-content-center" style="font-size: 24px">
-                    <a class="mt-2" href="/adminDashboard">
+                    <a class="mt-2" href="/templateDashboard/${template.getTemplateId()}?zoneId=${zoneId}">
                         <img src="img/left.svg" class="img-fluid" style="width: 25px">
                     </a>
                     <%--       Getting zone excercise ocunt value from property file         --%>
