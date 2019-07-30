@@ -140,6 +140,4 @@ public class ApplicationController {
         logger.info("Active zone ID - " + zoneId);
         return model;
     }
-
-
 }
