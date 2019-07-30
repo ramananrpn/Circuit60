@@ -4,6 +4,7 @@ import com.orcaso.circuit60.model.Gym;
 import com.orcaso.circuit60.model.Templates;
 import com.orcaso.circuit60.repository.GymRepository;
 import com.orcaso.circuit60.repository.TemplateRepository;
+import com.orcaso.circuit60.repository.ZoneRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,9 @@ public class ApplicationController {
 
     @Autowired
     private TemplateRepository templateRepository;
-    Templates templateObj;
+
+    @Autowired
+    private ZoneRepository zoneRepository;
 
 
     //    Get Gym Object
@@ -38,14 +41,15 @@ public class ApplicationController {
     }
 
     //    Authentication check
-    public boolean validUser(HttpServletRequest request){
-        if(request.getSession().getAttribute("gymId")!=null)
-            return true;
-        return false;
+    public String  validUser(HttpServletRequest request){
+        if(request.getSession().getAttribute("gymId")!=null){
+            return request.getSession().getAttribute("gymId").toString();
+        }
+        return null;
     }
     @RequestMapping("/")
     public String index(HttpServletRequest request){
-        if(validUser(request)){
+        if(validUser(request)!=null){
             return "redirect:/adminDashboard";
         }
         else
@@ -73,7 +77,7 @@ public class ApplicationController {
 //    Display all templates - adminDashboard
     @RequestMapping("/adminDashboard")
     public String adminDashboard(HttpServletRequest request , Model model){
-        if(validUser(request)){
+        if(validUser(request)!=null){
             //      Retrieve Template
             List<Templates> templates = templateRepository.findAllByGymId(getGym(request));
             logger.info("templateList of current user - " +templates);
@@ -94,7 +98,7 @@ public class ApplicationController {
 //    Zone Add exercise dashboard
     @RequestMapping("/templateDashboard/{templateName}")
     public String templateDashboard(@PathVariable("templateName") String templateName , Model model,HttpServletRequest request){
-        if(validUser(request)){
+        if(validUser(request)!=null){
             System.out.println("Selected template Name = "+templateName);
             model.addAttribute("templateName" , templateName);
             List<Templates> templates = templateRepository.findTemplatesByGymId(getGym(request));
@@ -109,8 +113,9 @@ public class ApplicationController {
 //    Select Exercise Dashboard
     @RequestMapping("/selectExercise")
     public String selectExcercise(HttpServletRequest request , Model model){
-        if(validUser(request)) {
+        if(validUser(request)!=null) {
             model = addZoneId(request, model);
+//            if(zoneRepository.existsZonesByTemplateIdAndZone())
             return "selectExercise";
         }
         return "redirect:/invalidUser";
