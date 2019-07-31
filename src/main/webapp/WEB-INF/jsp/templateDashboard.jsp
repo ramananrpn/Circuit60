@@ -63,6 +63,13 @@
         /*border-left: 1px solid #9966FF;*/
         /*height : 100px;*/
     }
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        margin: 0;
+    }
 </style>
 
 <body onload="changeActiveOnload()">
@@ -206,20 +213,28 @@
                 <div class="container-fluid">
                     <br>
                     <%--         Excersie time reps brefore configure           --%>
-                    <div class="row d-flex justify-content-center">
+                    <div class="row d-flex justify-content-center md-form">
                         <div class="col-md-4 ">
                             <span class="card exerciseCustomise-card flex-center">
                                 <div class="row">
                                     <span class="flex-center">
                                         <img src="../img/clock.svg">
                                         <p class="ml-2">Seconds Per Exercise</p>
-                                        <a class="button mt-2"><img src="../img/minusButton.svg"></a>
+                                        <a class="button mt-2" onclick="decreaseExerciseSeconds()">
+                                            <img src="../img/minusButton.svg">
+                                        </a>
                                         <span style="color: #707070" class="flex-center ml-1">
-                                            <p id="mins" >00</p>
+                                            <input type="number" id="exerciseMins" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="00"
+                                                   onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
+<%--                                            <p id="mins" >00</p>--%>
                                             <p >:</p>
-                                            <p id="secs" >45</p>
+<%--                                            <p id="secs" >45</p>--%>
+                                            <input type="number" id="exerciseSecs" class="form-control form-control-sm text-center" min="00" max="60" style="width: 25px" value="00"
+                                                   onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
                                         </span>
-                                       <a class="button mt-2"><img src="../img/plusButton.svg"></a>
+                                       <a class="button mt-2" onclick="increaseExerciseSeconds()">
+                                           <img src="../img/plusButton.svg">
+                                       </a>
                                     </span>
                                 </div>
                             </span>
@@ -230,11 +245,15 @@
                                     <span class="flex-center">
                                         <img src="../img/reps.svg">
                                         <p class="ml-2">Reps</p>
-                                        <a class="button mt-2"><img src="../img/minusButton.svg"></a>
+                                        <a class="button mt-2" onclick="decreaseReps()">
+                                            <img src="../img/minusButton.svg">
+                                        </a>
                                         <span style="color: #707070" class="flex-center ml-1">
-                                           <p id="repsCount">05</p>
+                                           <input type="number" id="repsCount" class="form-control form-control-sm text-center" min="0" style="width: 25px" value="1">
                                         </span>
-                                       <a class="button mt-2"><img src="../img/plusButton.svg"></a>
+                                       <a class="button mt-2" onclick="increaseReps()">
+                                           <img src="../img/plusButton.svg">
+                                       </a>
                                     </span>
                                 </div>
                             </span>
@@ -245,14 +264,21 @@
                                     <span class="flex-center">
                                         <img src="../img/break.svg">
                                         <p class="ml-2">Break</p>
-                                        <a class="button mt-2"><img src="../img/minusButton.svg"></a>
-                                         <span style="color: #707070" class="flex-center ml-1">
-                                            <p id="breakMins" >00</p>
-                                            <p >:</p>
-                                            <p id="breakSec" >45</p>
-                                             <p >s</p>
-                                        </span>
-                                       <a class="button mt-2"><img src="../img/plusButton.svg"></a>
+                                        <a class="button mt-2" onclick="decreaseBreakSeconds()">
+                                            <img src="../img/minusButton.svg">
+                                        </a>
+                                            <span style="color: #707070" class="flex-center ml-1">
+                                            <input type="number" id="breakMins" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="00"
+                                                   onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
+                                            <%--   <p id="mins" >00</p>--%>
+                                                <p >:</p>
+                                            <%--                                            <p id="secs" >45</p>--%>
+                                            <input type="number" id="breakSecs" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="00"
+                                                   onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
+                                             </span>
+                                       <a class="button mt-2" onclick="increaseBreakSeconds()">
+                                           <img src="../img/plusButton.svg">
+                                       </a>
                                     </span>
                                 </div>
                             </span>
@@ -334,7 +360,79 @@
         zone.classList.add('active');
     }
 </script>
-</body>
 
+<%--Scripts for time settings customization--%>
+<script>
+<%--  Seconds per Exercise Customization  --%>
+    function increaseExerciseSeconds() {
+        var secs = parseInt(document.getElementById('exerciseSecs').value);
+        var mins = parseInt(document.getElementById('exerciseMins').value);
+        // alert(secs +" "+mins);
+        if(secs==59){
+            document.getElementById('exerciseSecs').value = "00";
+            document.getElementById('exerciseMins').value = (mins+1<=10)?"0"+(mins+1):mins+1;
+        }
+        else {
+            document.getElementById('exerciseSecs').value = ((secs + 1 <= 10) ? ( "0" + (secs + 1)) :  (secs + 1));
+        }
+    }
+    function decreaseExerciseSeconds() {
+        var secs = parseInt(document.getElementById('exerciseSecs').value);
+        var mins = parseInt(document.getElementById('exerciseMins').value);
+        // alert(secs +" "+mins);
+        if(secs>0 || mins>0){
+            if(secs==1){
+                document.getElementById('exerciseSecs').value = "00";
+                if(mins>0)
+                document.getElementById('exerciseMins').value = (mins-1<=10)?"0"+(mins-1):mins-1;
+            }
+            else {
+                document.getElementById('exerciseSecs').value = ((secs - 1 <= 10) ? ( "0" + (secs - 1)) :  (secs - 1));
+            }
+        }
+    }
+    <!--Reps Customization-->
+    function increaseReps() {
+        var repsCount = parseInt(document.getElementById('repsCount').value);
+        document.getElementById('repsCount').value = repsCount+1;
+    }
+    function decreaseReps() {
+        var repsCount = parseInt(document.getElementById('repsCount').value);
+        if(repsCount>1)
+        document.getElementById('repsCount').value = repsCount-1;
+    }
+
+//    Break time customization
+function increaseBreakSeconds() {
+    var secs = parseInt(document.getElementById('breakSecs').value);
+    var mins = parseInt(document.getElementById('breakMins').value);
+    // alert(secs +" "+mins);
+    if(secs==59){
+        document.getElementById('breakSecs').value = "00";
+        document.getElementById('breakMins').value = (mins+1<=10)?"0"+(mins+1):mins+1;
+    }
+    else {
+        document.getElementById('breakSecs').value = ((secs + 1 <= 10) ? ( "0" + (secs + 1)) :  (secs + 1));
+    }
+}
+function decreaseBreakSeconds() {
+    var secs = parseInt(document.getElementById('breakSecs').value);
+    var mins = parseInt(document.getElementById('breakMins').value);
+    // alert(secs +" "+mins);
+    if(secs>0 || mins>0){
+        if(secs==1){
+            document.getElementById('breakSecs').value = "00";
+            if(mins>0)
+                document.getElementById('breakMins').value = (mins-1<=10)?"0"+(mins-1):mins-1;
+        }
+        else {
+            document.getElementById('breakSecs').value = ((secs - 1 <= 10) ? ( "0" + (secs - 1)) :  (secs - 1));
+        }
+    }
+}
+
+</script>
+<%----%>
+</body>
 </html>
 
