@@ -169,9 +169,10 @@
 <%--                </li>--%>
             </ul>
         </span>
-        <span class="col-md-9 col-sm-5 card base-r1 "  style="margin-left: -30px;z-index: 2">
+
 <%--      Display default Add exercide Icon and button when no exercise found for the current zone     --%>
-            <c:if test="${isZonePresent=='false'}">
+        <c:if test="${isZonePresent=='false'}">
+            <span class="col-md-9 col-sm-5 card base-r1 "  style="margin-left: -30px;z-index: 2;">
                 <div class=" flex-center">
                         <div class="text-center">
                             <%--        Gym Dumbell add exercise LOGO    --%>
@@ -185,11 +186,12 @@
                             </button>
                         </div>
                 </div>
-
-            </c:if>
+            </span>
+        </c:if>
 
 <%--    Display Exercise CRUD screen when exercise found for the current zone   --%>
-            <c:if test="${isZonePresent=='true'}">
+        <c:if test="${isZonePresent=='true'}">
+            <span class="col-md-9 col-sm-5 card base-r1 "  style="margin-left: -30px;z-index: 2;height: auto">
                 <div class="container-fluid">
                     <br>
                     <%--         Excersie time reps brefore configure           --%>
@@ -278,9 +280,10 @@
                     <div class="d-flex flex-row-reverse">
                         <button type="button" class="btn-sm set-text-violet set-btn-outline" style="width: 180px;">Add / customize</button>
                     </div>
+                    <br>
                 </div>
-            </c:if>
-        </span>
+            </span>
+        </c:if>
     </div>
 
 </div>
