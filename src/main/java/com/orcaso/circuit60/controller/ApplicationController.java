@@ -2,6 +2,7 @@ package com.orcaso.circuit60.controller;
 
 import com.orcaso.circuit60.model.Gym;
 import com.orcaso.circuit60.model.Templates;
+import com.orcaso.circuit60.model.Zones;
 import com.orcaso.circuit60.repository.GymRepository;
 import com.orcaso.circuit60.repository.TemplateRepository;
 import com.orcaso.circuit60.repository.ZoneRepository;
@@ -95,15 +96,23 @@ public class ApplicationController {
                     List<Templates> templateList = getTemplates();
                     logger.info("List of all templates to be passed : " + templateList);
                     model.addAttribute("templateList" , templateList);
-                    model = addZoneId(request, model);
+                    String zoneId= getZoneId(request);
+                    logger.info("Active zone ID - " + zoneId);
+                    model.addAttribute("zoneId" , zoneId);
+                    Boolean isZonePresent = true ;
+//                    Boolean isZonePresent = zoneRepository.existsZonesByTemplateIdAndZone(currentTemplate ,zoneId) ;
+                    logger.info(zoneId+" found for Template : " + isZonePresent);
+                    model.addAttribute("isZonePresent",isZonePresent);
+                    if(isZonePresent){
+                        Zones zoneDetails = zoneRepository.findZonesByTemplateIdAndZone(currentTemplate,zoneId);
+                        model.addAttribute("zoneDetails" , zoneDetails);
+                    }
                     return "templateDashboard";
                 }catch (Exception e){
                     logger.warn("Exception Caught :: " + e);
                 }
             }
             return "redirect:/invalidUser";
-
-
     }
 
 //    Select Exercise Dashboard
@@ -111,11 +120,9 @@ public class ApplicationController {
     public String selectExercise(HttpServletRequest request , Model model){
         if(validUser(request)!=null) {
             try{
-
-            }catch(Exception ex){
-
-            }
-            model = addZoneId(request, model);
+            String zoneId= getZoneId(request);
+            model.addAttribute("zoneId" , zoneId);
+            logger.info("Active zone ID - " + zoneId);
             if(currentTemplate!=null){
                 model.addAttribute("template" , currentTemplate);
             }
@@ -125,6 +132,9 @@ public class ApplicationController {
             model.addAttribute("template" , currentTemplate);
 //            if(zoneRepository.existsZonesByTemplateIdAndZone())
             return "selectExercise";
+            }catch(Exception ex){
+                logger.warn("Exception Caught :: " + ex);
+            }
         }
         return "redirect:/invalidUser";
     }
@@ -135,11 +145,10 @@ public class ApplicationController {
         return "error";
     }
 
-
 //    ------------------  UTILITIES  ---------------------------
 
 //    Retrieve zoneId from request and add model Attribute
-    public Model addZoneId(HttpServletRequest request , Model model){
+    public String getZoneId(HttpServletRequest request){
         //            getting zoneId from request
         String zoneId =  request.getParameter("zoneId");
         logger.info("Received zone ID - " + zoneId);
@@ -147,9 +156,7 @@ public class ApplicationController {
             zoneId = "zone1";
             logger.info("Zone Id is null , so adding default zone 1");
         }
-        model.addAttribute("zoneId" , zoneId);
-        logger.info("Active zone ID - " + zoneId);
-        return model;
+        return zoneId;
     }
 
     //    Authentication check

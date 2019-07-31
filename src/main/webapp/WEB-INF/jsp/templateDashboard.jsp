@@ -49,6 +49,20 @@
         font-weight: lighter;
         color: rgba(255,255,255,0.5);
     }
+    .exerciseCustomise-card{
+        border-radius: 33px;
+        background-color: #f8f8f8;
+        height: 45px;
+        font-size: 15px;
+        font-weight: 600;
+    }
+    .divider {
+        width: 1px;
+        margin: 6px 0 ;
+        background: #9966FF;
+        /*border-left: 1px solid #9966FF;*/
+        /*height : 100px;*/
+    }
 </style>
 
 <body onload="changeActiveOnload()">
@@ -156,19 +170,116 @@
             </ul>
         </span>
         <span class="col-md-9 col-sm-5 card base-r1 "  style="margin-left: -30px;z-index: 2">
-            <div class=" flex-center" style="">
-                    <div class="text-center">
-                        <%--        Gym Dumbell add exercise LOGO    --%>
-                         <a type="button" href="/selectExercise?zoneId=${zoneId}">
-                             <img src="../img/gym.svg" style="width: 40px;height: 40px;">
-                         </a>
-                        <br>
-                        <%--     Add Exercise Button   --%>
-                        <button type="button" onclick="location.href='/selectExercise?zoneId=${zoneId}'" class="set-btn-outline btn-rounded waves-effect" style="width: 180px;border: solid 1px #0d0d0d" >
-                            Add Exercise
-                        </button>
+<%--      Display default Add exercide Icon and button when no exercise found for the current zone     --%>
+            <c:if test="${isZonePresent=='false'}">
+                <div class=" flex-center">
+                        <div class="text-center">
+                            <%--        Gym Dumbell add exercise LOGO    --%>
+                             <a type="button" href="/selectExercise?zoneId=${zoneId}">
+                                 <img src="../img/gym.svg" style="width: 40px;height: 40px;">
+                             </a>
+                            <br>
+                            <%--     Add Exercise Button   --%>
+                            <button type="button" onclick="location.href='/selectExercise?zoneId=${zoneId}'" class="set-btn-outline btn-rounded waves-effect" style="width: 180px;border: solid 1px #0d0d0d" >
+                                Add Exercise
+                            </button>
+                        </div>
+                </div>
+
+            </c:if>
+
+<%--    Display Exercise CRUD screen when exercise found for the current zone   --%>
+            <c:if test="${isZonePresent=='true'}">
+                <div class="container-fluid">
+                    <br>
+                    <%--         Excersie time reps brefore configure           --%>
+                    <div class="row d-flex justify-content-center">
+                        <div class="col-md-4 ">
+                            <span class="card exerciseCustomise-card flex-center">
+                                <div class="row">
+                                    <span class="flex-center">
+                                        <img src="../img/clock.svg">
+                                        <p class="ml-2">Seconds Per Exercise</p>
+                                        <a class="button mt-2"><img src="../img/minusButton.svg"></a>
+                                        <span style="color: #707070" class="flex-center ml-1">
+                                            <p id="mins" >00</p>
+                                            <p >:</p>
+                                            <p id="secs" >45</p>
+                                        </span>
+                                       <a class="button mt-2"><img src="../img/plusButton.svg"></a>
+                                    </span>
+                                </div>
+                            </span>
+                        </div>
+                        <div class="col-md-3 d-flex justify-content-center">
+                            <span class="card exerciseCustomise-card flex-center" style="width: 240px;" >
+                                <div class="row">
+                                    <span class="flex-center">
+                                        <img src="../img/reps.svg">
+                                        <p class="ml-2">Reps</p>
+                                        <a class="button mt-2"><img src="../img/minusButton.svg"></a>
+                                        <span style="color: #707070" class="flex-center ml-1">
+                                           <p id="repsCount">05</p>
+                                        </span>
+                                       <a class="button mt-2"><img src="../img/plusButton.svg"></a>
+                                    </span>
+                                </div>
+                            </span>
+                        </div>
+                        <div class="col-md-3 d-flex justify-content-center">
+                            <span class="card exerciseCustomise-card flex-center" style="width: 283px;" >
+                                <div class="row">
+                                    <span class="flex-center">
+                                        <img src="../img/break.svg">
+                                        <p class="ml-2">Break</p>
+                                        <a class="button mt-2"><img src="../img/minusButton.svg"></a>
+                                         <span style="color: #707070" class="flex-center ml-1">
+                                            <p id="breakMins" >00</p>
+                                            <p >:</p>
+                                            <p id="breakSec" >45</p>
+                                             <p >s</p>
+                                        </span>
+                                       <a class="button mt-2"><img src="../img/plusButton.svg"></a>
+                                    </span>
+                                </div>
+                            </span>
+                        </div>
                     </div>
-            </div>
+
+                    <hr>
+                    <%--       Exercise Display         --%>
+                    <div class="row">
+                        <%for(int i=0; i<4 ;i++){%>
+                         <div class="col-md-3 col-sm-1 col-xs-1 d-flex justify-content-center " >
+                            <div class="card text-center mb-3 border-0 card-color" >
+                                <div class="card-body">
+                                    <h5 class="card-title">Push Ups</h5>
+                                    <p class="card-text mt-4"><video class="video-fluid z-depth-1" src="../../exercises/chest/Pull%20Ups.mp4" autoplay loop muted></video></p>
+                                </div>
+                            </div>
+                             <%if(i!=3){%>
+                                <div class="d-flex flex-center">
+                                    <div class="divider"></div>
+                                </div>
+                             <%}%>
+                         </div>
+                        <%}%>
+                    </div>
+
+                    <%--        Progress Bar      --%>
+                    <div class="progress">
+                        <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="40"
+                                   aria-valuemin="0" aria-valuemax="100" style="width:70%">
+                        </div>
+                    </div>
+                    <br>
+                    <hr>
+                    <%--       Bottom button             --%>
+                    <div class="d-flex flex-row-reverse">
+                        <button type="button" class="btn-sm set-text-violet set-btn-outline" style="width: 180px;">Add / customize</button>
+                    </div>
+                </div>
+            </c:if>
         </span>
     </div>
 

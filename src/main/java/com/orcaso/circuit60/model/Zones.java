@@ -23,7 +23,7 @@ public class Zones {
     private Templates templateId;
 
     @Column(name = "zone")
-    private int zone;
+    private String zone;
 
     @Column(name = "seconds")
     private long seconds;
@@ -60,11 +60,11 @@ public class Zones {
         this.templateId = templateId;
     }
 
-    public int getZone() {
+    public String getZone() {
         return zone;
     }
 
-    public void setZone(int zone) {
+    public void setZone(String zone) {
         this.zone = zone;
     }
 

@@ -16,9 +16,11 @@ public class Templates {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long templateId;
 
-
     @Column(name = "template_name")
     private String templateName;
+
+    @Column(name = "template_logo")
+    private String templateLogo;
 
     @Column(name="active",columnDefinition = "Integer default 0")
     private int active;
@@ -49,6 +51,14 @@ public class Templates {
 
     public void setTemplateName(String templateName) {
         this.templateName = templateName;
+    }
+
+    public String getTemplateLogo() {
+        return templateLogo;
+    }
+
+    public void setTemplateLogo(String templateLogo) {
+        this.templateLogo = templateLogo;
     }
 
     public int getActive() {

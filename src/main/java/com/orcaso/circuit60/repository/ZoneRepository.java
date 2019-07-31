@@ -7,8 +7,10 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public interface ZoneRepository extends CrudRepository<Zones , Long> {
-    Boolean existsZonesByTemplateIdAndZone(Templates template , int zone);
+    Boolean existsZonesByTemplateIdAndZone(Templates template , String zone);
+    Zones findZonesByTemplateIdAndZone(Templates template , String zone);
 }

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" viewBox="0 0 38 38">
+    <defs>
+        <style>
+            .cls-1{fill:#fff}.cls-2{fill:#707070}.cls-3{filter:url(#Rectangle_1363)}
+        </style>
+        <filter id="Rectangle_1363" width="38" height="38" x="0" y="0" filterUnits="userSpaceOnUse">
+            <feOffset dy="5"/>
+            <feGaussianBlur result="blur" stdDeviation="3"/>
+            <feFlood flood-opacity=".063"/>
+            <feComposite in2="blur" operator="in"/>
+            <feComposite in="SourceGraphic"/>
+        </filter>
+    </defs>
+    <g id="Group_6583" data-name="Group 6583" transform="translate(9 4)">
+        <g class="cls-3" transform="translate(-9 -4)">
+            <rect id="Rectangle_1363-2" width="20" height="20" class="cls-1" data-name="Rectangle 1363" rx="5" transform="translate(9 4)"/>
+        </g>
+        <g id="Group_6559" data-name="Group 6559" transform="translate(6 6)">
+            <path id="Path_8606" d="M49.455 45.455h-2.91v-2.91a.545.545 0 0 0-1.091 0v2.909h-2.909a.545.545 0 0 0 0 1.091h2.909v2.909a.545.545 0 0 0 1.091 0v-2.909h2.909a.545.545 0 0 0 0-1.091z" class="cls-2" data-name="Path 8606" transform="translate(-42 -42)"/>
+        </g>
+    </g>
+</svg>

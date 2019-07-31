@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" viewBox="0 0 38 38">
+    <defs>
+        <style>
+            .cls-1{fill:#fff}.cls-2{fill:none;stroke:#707070;stroke-linecap:round;stroke-width:1.1px}.cls-3{filter:url(#Rectangle_1364)}
+        </style>
+        <filter id="Rectangle_1364" width="38" height="38" x="0" y="0" filterUnits="userSpaceOnUse">
+            <feOffset dy="5"/>
+            <feGaussianBlur result="blur" stdDeviation="3"/>
+            <feFlood flood-opacity=".063"/>
+            <feComposite in2="blur" operator="in"/>
+            <feComposite in="SourceGraphic"/>
+        </filter>
+    </defs>
+    <g id="Group_6585" data-name="Group 6585" transform="translate(9 4)">
+        <g class="cls-3" transform="translate(-9 -4)">
+            <rect id="Rectangle_1364-2" width="20" height="20" class="cls-1" data-name="Rectangle 1364" rx="5" transform="translate(9 4)"/>
+        </g>
+        <path id="Path_12200" d="M-9845 3744h7" class="cls-2" data-name="Path 12200" transform="translate(9851.5 -3734)"/>
+    </g>
+</svg>
