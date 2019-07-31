@@ -373,7 +373,7 @@
             document.getElementById('exerciseMins').value = (mins+1<=10)?"0"+(mins+1):mins+1;
         }
         else {
-            document.getElementById('exerciseSecs').value = ((secs + 1 <= 10) ? ( "0" + (secs + 1)) :  (secs + 1));
+            document.getElementById('exerciseSecs').value = ((secs + 1 < 10) ? ( "0" + (secs + 1)) :  (secs + 1));
         }
     }
     function decreaseExerciseSeconds() {
@@ -384,7 +384,7 @@
             if(secs==1){
                 document.getElementById('exerciseSecs').value = "00";
                 if(mins>0)
-                document.getElementById('exerciseMins').value = (mins-1<=10)?"0"+(mins-1):mins-1;
+                document.getElementById('exerciseMins').value = (mins-1<10)?"0"+(mins-1):mins-1;
             }
             else {
                 document.getElementById('exerciseSecs').value = ((secs - 1 <= 10) ? ( "0" + (secs - 1)) :  (secs - 1));
