@@ -103,6 +103,12 @@
     border: solid 1px #5e31e9;
     background-color: white;
 }
+.set-btn-outline-orange{
+    border-radius: 22px;
+    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+    border: solid 1px #ffffff;
+    background-color: #ffa700;
+}
 .Rectangle-1378 {
     width: 250px;
     height: 180px;

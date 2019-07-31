@@ -96,7 +96,7 @@
     </nav>
     <%--   Navbar     --%>
     <div class="container-fluid" style="margin-top: -15px;z-index: 2;position: absolute">
-        <nav class="text-center navbar navbar-expand-lg fixed navbar-light warning-color navbar-custom white-text" >
+        <nav class="text-center navbar navbar-expand-lg fixed navbar-light navbar-custom white-text" style="background-color: #ffa700;">
 
                         <div class="nav nav-text mr-auto ">
                             <a class="nav-item black-text  ml-4" href="/adminDashboard"><img src="../img/left.svg" class="img-fluid" style="width: 25px"></a>
@@ -117,10 +117,21 @@
                                 </div>
                             </span>
                         </div>
-            <div class="ml-auto">
-                <button type="button" class="btn-sm btn-white btn-rounded" style="width: 150px" onclick="location.href='/selectExercise?zoneId=${zoneId}'" >
-                Add Excercise
-                </button>
+            <div class="ml-auto mr-4">
+                <%--Checking whether to show add exercise button or Start Section button--%>
+                <c:if test="${isZonePresent=='false'}">
+                    <button type="button" class="btn-sm btn-white btn-rounded" style="width: 150px" onclick="location.href='/selectExercise?zoneId=${zoneId}'" >
+                    Add Excercise
+                    </button>
+                </c:if>
+                <c:if test="${isZonePresent=='true'}">
+                    <button type="button" class="btn-md set-btn-outline-orange white-text" style="width: 150px" onclick="location.href='/selectExercise?zoneId=${zoneId}'" >
+                        Save Section
+                    </button>
+                    <button type="button" class="btn-md btn-white btn-rounded" style="width: 150px" onclick="location.href='/selectExercise?zoneId=${zoneId}'" >
+                        Start Section
+                    </button>
+                </c:if>
                 <a><img src="../img/settings.svg" class="img-fluid"></a>
             </div>
         </nav>
