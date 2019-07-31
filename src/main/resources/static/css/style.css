@@ -103,6 +103,12 @@
     border: solid 1px #5e31e9;
     background-color: white;
 }
+.set-btn-outline-orange{
+    border-radius: 22px;
+    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+    border: solid 1px #ffffff;
+    background-color: #ffa700;
+}
 .Rectangle-1378 {
     width: 250px;
     height: 180px;
@@ -178,4 +184,11 @@
     border-radius: 20px;
     border: solid 1px rgba(94, 49, 233, 0.25);
     background-color: #ffffff;
+}
+.divider {
+    width: 2px;
+    margin: 6px 0;
+    background: #9966FF;
+    /*border-left: 1px solid #9966FF;*/
+    /*height : 100px;*/
 }

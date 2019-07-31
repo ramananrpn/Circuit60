@@ -3,6 +3,7 @@
 <%@ page import="java.util.Date" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -28,7 +29,10 @@
     .view {
         background-color: #f2f5fa;
     }
-
+    b{
+        font-size: 15px;
+        font-weight: 600;
+    }
 </style>
 <body>
 <header>
@@ -130,7 +134,7 @@
                 %>
         <%--   Template Details Card     --%>
         <!-- Grid column -->
-        <a class="col-lg-2 col-md-2 mt-5 ml-4" href="/templateDashboard/${template.templateName}">
+        <a class="col-lg-2 col-md-2 mt-5 ml-4" href="/templateDashboard/${template.templateId}">
             <div class="text-center Rectangle-1378 " >
                 <div class="row " >
                     <div class="flex-center">
@@ -139,8 +143,19 @@
                     </div>
                 </div>
                 <div class="row flex-center">
-                    <div class="text-center Rectangle-1379 flex-center">
-
+                    <div class="Rectangle-1379 black-text " style="font-size: 13px">
+                        <div class="container text-left mt-3 " >
+                            <c:set var="createdDate" value="${template.getCreatedAt()}"/>
+                            <c:set var="updatedDate" value="${template.getLastUpdatedDate()}"/>
+                            <%
+                                SimpleDateFormat dateFormat1 = new SimpleDateFormat ("dd-MM-yyyy");
+                            %>
+                            <p style="padding: 1px">Created on <%=dateFormat1.format(pageContext.getAttribute("createdDate"))%></p>
+                            <p style="padding: 1px">Edited on <%=dateFormat1.format(pageContext.getAttribute("updatedDate"))%></p>
+                            <hr>
+                            <p style="padding: 1px">No. of exercises :  <b>0</b></p>
+                            <p style="padding: 1px">Total duration : <b>20 mins</b></p>
+                        </div>
                     </div>
                 </div>
             </div>

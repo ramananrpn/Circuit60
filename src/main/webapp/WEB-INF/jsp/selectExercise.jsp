@@ -163,7 +163,7 @@
     <section class="view col-md-10 container "  >
             <div class="row">
                 <div class="col-md-6 row d-flex justify-content-center" style="font-size: 24px">
-                    <a class="mt-2" href="/adminDashboard">
+                    <a class="mt-2" href="/templateDashboard/${template.getTemplateId()}?zoneId=${zoneId}">
                         <img src="img/left.svg" class="img-fluid" style="width: 25px">
                     </a>
                     <%--       Getting zone excercise ocunt value from property file         --%>
@@ -229,14 +229,9 @@
                             <div class="card text-center mb-3 border-0 mt-3 card-color" >
                                 <div class="card-body">
                                     <h5 class="card-title">Push Ups</h5>
-                                    <p class="card-text mt-4"><video class="video-fluid z-depth-1" src="../../exercises/chest/Pull%20Ups.mp4" autoplay loop muted></video></p>
-                                    <%--                        <span class="card-text mt-4"><video width="320" height="240" controls>--%>
-                                    <%--                            <%System.out.println(directory+"/Pull Ups.mp4");%>--%>
-                                    <%--                              <source src="../../../resources/static/exercises/chest/Pull Ups.mp4" type="video/mp4">--%>
-                                    <%--                              Your browser does not support the video tag.--%>
-                                    <%--                              </video>--%>
-                                    <%--                        </span>--%>
-
+                                    <p class="card-text mt-4">
+                                        <video class="video-fluid z-depth-1" src="../../exercises/chest/Pull%20Ups.mp4" autoplay loop muted></video>
+                                    </p>
                                 </div>
                             </div>
 <%--                        </label>--%>

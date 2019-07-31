@@ -13,9 +13,6 @@ public class Gym  {
     @Column(name = "password")
     private String password;
 
-    @OneToMany(mappedBy = "gymId")
-    private Set<Templates> templates;
-
     //    Getter Setters
     public String getGymId(){
         return gymId;
@@ -31,14 +28,6 @@ public class Gym  {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public Set<Templates> getTemplates() {
-        return templates;
-    }
-
-    public void setTemplates(Set<Templates> templates) {
-        this.templates = templates;
     }
 
 }

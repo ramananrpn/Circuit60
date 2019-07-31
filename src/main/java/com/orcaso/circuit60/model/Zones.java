@@ -1,10 +1,13 @@
 package com.orcaso.circuit60.model;
 
+import com.orcaso.circuit60.converter.StringMapConverter;
+
 import javax.persistence.*;
+import java.util.Map;
 import java.util.Set;
 
 @Entity
-@Table(name = "template_zones")
+@Table(name = "template_zone_details")
 public class Zones {
     @Id
     @Column(name = "zone_id")
@@ -20,7 +23,7 @@ public class Zones {
     private Templates templateId;
 
     @Column(name = "zone")
-    private int zone;
+    private String zone;
 
     @Column(name = "seconds")
     private long seconds;
@@ -31,8 +34,14 @@ public class Zones {
     @Column(name = "break_time")
     private long breakTime;
 
-    //Getters & Setters
+//    USED JSON DATATYPE - MAP to store exercise
+//    Convert is used to convert Data from entity to dbcolumn and viceversa
+    @Column(name="exercise_details")
+    @Convert(converter = StringMapConverter.class)
+    private Map<String, String> exerciseDetails;
 
+
+    //Getters & Setters
 
     public long getZoneId() {
         return zoneId;
@@ -51,11 +60,11 @@ public class Zones {
         this.templateId = templateId;
     }
 
-    public int getZone() {
+    public String getZone() {
         return zone;
     }
 
-    public void setZone(int zone) {
+    public void setZone(String zone) {
         this.zone = zone;
     }
 
@@ -82,4 +91,13 @@ public class Zones {
     public void setBreakTime(long breakTime) {
         this.breakTime = breakTime;
     }
+
+    public Map<String, String> getExerciseDetails() {
+        return exerciseDetails;
+    }
+
+    public void setExerciseDetails(Map<String, String> exerciseDetails) {
+        this.exerciseDetails = exerciseDetails;
+    }
+
 }

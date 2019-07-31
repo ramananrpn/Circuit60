@@ -49,6 +49,27 @@
         font-weight: lighter;
         color: rgba(255,255,255,0.5);
     }
+    .exerciseCustomise-card{
+        border-radius: 33px;
+        background-color: #f8f8f8;
+        height: 45px;
+        font-size: 15px;
+        font-weight: 600;
+    }
+    .divider {
+        width: 1px;
+        margin: 6px 0 ;
+        background: #9966FF;
+        /*border-left: 1px solid #9966FF;*/
+        /*height : 100px;*/
+    }
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        margin: 0;
+    }
 </style>
 
 <body onload="changeActiveOnload()">
@@ -82,19 +103,19 @@
     </nav>
     <%--   Navbar     --%>
     <div class="container-fluid" style="margin-top: -15px;z-index: 2;position: absolute">
-        <nav class="text-center navbar navbar-expand-lg fixed navbar-light warning-color navbar-custom white-text" >
+        <nav class="text-center navbar navbar-expand-lg fixed navbar-light navbar-custom white-text" style="background-color: #ffa700;">
 
                         <div class="nav nav-text mr-auto ">
                             <a class="nav-item black-text  ml-4" href="/adminDashboard"><img src="../img/left.svg" class="img-fluid" style="width: 25px"></a>
                             <!--Template Name Dropdown -->
                             <span class="nav-item dropdown" style="margin-top: -10px"  >
                                 <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
-                                   aria-haspopup="true" aria-expanded="false">${templateName}</a>
+                                   aria-haspopup="true" aria-expanded="false">${template.getTemplateName()}</a>
                                 <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
                                     <c:forEach items="${templateList}" var="template">
                                         <%--      href condition to place redirection URL if its not current template in dropdown            --%>
                                     <a class="dropdown-item" href="<c:if test="${templateName!=template.templateName}">
-                                                                            /templateDashboard/${template.templateName}
+                                                                            /templateDashboard/${template.templateId}
                                                                    </c:if>">
                                         <%--  Displaying Template Name --%>
                                         ${template.templateName}
@@ -103,10 +124,21 @@
                                 </div>
                             </span>
                         </div>
-            <div class="ml-auto">
-                <button type="button" class="btn-sm btn-white btn-rounded" style="width: 150px" onclick="location.href='/selectExercise?zoneId=${zoneId}'" >
-                Add Excercise
-                </button>
+            <div class="ml-auto mr-4">
+                <%--Checking whether to show add exercise button or Start Section button--%>
+                <c:if test="${isZonePresent=='false'}">
+                    <button type="button" class="btn-sm btn-white btn-rounded" style="width: 150px" onclick="location.href='/selectExercise?zoneId=${zoneId}'" >
+                    Add Excercise
+                    </button>
+                </c:if>
+                <c:if test="${isZonePresent=='true'}">
+                    <button type="button" class="btn-md set-btn-outline-orange white-text" style="width: 150px" onclick="location.href='/selectExercise?zoneId=${zoneId}'" >
+                        Save Section
+                    </button>
+                    <button type="button" class="btn-md btn-white btn-rounded" style="width: 150px" onclick="location.href='/selectExercise?zoneId=${zoneId}'" >
+                        Start Section
+                    </button>
+                </c:if>
                 <a><img src="../img/settings.svg" class="img-fluid"></a>
             </div>
         </nav>
@@ -116,7 +148,7 @@
     <div class="row ml-3 jumbotron-fluid flex-center">
         <span class="col-md-2 col-sm-2 card navbar Rectangle-9 white-text d-flex justify-content-center " >
             <ul class="nav navbar-nav" id="zone-navigation" >
-                <c:set var = "url" scope = "session" value = "/templateDashboard/${templateName}"/>
+                <c:set var = "url" scope = "session" value = "/templateDashboard/${template.getTemplateId()}"/>
 <%--       Getting zone count value from property file         --%>
                 <%
                     ResourceBundle resource = ResourceBundle.getBundle("application-settings");
@@ -155,21 +187,140 @@
 <%--                </li>--%>
             </ul>
         </span>
-        <span class="col-md-9 col-sm-5 card base-r1 "  style="margin-left: -30px;z-index: 2">
-            <div class=" flex-center" style="">
-                    <div class="text-center">
-                        <%--        Gym Dumbell add exercise LOGO    --%>
-                         <a type="button" href="/selectExercise?zoneId=${zoneId}">
-                             <img src="../img/gym.svg" style="width: 40px;height: 40px;">
-                         </a>
-                        <br>
-                        <%--     Add Exercise Button   --%>
-                        <button type="button" onclick="location.href='/selectExercise?zoneId=${zoneId}'" class="set-btn-outline btn-rounded waves-effect" style="width: 180px;border: solid 1px #0d0d0d" >
-                            Add Exercise
-                        </button>
+
+<%--      Display default Add exercide Icon and button when no exercise found for the current zone     --%>
+        <c:if test="${isZonePresent=='false'}">
+            <span class="col-md-9 col-sm-5 card base-r1 "  style="margin-left: -30px;z-index: 2;">
+                <div class=" flex-center">
+                        <div class="text-center">
+                            <%--        Gym Dumbell add exercise LOGO    --%>
+                             <a type="button" href="/selectExercise?zoneId=${zoneId}">
+                                 <img src="../img/gym.svg" style="width: 40px;height: 40px;">
+                             </a>
+                            <br>
+                            <%--     Add Exercise Button   --%>
+                            <button type="button" onclick="location.href='/selectExercise?zoneId=${zoneId}'" class="set-btn-outline btn-rounded waves-effect" style="width: 180px;border: solid 1px #0d0d0d" >
+                                Add Exercise
+                            </button>
+                        </div>
+                </div>
+            </span>
+        </c:if>
+
+<%--    Display Exercise CRUD screen when exercise found for the current zone   --%>
+        <c:if test="${isZonePresent=='true'}">
+            <span class="col-md-9 col-sm-5 card base-r1 "  style="margin-left: -30px;z-index: 2;height: auto">
+                <div class="container-fluid">
+                    <br>
+                    <%--         Excersie time reps brefore configure           --%>
+                    <div class="row d-flex justify-content-center md-form">
+                        <div class="col-md-4 ">
+                            <span class="card exerciseCustomise-card flex-center">
+                                <div class="row">
+                                    <span class="flex-center">
+                                        <img src="../img/clock.svg">
+                                        <p class="ml-2">Seconds Per Exercise</p>
+                                        <a class="button mt-2" onclick="decreaseExerciseSeconds()">
+                                            <img src="../img/minusButton.svg">
+                                        </a>
+                                        <span style="color: #707070" class="flex-center ml-1">
+                                            <input type="number" id="exerciseMins" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="00"
+                                                   onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
+<%--                                            <p id="mins" >00</p>--%>
+                                            <p >:</p>
+<%--                                            <p id="secs" >45</p>--%>
+                                            <input type="number" id="exerciseSecs" class="form-control form-control-sm text-center" min="00" max="60" style="width: 25px" value="00"
+                                                   onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
+                                        </span>
+                                       <a class="button mt-2" onclick="increaseExerciseSeconds()">
+                                           <img src="../img/plusButton.svg">
+                                       </a>
+                                    </span>
+                                </div>
+                            </span>
+                        </div>
+                        <div class="col-md-3 d-flex justify-content-center">
+                            <span class="card exerciseCustomise-card flex-center" style="width: 240px;" >
+                                <div class="row">
+                                    <span class="flex-center">
+                                        <img src="../img/reps.svg">
+                                        <p class="ml-2">Reps</p>
+                                        <a class="button mt-2" onclick="decreaseReps()">
+                                            <img src="../img/minusButton.svg">
+                                        </a>
+                                        <span style="color: #707070" class="flex-center ml-1">
+                                           <input type="number" id="repsCount" class="form-control form-control-sm text-center" min="0" style="width: 25px" value="1">
+                                        </span>
+                                       <a class="button mt-2" onclick="increaseReps()">
+                                           <img src="../img/plusButton.svg">
+                                       </a>
+                                    </span>
+                                </div>
+                            </span>
+                        </div>
+                        <div class="col-md-3 d-flex justify-content-center">
+                            <span class="card exerciseCustomise-card flex-center" style="width: 283px;" >
+                                <div class="row">
+                                    <span class="flex-center">
+                                        <img src="../img/break.svg">
+                                        <p class="ml-2">Break</p>
+                                        <a class="button mt-2" onclick="decreaseBreakSeconds()">
+                                            <img src="../img/minusButton.svg">
+                                        </a>
+                                            <span style="color: #707070" class="flex-center ml-1">
+                                            <input type="number" id="breakMins" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="00"
+                                                   onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
+                                            <%--   <p id="mins" >00</p>--%>
+                                                <p >:</p>
+                                            <%--                                            <p id="secs" >45</p>--%>
+                                            <input type="number" id="breakSecs" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="00"
+                                                   onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
+                                             </span>
+                                       <a class="button mt-2" onclick="increaseBreakSeconds()">
+                                           <img src="../img/plusButton.svg">
+                                       </a>
+                                    </span>
+                                </div>
+                            </span>
+                        </div>
                     </div>
-            </div>
-        </span>
+
+                    <hr>
+                    <%--       Exercise Display         --%>
+                    <div class="row">
+                        <%for(int i=0; i<4 ;i++){%>
+                         <div class="col-md-3 col-sm-1 col-xs-1 d-flex justify-content-center " >
+                            <div class="card text-center mb-3 border-0 card-color" >
+                                <div class="card-body">
+                                    <h5 class="card-title">Push Ups</h5>
+                                    <p class="card-text mt-4"><video class="video-fluid z-depth-1" src="../../exercises/chest/Pull%20Ups.mp4" autoplay loop muted></video></p>
+                                </div>
+                            </div>
+                             <%if(i!=3){%>
+                                <div class="d-flex flex-center">
+                                    <div class="divider"></div>
+                                </div>
+                             <%}%>
+                         </div>
+                        <%}%>
+                    </div>
+
+                    <%--        Progress Bar      --%>
+                    <div class="progress">
+                        <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="40"
+                                   aria-valuemin="0" aria-valuemax="100" style="width:70%">
+                        </div>
+                    </div>
+                    <br>
+                    <hr>
+                    <%--       Bottom button             --%>
+                    <div class="d-flex flex-row-reverse">
+                        <button type="button" class="btn-sm set-text-violet set-btn-outline" style="width: 180px;">Add / customize</button>
+                    </div>
+                    <br>
+                </div>
+            </span>
+        </c:if>
     </div>
 
 </div>
@@ -209,7 +360,79 @@
         zone.classList.add('active');
     }
 </script>
-</body>
 
+<%--Scripts for time settings customization--%>
+<script>
+<%--  Seconds per Exercise Customization  --%>
+    function increaseExerciseSeconds() {
+        var secs = parseInt(document.getElementById('exerciseSecs').value);
+        var mins = parseInt(document.getElementById('exerciseMins').value);
+        // alert(secs +" "+mins);
+        if(secs==59){
+            document.getElementById('exerciseSecs').value = "00";
+            document.getElementById('exerciseMins').value = (mins+1<=10)?"0"+(mins+1):mins+1;
+        }
+        else {
+            document.getElementById('exerciseSecs').value = ((secs + 1 <= 10) ? ( "0" + (secs + 1)) :  (secs + 1));
+        }
+    }
+    function decreaseExerciseSeconds() {
+        var secs = parseInt(document.getElementById('exerciseSecs').value);
+        var mins = parseInt(document.getElementById('exerciseMins').value);
+        // alert(secs +" "+mins);
+        if(secs>0 || mins>0){
+            if(secs==1){
+                document.getElementById('exerciseSecs').value = "00";
+                if(mins>0)
+                document.getElementById('exerciseMins').value = (mins-1<=10)?"0"+(mins-1):mins-1;
+            }
+            else {
+                document.getElementById('exerciseSecs').value = ((secs - 1 <= 10) ? ( "0" + (secs - 1)) :  (secs - 1));
+            }
+        }
+    }
+    <!--Reps Customization-->
+    function increaseReps() {
+        var repsCount = parseInt(document.getElementById('repsCount').value);
+        document.getElementById('repsCount').value = repsCount+1;
+    }
+    function decreaseReps() {
+        var repsCount = parseInt(document.getElementById('repsCount').value);
+        if(repsCount>1)
+        document.getElementById('repsCount').value = repsCount-1;
+    }
+
+//    Break time customization
+function increaseBreakSeconds() {
+    var secs = parseInt(document.getElementById('breakSecs').value);
+    var mins = parseInt(document.getElementById('breakMins').value);
+    // alert(secs +" "+mins);
+    if(secs==59){
+        document.getElementById('breakSecs').value = "00";
+        document.getElementById('breakMins').value = (mins+1<=10)?"0"+(mins+1):mins+1;
+    }
+    else {
+        document.getElementById('breakSecs').value = ((secs + 1 <= 10) ? ( "0" + (secs + 1)) :  (secs + 1));
+    }
+}
+function decreaseBreakSeconds() {
+    var secs = parseInt(document.getElementById('breakSecs').value);
+    var mins = parseInt(document.getElementById('breakMins').value);
+    // alert(secs +" "+mins);
+    if(secs>0 || mins>0){
+        if(secs==1){
+            document.getElementById('breakSecs').value = "00";
+            if(mins>0)
+                document.getElementById('breakMins').value = (mins-1<=10)?"0"+(mins-1):mins-1;
+        }
+        else {
+            document.getElementById('breakSecs').value = ((secs - 1 <= 10) ? ( "0" + (secs - 1)) :  (secs - 1));
+        }
+    }
+}
+
+</script>
+<%----%>
+</body>
 </html>
 

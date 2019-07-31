@@ -2,6 +2,7 @@ package com.orcaso.circuit60.controller;
 
 import com.orcaso.circuit60.model.Gym;
 import com.orcaso.circuit60.model.Templates;
+import com.orcaso.circuit60.model.Zones;
 import com.orcaso.circuit60.repository.GymRepository;
 import com.orcaso.circuit60.repository.TemplateRepository;
 import com.orcaso.circuit60.repository.ZoneRepository;
@@ -32,21 +33,9 @@ public class ApplicationController {
     @Autowired
     private ZoneRepository zoneRepository;
 
+    //    template object
+    Templates currentTemplate ;
 
-    //    Get Gym Object
-    public Gym getGym(HttpServletRequest request){
-        Gym gym = new Gym();
-        gym.setGymId(request.getSession().getAttribute("gymId").toString());
-        return gym;
-    }
-
-    //    Authentication check
-    public String  validUser(HttpServletRequest request){
-        if(request.getSession().getAttribute("gymId")!=null){
-            return request.getSession().getAttribute("gymId").toString();
-        }
-        return null;
-    }
     @RequestMapping("/")
     public String index(HttpServletRequest request){
         if(validUser(request)!=null){
@@ -56,13 +45,12 @@ public class ApplicationController {
         return "home";
     }
 
-
     @PostMapping("/adminLogin")
     public String checkAdmin(Gym gym , Model model,HttpServletRequest request) {
         Gym admin = gymRepository.findByGymId(gym.getGymId());
         if(admin!=null && admin.getPassword().equals(gym.getPassword())){
 //            setting session attribute - gymId
-            logger.info("Login Successfull");
+            logger.info("Login Successful");
             request.getSession().setAttribute("gymId" , admin.getGymId() );
 
 //            Redirecting to /adminDashboard
@@ -79,9 +67,9 @@ public class ApplicationController {
     public String adminDashboard(HttpServletRequest request , Model model){
         if(validUser(request)!=null){
             //      Retrieve Template
-            List<Templates> templates = templateRepository.findAllByGymId(getGym(request));
-            logger.info("templateList of current user - " +templates);
-            model.addAttribute("templateList" , templates);
+            List<Templates> templateList = getTemplates();
+            logger.info("List of all templates to be passed : " + templateList);
+            model.addAttribute("templateList" , templateList);
             return "adminDashboard";
         }
         return "redirect:/";
@@ -96,27 +84,57 @@ public class ApplicationController {
     }
 
 //    Zone Add exercise dashboard
-    @RequestMapping("/templateDashboard/{templateName}")
-    public String templateDashboard(@PathVariable("templateName") String templateName , Model model,HttpServletRequest request){
-        if(validUser(request)!=null){
-            System.out.println("Selected template Name = "+templateName);
-            model.addAttribute("templateName" , templateName);
-            List<Templates> templates = templateRepository.findTemplatesByGymId(getGym(request));
-            System.out.println("Templates Fetched with gymId " + templates);
-            model.addAttribute("templateList" , templates);
-            model = addZoneId(request, model);
-            return "templateDashboard";
-        }
-        return "redirect:/invalidUser";
+    @RequestMapping("/templateDashboard/{templateId}")
+    public String templateDashboard(@PathVariable("templateId") Long templateId , Model model,HttpServletRequest request){
+
+            if(validUser(request)!=null){
+                try{
+                    Templates template = templateRepository.findTemplatesByTemplateId(templateId);
+                    currentTemplate = template;
+                    logger.info("Selected template Name = "+template.getTemplateName());
+                    model.addAttribute("template" , template);
+                    List<Templates> templateList = getTemplates();
+                    logger.info("List of all templates to be passed : " + templateList);
+                    model.addAttribute("templateList" , templateList);
+                    String zoneId= getZoneId(request);
+                    logger.info("Active zone ID - " + zoneId);
+                    model.addAttribute("zoneId" , zoneId);
+                    Boolean isZonePresent = true ;
+//                    Boolean isZonePresent = zoneRepository.existsZonesByTemplateIdAndZone(currentTemplate ,zoneId) ;
+                    logger.info(zoneId+" found for Template : " + isZonePresent);
+                    model.addAttribute("isZonePresent",isZonePresent);
+                    if(isZonePresent){
+                        Zones zoneDetails = zoneRepository.findZonesByTemplateIdAndZone(currentTemplate,zoneId);
+                        model.addAttribute("zoneDetails" , zoneDetails);
+                    }
+                    return "templateDashboard";
+                }catch (Exception e){
+                    logger.warn("Exception Caught :: " + e);
+                }
+            }
+            return "redirect:/invalidUser";
     }
 
 //    Select Exercise Dashboard
     @RequestMapping("/selectExercise")
-    public String selectExcercise(HttpServletRequest request , Model model){
+    public String selectExercise(HttpServletRequest request , Model model){
         if(validUser(request)!=null) {
-            model = addZoneId(request, model);
+            try{
+            String zoneId= getZoneId(request);
+            model.addAttribute("zoneId" , zoneId);
+            logger.info("Active zone ID - " + zoneId);
+            if(currentTemplate!=null){
+                model.addAttribute("template" , currentTemplate);
+            }
+            else{
+                logger.warn("Current Template Object is null - check");
+            }
+            model.addAttribute("template" , currentTemplate);
 //            if(zoneRepository.existsZonesByTemplateIdAndZone())
             return "selectExercise";
+            }catch(Exception ex){
+                logger.warn("Exception Caught :: " + ex);
+            }
         }
         return "redirect:/invalidUser";
     }
@@ -127,8 +145,10 @@ public class ApplicationController {
         return "error";
     }
 
+//    ------------------  UTILITIES  ---------------------------
+
 //    Retrieve zoneId from request and add model Attribute
-    public Model addZoneId(HttpServletRequest request , Model model){
+    public String getZoneId(HttpServletRequest request){
         //            getting zoneId from request
         String zoneId =  request.getParameter("zoneId");
         logger.info("Received zone ID - " + zoneId);
@@ -136,8 +156,21 @@ public class ApplicationController {
             zoneId = "zone1";
             logger.info("Zone Id is null , so adding default zone 1");
         }
-        model.addAttribute("zoneId" , zoneId);
-        logger.info("Active zone ID - " + zoneId);
-        return model;
+        return zoneId;
     }
+
+    //    Authentication check
+    public String  validUser(HttpServletRequest request){
+        if(request.getSession().getAttribute("gymId")!=null){
+            return request.getSession().getAttribute("gymId").toString();
+        }
+        return null;
+    }
+
+//    get All templates
+    public  List<Templates> getTemplates(){
+        List<Templates> templateList = (List<Templates>) templateRepository.findAll();
+        return templateList;
+    }
+
 }
