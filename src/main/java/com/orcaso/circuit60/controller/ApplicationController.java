@@ -167,7 +167,7 @@ public class ApplicationController {
         return null;
     }
 
-//    get All templates
+    //    get All templates
     public  List<Templates> getTemplates(){
         List<Templates> templateList = (List<Templates>) templateRepository.findAll();
         return templateList;

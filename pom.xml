@@ -62,6 +62,12 @@
             <optional>true</optional>
         </dependency>
 
+        <!--   WebSockets     -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+
         <!--Bootstrap-->
 <!--        <dependency>-->
 <!--            <groupId>org.webjars</groupId>-->
