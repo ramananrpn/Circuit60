@@ -160,7 +160,7 @@
             </ul>
         </div>
     </section>
-    <section class="view col-md-10 container "  >
+    <section class="view col-md-11 container-fluid "  >
             <div class="row">
                 <div class="col-md-6 row d-flex justify-content-center" style="font-size: 24px">
                     <a class="mt-2" href="/templateDashboard/${template.getTemplateId()}?zoneId=${zoneId}">
@@ -240,19 +240,29 @@
                 </div>
 
             </div>
-            <div class="col-md-2">
+            <div class="col-md-2 ">
                 <div class="row d-flex justify-content-center ml-4">
                     <p class="text-danger" style="font-size: 14px">Selected Exercise</p>
                 </div>
-                <section class="row">
-                    <ul id="sortable" >
-                        <%for(int i=1 ; i<5 ;i++){%>
-                        <div class="card sortable-card  white-text" >
-                                <p class="mt-3 center-block">Exercise <%=i%></p>
-                                <p class="sortable-blur-text d-flex flex-row-reverse mr-4" style="margin-top: -40px;"><%="0"+i%></p>
+                <section class="row ">
+                    <span class="d-flex flex-row-reverse">
+                        <ul id="sortable" >
+                        <%for(int i=1 ; i<6 ;i++){%>
+                        <div class="card sortable-card white-text row" >
+                                <span style="margin-left: -10px" class="mt-2">
+                                     <a><img src="img/exerciseMinus.svg" class="img-fluid mt-3"></a>
+                                </span>
+                                <span class=" mt-3" style="z-index: 1">
+                                    <p >Exercise <%=i%></p>
+                                </span>
+                                <span class="row mt-2" style="position: absolute;margin-left: 90px;">
+                                    <p class="sortable-blur-text mr-4 " style=""><%="0"+i%></p>
+                                </span>
                         </div>
                         <%}%>
                     </ul>
+                    </span>
+
                 </section>
             </div>
         </div>
