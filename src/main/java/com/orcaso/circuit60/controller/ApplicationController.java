@@ -1,6 +1,7 @@
 package com.orcaso.circuit60.controller;
 
 import com.orcaso.circuit60.model.Gym;
+import com.orcaso.circuit60.model.SocketMessage;
 import com.orcaso.circuit60.model.Templates;
 import com.orcaso.circuit60.model.Zones;
 import com.orcaso.circuit60.repository.GymRepository;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,7 +25,7 @@ import java.util.List;
 @Controller
 public class ApplicationController {
 
-    Logger logger = LoggerFactory.getLogger(ApplicationController.class);
+    public static final Logger logger = LoggerFactory.getLogger(ApplicationController.class);
     @Autowired
     private GymRepository gymRepository;
 
@@ -32,6 +34,9 @@ public class ApplicationController {
 
     @Autowired
     private ZoneRepository zoneRepository;
+
+    @Autowired
+    private SimpMessageSendingOperations messagingTemplate;
 
     //    template object
     Templates currentTemplate ;
@@ -137,6 +142,29 @@ public class ApplicationController {
             }
         }
         return "redirect:/invalidUser";
+    }
+
+//    CLIENT SIDE CONTROLLERS
+//    home to connect - displays zones
+    @RequestMapping("/connect")
+    public String connectHome(){
+        return "connect";
+    }
+
+    //    When Admin start Section
+    //    Mapped when admin starts session
+    @RequestMapping("/startSection/{templateId}")
+    public String startSection(@PathVariable Long templateId , HttpServletRequest request ,Model model){
+        SocketMessage adminCommand = new SocketMessage();
+        logger.info("working" + templateId);
+        adminCommand.setCommand("start");
+        adminCommand.setTemplateId(templateId);
+        messagingTemplate.convertAndSend("/zone/client" , adminCommand);
+        String zoneId= getZoneId(request);
+        logger.info("Active zone ID - " + zoneId);
+        Templates templateToUpdate = templateRepository.findTemplatesByTemplateId(templateId);
+        templateToUpdate.setActive(1);
+        return "redirect:/templateDashboard/"+templateId+"?zoneId="+zoneId;
     }
 
 //   ERROR

@@ -36,8 +36,8 @@
     <link href="css/style.css" rel="stylesheet">
 
     <%--Sortable to make draggable components (selected exercise need to be sorted)--%>
-    <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
-    <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+    <script src="../../js/jquery-1.10.2.js"></script>
+    <script src="../../js/jquery-ui.js"></script>
 
 </head>
 <style>
@@ -81,9 +81,6 @@
     .sortable-blur-text{
         font-size: 50px;
         opacity: 0.14;
-    }
-    .hidden{
-        display:none;
     }
 </style>
 <body>

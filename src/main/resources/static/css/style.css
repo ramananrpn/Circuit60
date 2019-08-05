@@ -192,3 +192,6 @@
     /*border-left: 1px solid #9966FF;*/
     /*height : 100px;*/
 }
+.hidden {
+    display: none;
+}

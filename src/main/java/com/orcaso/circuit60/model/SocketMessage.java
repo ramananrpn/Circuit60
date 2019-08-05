@@ -3,6 +3,7 @@ package com.orcaso.circuit60.model;
 public class SocketMessage {
     private Long templateId;
     private String command;
+    private String zone;
 
 //    getters & setters
 
@@ -20,5 +21,13 @@ public class SocketMessage {
 
     public void setCommand(String command) {
         this.command = command;
+    }
+
+    public String getZone() {
+        return zone;
+    }
+
+    public void setZone(String zone) {
+        this.zone = zone;
     }
 }

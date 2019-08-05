@@ -135,7 +135,7 @@
                     <button type="button" class="btn-md set-btn-outline-orange white-text" style="width: 150px" onclick="location.href='/selectExercise?zoneId=${zoneId}'" >
                         Save Section
                     </button>
-                    <button type="button" class="btn-md btn-white btn-rounded" style="width: 150px" onclick="location.href='/selectExercise?zoneId=${zoneId}'" >
+                    <button type="button" class="btn-md btn-white btn-rounded" style="width: 150px" onclick="location.href='/startSection/${template.getTemplateId()}?zoneId=${zoneId}'">
                         Start Section
                     </button>
                 </c:if>
@@ -189,7 +189,7 @@
         </span>
 
 <%--      Display default Add exercide Icon and button when no exercise found for the current zone     --%>
-        <c:if test="${isZonePresent=='true'}">
+        <c:if test="${isZonePresent=='false'}">
             <span class="col-md-9 col-sm-5 card base-r1 "  style="margin-left: -30px;z-index: 2;">
                 <div class=" flex-center">
                         <div class="text-center">
@@ -208,7 +208,7 @@
         </c:if>
 
 <%--    Display Exercise CRUD screen when exercise found for the current zone   --%>
-        <c:if test="${isZonePresent=='false'}">
+        <c:if test="${isZonePresent=='true'}">
             <span class="col-md-9 col-sm-5 card base-r1 "  style="margin-left: -30px;z-index: 2;height: auto">
                 <div class="container-fluid">
                     <br>
