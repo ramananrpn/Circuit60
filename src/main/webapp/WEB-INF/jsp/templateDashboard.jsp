@@ -132,12 +132,29 @@
                     </button>
                 </c:if>
                 <c:if test="${isZonePresent=='true'}">
-                    <button type="button" class="btn-md set-btn-outline-orange white-text" style="width: 150px" onclick="location.href='/selectExercise?zoneId=${zoneId}'" >
-                        Save Section
-                    </button>
-                    <button type="button" class="btn-md btn-white btn-rounded" style="width: 150px" onclick="location.href='/startSection/${template.getTemplateId()}?zoneId=${zoneId}'">
-                        Start Section
-                    </button>
+                    <c:choose>
+<%--                        if Section is Started--%>
+                        <c:when test="${(isTemplateActive=='true') && (activeTemplate.getTemplateId()==template.getTemplateId())}">
+                            <button type="button" class="btn-md set-btn-outline-orange white-text" style="width: 150px" onclick="location.href='/selectExercise?zoneId=${zoneId}'" >
+                                Stop Section
+                            </button>
+                            <button type="button" class="btn-md btn-white btn-rounded" style="width: 150px" onclick="location.href='/startSection/${template.getTemplateId()}?zoneId=${zoneId}'">
+                                Pause Section
+                            </button>
+                        </c:when>
+<%--                        else section is not started--%>
+                        <c:otherwise>
+                            <button type="button" class="btn-md set-btn-outline-orange white-text" style="width: 150px" onclick="location.href='/selectExercise?zoneId=${zoneId}'" >
+                                Save Section
+                            </button>
+                            <%--  Disabling Start Section button when a Template/Section is already started  --%>
+                            <c:if test="${isTemplateActive!='true'}">
+                                <button type="button" class="btn-md btn-white btn-rounded" style="width: 150px" onclick="location.href='/startSection/${template.getTemplateId()}?zoneId=${zoneId}'">
+                                    Start Section
+                                </button>
+                            </c:if>
+                        </c:otherwise>
+                    </c:choose>
                 </c:if>
                 <a><img src="../img/settings.svg" class="img-fluid"></a>
             </div>
@@ -315,7 +332,18 @@
                     <hr>
                     <%--       Bottom button             --%>
                     <div class="d-flex flex-row-reverse">
-                        <button type="button" class="btn-sm set-text-violet set-btn-outline" style="width: 180px;">Add / customize</button>
+                        <c:choose>
+                            <c:when test="${(isTemplateActive=='true') && (activeTemplate.getTemplateId()==template.getTemplateId())}">
+                                <button type="button" class="btn-sm set-text-violet set-btn-outline" style="width: 180px;">
+                                    Pause Section
+                                </button>
+                            </c:when>
+                            <c:otherwise>
+                                <button type="button" class="btn-sm set-text-violet set-btn-outline" style="width: 180px;" onclick="location.href='/selectExercise?zoneId=${zoneId}'">
+                                    Add / customize
+                                </button>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                     <br>
                 </div>

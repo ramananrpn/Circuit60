@@ -1,4 +1,4 @@
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -35,14 +35,26 @@
         height: 35px;
         object-fit: contain;
     }
+    svg {
+        -webkit-transform: rotate(-90deg);
+        transform: rotate(-90deg);
+    }
 
+    .circle_animation {
+        stroke-dasharray: 440; /* this value is the pixel circumference of the circle */
+        stroke-dashoffset: 440;
+        transition: all 1s linear;
+    }
 </style>
+
+<%--set isStarted var globally--%>
+<script>
+    var isStarted = "<c:out value="${isTemplateActive}"></c:out>"
+</script>
 <body>
 <%-- Before Start Screen --%>
-    <!-- Full Page Intro -->
-    <div class="view" style="background-image: url('../../img/action-athlete-barbell-841130.png'); background-repeat: no-repeat; background-size: cover; background-position: center center;" id="beforeStart">
-        <!-- Mask & flexbox options-->
-        <div class="mask rgba-gradient align-items-center" >
+    <div class="view " style="background-image: url('../../img/action-athlete-barbell-841130.png'); background-repeat: no-repeat; background-size: cover; background-position: center center;" id="beforeStart">
+        <div class="mask rgba-gradient align-items-center " >
             <div class="container flex-center">
                 <div class="white-text text-center">
                     <%--       zones selection      --%>
@@ -64,22 +76,34 @@
                         <b><h5 id="connectedZoneText"></h5></b>
                     </span>
                     </div>
-
                 </div>
             </div>
-
         </div>
-        <!-- Mask & flexbox options-->
     </div>
-    <!-- Full Page Intro -->
 
 <%--After Start Screen--%>
 <div id="sessionStartTimer" class="container-fluid text-center hidden mt-5" >
     <h2>The Session will start in </h2>
-    <div class="container-fluid" >
-        <img src="/img/sessionStartBg.svg" alt="sessionTimer" class="img-fluid">
-    </div>
+    <!--Grid column-->
 
+        <div class="container-fluid img-fluid mt-5" style="background-image: url(/img/sessionStartBg.svg);background-repeat: no-repeat;width: auto;height: auto;background-position: center center;">
+            <div class="flex-center">
+                <span class="draw-ellipse flex-center" style="z-index: 1">
+                     <span class="draw-circle flex-center " >
+                        <h1 id="sectionStartTimerSeconds" class="white-text" ></h1>
+                    </span>
+                </span>
+
+            </div>
+        </div>
+    <!--Grid column-->
+<%--    <div class="card card-image img-fluid" style="background-image: url(/img/sessionStartBg.svg);">--%>
+<%--        <img src="/img/sessionStartBg.svg" alt="sessionTimer" class="img-fluid">--%>
+</div>
+
+<%--Section Video Player--%>
+<div class="container-fluid hidden" id="exercisePlayer">
+    <h1>SECTION RUNNING</h1>
 </div>
 
 
@@ -98,6 +122,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script src="../../js/webSocket/control.js" ></script>
+
+
 </body>
 
 </html>

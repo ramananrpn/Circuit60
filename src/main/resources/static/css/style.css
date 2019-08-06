@@ -195,3 +195,17 @@
 .hidden {
     display: none;
 }
+
+.draw-circle {
+    width: 289.4px;
+    height: 289.4px;
+    background: #fe5562;
+    border-radius: 50%
+}
+
+.draw-ellipse {
+    width: 370px;
+    height: 370px;
+    background-color: #fafafa;
+    border-radius: 50%
+}

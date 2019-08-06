@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.ui.Model;
-
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
@@ -49,6 +48,13 @@ public class ApplicationController {
         else
         return "home";
     }
+
+//    Admin Login Page
+    @RequestMapping("/adminLogin")
+    public String adminLogin(){
+        return "home";
+    }
+
 
     @PostMapping("/adminLogin")
     public String checkAdmin(Gym gym , Model model,HttpServletRequest request) {
@@ -101,16 +107,21 @@ public class ApplicationController {
                     List<Templates> templateList = getTemplates();
                     logger.info("List of all templates to be passed : " + templateList);
                     model.addAttribute("templateList" , templateList);
+//                    getting zoneId from request query string ; if null zone1 is made active (default)
                     String zoneId= getZoneId(request);
                     logger.info("Active zone ID - " + zoneId);
                     model.addAttribute("zoneId" , zoneId);
+//                    checking if exercise present for current zone
                     Boolean isZonePresent = true ;
 //                    Boolean isZonePresent = zoneRepository.existsZonesByTemplateIdAndZone(currentTemplate ,zoneId) ;
                     logger.info(zoneId+" found for Template : " + isZonePresent);
                     model.addAttribute("isZonePresent",isZonePresent);
+//                    If exercise added for current zone - fetching the exercuse details to display
                     if(isZonePresent){
                         Zones zoneDetails = zoneRepository.findZonesByTemplateIdAndZone(currentTemplate,zoneId);
                         model.addAttribute("zoneDetails" , zoneDetails);
+                        //        Checking if is any template session started and getting details
+                        model = checkAndGetActiveTemplateDetails(model);
                     }
                     return "templateDashboard";
                 }catch (Exception e){
@@ -147,7 +158,9 @@ public class ApplicationController {
 //    CLIENT SIDE CONTROLLERS
 //    home to connect - displays zones
     @RequestMapping("/connect")
-    public String connectHome(){
+    public String connectHome(Model model){
+//        Checking if is any template session started and getting details
+        model = checkAndGetActiveTemplateDetails(model);
         return "connect";
     }
 
@@ -195,10 +208,24 @@ public class ApplicationController {
         return null;
     }
 
+//    Checking Template is active and fetching details - add model attribute
+    public Model checkAndGetActiveTemplateDetails(Model model){
+        //  Checking ant template is started/active
+        Boolean isTemplateActive = templateRepository.existsTemplatesByActive(1);
+        model.addAttribute("isTemplateActive" , isTemplateActive);
+        //  If template is started fetching its details
+        if(isTemplateActive){
+            Templates activeTemplate = templateRepository.findTemplatesByActive(1);
+            model.addAttribute("activeTemplate" , activeTemplate);
+        }
+        return  model;
+    }
+
     //    get All templates
     public  List<Templates> getTemplates(){
         List<Templates> templateList = (List<Templates>) templateRepository.findAll();
         return templateList;
     }
+
 
 }
