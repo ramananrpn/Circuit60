@@ -1,10 +1,14 @@
 package com.orcaso.circuit60.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import javax.persistence.Embeddable;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+@Embeddable
 public class Exercise {
     private String exerciseName;
-    private String mediaPath;
-    private int position;
-
+    private String url;
 //    getters & setters
 
     public String getExerciseName() {
@@ -15,19 +19,11 @@ public class Exercise {
         this.exerciseName = exerciseName;
     }
 
-    public String getMediaPath() {
-        return mediaPath;
+    public String getUrl() {
+        return url;
     }
 
-    public void setMediaPath(String mediaPath) {
-        this.mediaPath = mediaPath;
-    }
-
-    public int getPosition() {
-        return position;
-    }
-
-    public void setPosition(int position) {
-        this.position = position;
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

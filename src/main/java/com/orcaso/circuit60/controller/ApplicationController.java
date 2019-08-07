@@ -1,12 +1,11 @@
 package com.orcaso.circuit60.controller;
 
-import com.orcaso.circuit60.model.Gym;
-import com.orcaso.circuit60.model.SocketMessage;
-import com.orcaso.circuit60.model.Templates;
-import com.orcaso.circuit60.model.Zones;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.orcaso.circuit60.model.*;
 import com.orcaso.circuit60.repository.GymRepository;
 import com.orcaso.circuit60.repository.TemplateRepository;
 import com.orcaso.circuit60.repository.ZoneRepository;
+import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +19,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.ui.Model;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
+import java.util.*;
 
 @SpringBootApplication
 @Controller
@@ -111,10 +109,9 @@ public class ApplicationController {
 
             if(validUser(request)!=null){
                 try{
-                    Templates template = templateRepository.findTemplatesByTemplateId(templateId);
-                    currentTemplate = template;
-                    logger.info("Selected template Name = "+template.getTemplateName());
-                    model.addAttribute("template" , template);
+                    currentTemplate = getTemplateById(templateId);
+                    logger.info("Selected template Name = "+currentTemplate.getTemplateName());
+                    model.addAttribute("template" , currentTemplate);
                     List<Templates> templateList = getTemplates();
                     logger.info("List of all templates to be passed : " + templateList);
                     model.addAttribute("templateList" , templateList);
@@ -143,22 +140,24 @@ public class ApplicationController {
     }
 
 //    Select Exercise Dashboard
-    @RequestMapping("/selectExercise")
-    public String selectExercise(HttpServletRequest request , Model model){
+    @RequestMapping("/selectExercise/{templateId}")
+    public String selectExercise(@PathVariable Long templateId , HttpServletRequest request , Model model){
         if(validUser(request)!=null) {
             try{
-            String zoneId= getZoneId(request);
-            model.addAttribute("zoneId" , zoneId);
-            logger.info("Active zone ID - " + zoneId);
-            if(currentTemplate!=null){
-                model.addAttribute("template" , currentTemplate);
-            }
-            else{
-                logger.warn("Current Template Object is null - check");
-            }
-            model.addAttribute("template" , currentTemplate);
-//            if(zoneRepository.existsZonesByTemplateIdAndZone())
-            return "selectExercise";
+                String zoneId= getZoneId(request);
+                model.addAttribute("zoneId" , zoneId);
+                logger.info("Active zone ID - " + zoneId);
+                currentTemplate = getTemplateById(templateId);
+                if(currentTemplate!=null){
+                    logger.info("Current TemplateID - " + currentTemplate.getTemplateId());
+                    model.addAttribute("template" , currentTemplate);
+                }
+                else{
+                    logger.warn("Current Template Object is null - check");
+                }
+//
+    //            if(zoneRepository.existsZonesByTemplateIdAndZone())
+                return "selectExercise";
             }catch(Exception ex){
                 logger.warn("Exception Caught :: " + ex);
             }
@@ -168,7 +167,7 @@ public class ApplicationController {
     
     /*method to change the category name in file path and return fileList based on the filePath*/
     @PostMapping("/selectExerciseAjax")
-    public @ResponseBody String[] selectExerciseAjax(HttpServletRequest request ,HttpServletResponse response,Model model,@RequestParam(value="category") String category) throws IOException{
+    public @ResponseBody String[] selectExerciseAjax(@RequestParam(value="category") String category) throws IOException{
     	File directory = new File(System.getProperty("user.dir")+"/src/main/webapp/exercises/"+category.toLowerCase()+"/");
     	logger.info("path : "+ directory.toString());
          String[] fileList = directory.list();
@@ -180,9 +179,42 @@ public class ApplicationController {
 
      /*method to save the selectedExerciseArray using ajax */
     @PostMapping("/saveSelectedExerciseAjax")
-    public @ResponseBody String saveSelectExerciseAjax(HttpServletRequest request ,HttpServletResponse response,Model model,@RequestParam(value="selectedExcerciseArray") String saveselectedExcerciseArray) throws IOException{
-    	System.out.println("hello"+saveselectedExcerciseArray);
-	return "success";
+    public @ResponseBody String saveSelectExerciseAjax(@RequestParam(value="selectedExcerciseArray") String saveSelectedExcerciseArray, @RequestParam(value="templateId") Long templateId , @RequestParam(value = "zoneId") String zone ) throws IOException{
+    	logger.info("---------  Selected exerciseArray - " + saveSelectedExcerciseArray + "------------");
+    	currentTemplate = getTemplateById(templateId);
+    	logger.info("currentTemplate Id - " + currentTemplate.getTemplateId() + " Current Zone - "+ zone);
+    	ObjectMapper mapper = new ObjectMapper();
+        try {
+            List<Exercise> selectedExerciseList = Arrays.asList(mapper.readValue(saveSelectedExcerciseArray, Exercise[].class));
+            logger.info("------======Exercise Map to DATABASE :: " + selectedExerciseList +" =======------");
+            Zones zoneDetails ;
+//            Saving Exercise in Database
+//            Update
+            if(zoneRepository.existsZonesByTemplateIdAndZone(currentTemplate , zone)){
+                zoneDetails = zoneRepository.findZonesByTemplateIdAndZone(currentTemplate , zone);
+                zoneDetails.setExerciseDetails(selectedExerciseList);
+            }
+//            create
+            else{
+                zoneDetails = new Zones();
+                zoneDetails.setTemplateId(currentTemplate);
+                zoneDetails.setZone(zone);
+                zoneDetails.setExerciseDetails(selectedExerciseList);
+                zoneRepository.save(zoneDetails);
+            }
+//            zoneDetails = zoneRepository.findZonesByTemplateIdAndZone(currentTemplate,zone);
+//            List<Exercise> exerciseList = zoneDetails.getExerciseDetails();
+//            logger.info("Length : " + exerciseList.size());
+//            for(Exercise ex : exerciseList){
+//                logger.info(ex.getExerciseName() +" "+ex.getUrl());
+//            }
+        } catch (Exception e) {
+            logger.error("Exception Occurred while saving selected exercise to database");
+            e.printStackTrace();
+        }
+
+
+        return "success";
     }
 
 //    CLIENT SIDE CONTROLLERS
@@ -253,6 +285,12 @@ public class ApplicationController {
             return request.getSession().getAttribute("gymId").toString();
         }
         return null;
+    }
+
+//    get Template with templateId
+    public Templates getTemplateById(Long templateId){
+        Templates currentTemplate = templateRepository.findTemplatesByTemplateId(templateId);
+        return currentTemplate;
     }
 
 //    Checking Template is active and fetching details - add model attribute

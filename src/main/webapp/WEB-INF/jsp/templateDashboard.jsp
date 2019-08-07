@@ -127,7 +127,7 @@
             <div class="ml-auto mr-4">
                 <%--Checking whether to show add exercise button or Start Section button--%>
                 <c:if test="${isZonePresent=='false'}">
-                    <button type="button" class="btn-sm btn-white btn-rounded" style="width: 150px" onclick="location.href='/selectExercise?zoneId=${zoneId}'" >
+                    <button type="button" class="btn-sm btn-white btn-rounded" style="width: 150px" onclick="location.href='/selectExercise/${template.getTemplateId()}?zoneId=${zoneId}'" >
                     Add Excercise
                     </button>
                 </c:if>
@@ -144,7 +144,7 @@
                         </c:when>
 <%--                        else section is not started--%>
                         <c:otherwise>
-                            <button type="button" class="btn-md set-btn-outline-orange white-text" style="width: 150px" onclick="location.href='/selectExercise?zoneId=${zoneId}'" >
+                            <button type="button" class="btn-md set-btn-outline-orange white-text" style="width: 150px" onclick="location.href='/selectExercise/${template.getTemplateId()}?zoneId=${zoneId}'" >
                                 Save Section
                             </button>
                             <%--  Disabling Start Section button when a Template/Section is already started  --%>
@@ -211,12 +211,12 @@
                 <div class=" flex-center">
                         <div class="text-center">
                             <%--        Gym Dumbell add exercise LOGO    --%>
-                             <a type="button" href="/selectExercise?zoneId=${zoneId}">
+                             <a type="button" href="/selectExercise/${template.getTemplateId()}?zoneId=${zoneId}">
                                  <img src="../img/gym.svg" style="width: 40px;height: 40px;">
                              </a>
                             <br>
                             <%--     Add Exercise Button   --%>
-                            <button type="button" onclick="location.href='/selectExercise?zoneId=${zoneId}'" class="set-btn-outline btn-rounded waves-effect" style="width: 180px;border: solid 1px #0d0d0d" >
+                            <button type="button" onclick="location.href='/selectExercise/${template.getTemplateId()}?zoneId=${zoneId}'" class="set-btn-outline btn-rounded waves-effect" style="width: 180px;border: solid 1px #0d0d0d" >
                                 Add Exercise
                             </button>
                         </div>
@@ -339,7 +339,7 @@
                                 </button>
                             </c:when>
                             <c:otherwise>
-                                <button type="button" class="btn-sm set-text-violet set-btn-outline" style="width: 180px;" onclick="location.href='/selectExercise?zoneId=${zoneId}'">
+                                <button type="button" class="btn-sm set-text-violet set-btn-outline" style="width: 180px;" onclick="location.href='/selectExercise/${template.getTemplateId()}?zoneId=${zoneId}'">
                                     Add / customize
                                 </button>
                             </c:otherwise>

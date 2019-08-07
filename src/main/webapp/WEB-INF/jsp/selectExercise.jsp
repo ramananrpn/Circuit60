@@ -32,11 +32,11 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
     <!-- Bootstrap core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
     <!-- Material Design Bootstrap -->
-    <link href="css/mdb.min.css" rel="stylesheet">
+    <link href="../css/mdb.min.css" rel="stylesheet">
     <!-- custom styles  -->
-    <link href="css/style.css" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
     <!--Jquery for ajax-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
@@ -112,7 +112,7 @@
                 <%-- BELL--%>
                 <li class="nav-item">
                     <a class="nav-link waves-effect waves-light">
-                        <img src="img/notification.svg">
+                        <img src="../../img/notification.svg">
                     </a>
                 </li>
                 <li class="nav-item avatar">
@@ -180,7 +180,7 @@
             <div class="row">
                 <div class="col-md-6 row d-flex justify-content-center" style="font-size: 24px">
                     <a class="mt-2" href="/templateDashboard/${template.getTemplateId()}?zoneId=${zoneId}">
-                        <img src="img/left.svg" class="img-fluid" style="width: 25px">
+                        <img src="../../img/left.svg" class="img-fluid" style="width: 25px">
                     </a>
                     <%--       Getting zone excercise ocunt value from property file         --%>
                     <%
@@ -207,7 +207,7 @@
                                 %>
                                       <a class="dropdown-item"
                                          <% if(!request.getParameter("zoneId").equals("zone"+zoneCount)){%>}
-                                         href="/selectExercise?zoneId=zone<%=zoneCount%>"
+                                         href="/selectExercise/${template.getTemplateId()}?zoneId=zone<%=zoneCount%>"
                                          <%}%>
                                       >
                                            Zone <%if (zoneCount < 10) {%><%=0%><%}%><%=zoneCount%>
@@ -300,7 +300,7 @@ var currentCategory ='',category='';
 	console.log(selectedExcerciseId);
 	for(var i=0;i<array.length;i++){
 		if(array[i].id == selectedExcerciseId){
-			console.log("removable object",array[i].id,array[i].videoName,array[i].url);
+			console.log("removable object",array[i].id,array[i].exerciseName,array[i].url);
 			array.splice(i,1);//removing the object in the matching index
 			console.log(array);
 		}/* else{
@@ -311,8 +311,8 @@ var currentCategory ='',category='';
 	}  
 	//checking condition 
 	for(var i=0;i<array.length;i++){
-		 str+= '<li class="card sortable-card white-text row" id="'+array[i].id+'" ><span style="margin-left: -10px" class="mt-2"><a onclick="removeSelectedExcercise('+"'"+array[i].id+"'"+')"><img src="img/exerciseMinus.svg" class="img-fluid mt-3"></a>'
-			+'</span><span class=" mt-3" style="z-index: 1"><p >'+array[i].videoName+'</p></span><span class="row mt-2" style="position: absolute;margin-left: 90px;"><p class="sortable-blur-text mr-4 " style="">'+i+'</p></span></li>';
+		 str+= '<li class="card sortable-card white-text row" id="'+array[i].id+'" ><span style="margin-left: -10px" class="mt-2"><a onclick="removeSelectedExcercise('+"'"+array[i].id+"'"+')"><img src="../../img/exerciseMinus.svg" class="img-fluid mt-3"></a>'
+			+'</span><span class=" mt-3" style="z-index: 1"><p >'+array[i].exerciseName+'</p></span><span class="row mt-2" style="position: absolute;margin-left: 90px;"><p class="sortable-blur-text mr-4 " style="">'+i+'</p></span></li>';
 			console.log(str);
 	}
 	if(category == currentCategory)
@@ -390,17 +390,20 @@ var currentCategory ='',category='';
 	  }
 	}
 /* 	console.log("selectedExcerciseArray",selectedExcerciseArray); */
-	 $.ajax({
+	 $.ajax(
+	     {
         url:"/saveSelectedExerciseAjax",
         method:"POST",
         data:{
-        	selectedExcerciseArray: JSON.stringify(selectedExcerciseArray), // Second add quotes on the value.
+        	selectedExcerciseArray: JSON.stringify(selectedExcerciseArray),
+            templateId:${template.getTemplateId()},// Second add quotes on the value.
+            zoneId:"${zoneId}",
         },
         success:function(response) {
-         alert("success");
+         alert("Saved Successfully !!");
        },
        error:function(){
-        alert("error");
+        alert("Error Occured while saving. Please try again.");
        }
 
       }); 
@@ -410,34 +413,34 @@ var currentCategory ='',category='';
 function addList(category,objectName,objectPath){
       var object={
 		id : category,
-		videoName: objectName,
+		exerciseName: objectName,
 		url:objectPath,
 	  }
 	  array.push(object);
-	 console.log(object.id,object.videoName,object.url);
+	 console.log(object.id,object.exerciseName,object.url);
 	  var str='';
 	   for(var i=0;i<array.length;i++){
-		   console.log(array[i].id,array[i].videoName,array[i].url);
-		   str+= '<li class="card sortable-card white-text row" id="'+array[i].id+'" ><span style="margin-left: -10px" class="mt-2"><a onclick="removeSelectedExcercise('+"'"+array[i].id+"'"+')"><img src="img/exerciseMinus.svg" class="img-fluid mt-3"></a>'
-     			+'</span><span class=" mt-3" style="z-t type="hidden" name="categoryHidden" id="categoryHidden" ><p >'+array[i].videoName+'</p></span><span class="row mt-2" style="position: absolute;margin-left: 90px;"><p class="sortable-blur-text mr-4 " style="">'+i+'</p></span></li>';
+		   console.log(array[i].id,array[i].exerciseName,array[i].url);
+		   str+= '<li class="card sortable-card white-text row" id="'+array[i].id+'" ><span style="margin-left: -10px" class="mt-2"><a onclick="removeSelectedExcercise('+"'"+array[i].id+"'"+')"><img src="../../img/exerciseMinus.svg" class="img-fluid mt-3"></a>'
+     			+'</span><span class=" mt-3" ><p >'+array[i].exerciseName+'</p></span><span class="row mt-2" style="position: absolute;margin-left: 90px;"><p class="sortable-blur-text mr-4 " style="">'+i+'</p></span></li>';
        }
 	   document.getElementById('sortable').innerHTML=str;
 	  }
 
 	//  Function to add selected green border ofr the exercise card
-    function surroundSelectedGreenBorder(a,id,name,path) {
+    function surroundSelectedGreenBorder(event,id,name,path) {
         // alert("ram");
         // alert(allowedNumberOfExerciseToSelect);
-        var count = document.querySelectorAll(".select-border").length;
-        if(count>=allowedNumberOfExerciseToSelect && !(a.classList.contains("select-border"))){
+        // var count = document.querySelectorAll(".select-border").length;
+        if(array.length >= allowedNumberOfExerciseToSelect && !(event.classList.contains("select-border"))){
             alert("Sorry! you can select only "+allowedNumberOfExerciseToSelect+" Exercises");
         }
         else{
-        	if(a.classList.contains("select-border")){
-        	   a.classList.remove("select-border");
+        	if(event.classList.contains("select-border")){
+        	   event.classList.remove("select-border");
         	   removeSelectedExcercise(id);//removing the object
         	}else{
-            	a.classList.add("select-border");
+            	event.classList.add("select-border");
             	addList(id,name,path)//adding the object
         	}
         }
@@ -448,11 +451,10 @@ function addList(category,objectName,objectPath){
     }
     /*to make chest active*/
     function activeOnLoad(){
-    	
      var count = document.querySelectorAll("active").length;
-     alert(count);
+     // alert(count);
       if(count == 0){
-    	  alert(count);
+    	  // alert(count);
     	  document.getElementById("Chestid").classList.remove("zone");
     	  document.getElementById("Chestid").classList.add("active");
       }
