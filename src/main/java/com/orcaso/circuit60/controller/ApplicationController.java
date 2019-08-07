@@ -1,5 +1,6 @@
 package com.orcaso.circuit60.controller;
 
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orcaso.circuit60.model.*;
 import com.orcaso.circuit60.repository.GymRepository;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.json.JsonParseException;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -184,7 +186,7 @@ public class ApplicationController {
 	return fileList;
     }
 
-     /*method to save the selectedExerciseArray using ajax */
+    /*method to save the selectedExerciseArray using ajax */
     @PostMapping("/saveSelectedExerciseAjax")
     public @ResponseBody String saveSelectExerciseAjax(@RequestParam(value="selectedExcerciseArray") String saveSelectedExcerciseArray, @RequestParam(value="templateId") Long templateId , @RequestParam(value = "zoneId") String zone ) throws IOException{
     	logger.info("---------  Selected exerciseArray - " + saveSelectedExcerciseArray + "------------");
@@ -213,8 +215,6 @@ public class ApplicationController {
             logger.error("Exception Occurred while saving selected exercise to database");
             e.printStackTrace();
         }
-
-
         return "success";
     }
 
