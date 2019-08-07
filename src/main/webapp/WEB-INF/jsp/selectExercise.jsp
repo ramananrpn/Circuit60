@@ -240,19 +240,15 @@
                             System.out.println(name);
                             path="../../exercises/"+categoryName.toLowerCase()+"/"+name; %>
                            
-                    <div class="col-md-3 mt-2 d-flex justify-content-center ml-5" id="<%=categoryName+number+"borderClass"%>"   onclick="myFunction(this,'<%=categoryName+number%>','<%=name.substring(0,name.indexOf('.')) %>','<%=path%>')">
-<%--                        <label>--%>
-                            <%-- <input type="checkbox" name="chk1" id="ex<%=i%>" value="val1" class="hidden" autocomplete="off"> --%>
+                    <div class="col-md-3 mt-2 d-flex justify-content-center ml-5" id="<%=categoryName+number+"borderClass"%>"   onclick="myFunction(this,'<%=categoryName+number%>','<%=name.substring(0,name.indexOf('.'))%>','<%=path%>','<%=categoryName%>')">
                             <div class="card text-center mb-3 border-0 mt-3 card-color" >
                                 <div class="card-body">
                                     <h5 class="card-title"><%=name.substring(0,name.indexOf('.')) %></h5>
                                     <p class="card-text mt-4">
                                         <video class="video-fluid z-depth-1" id="<%=categoryName+number++%>" src="<%=path%>"  autoplay loop muted></video>
-                                         
-                                    </p>
+                                      </p>
                                 </div>
                             </div>
-<%--                        </label>--%>
                     </div>
                     <%}%>
                 </div>
@@ -272,7 +268,7 @@
                                 </span>
                                 <span class=" mt-3" style="z-index: 1">
               
-<script>                      <p >'+array[i].videoName+'</p>
+<script>                      <p >'+array[i].exerciseName+'</p>
                                 </span>
                                 <span class="row mt-2" style="position: absolute;margin-left: 90px;">
                                     <p class="sortable-blur-text mr-4 " style=""><%="0"+i%></p>
@@ -291,50 +287,53 @@
 
 <!-- SCRIPTS -->
 <script>
+
 var array= new Array();
 var flag="notSelected";
-var currentCategory ='',category='';
+var currentCategory ='',selectedcategory='';
   /*method to remove the selectedExercise using execise Id*/
-  function removeSelectedExcercise(selectedExcerciseId){
+  function removeSelectedExcercise(selectedExcerciseId,category){
 	var str='';
 	console.log(selectedExcerciseId);
 	for(var i=0;i<array.length;i++){
 		if(array[i].id == selectedExcerciseId){
-			console.log("removable object",array[i].id,array[i].videoName,array[i].url);
+			selectedCategory=array[i].category;
+			console.log("removable object",array[i].id,array[i].exerciseName,array[i].url);
 			array.splice(i,1);//removing the object in the matching index
 			console.log(array);
+			
 		}/* else{
 			 str+= '<li class="card sortable-card white-text row" id="'+array[i].id+'" ><span style="margin-left: -10px" class="mt-2"><a onclick="removeSelectedExcercise('+"'"+array[i].id+"'"+')"><img src="img/exerciseMinus.svg" class="img-fluid mt-3"></a>'
-			+'</span><span class=" mt-3" style="z-index: 1"><p >'+array[i].videoName+'</p></span><span class="row mt-2" style="position: absolute;margin-left: 90px;"><p class="sortable-blur-text mr-4 " style="">'+i+'</p></span></li>';
+			+'</span><span class=" mt-3" style="z-index: 1"><p >'+array[i].exerciseName+'</p></span><span class="row mt-2" style="position: absolute;margin-left: 90px;"><p class="sortable-blur-text mr-4 " style="">'+i+'</p></span></li>';
 			console.log(str);
 		} */
 	}  
 	//checking condition 
 	for(var i=0;i<array.length;i++){
-		 str+= '<li class="card sortable-card white-text row" id="'+array[i].id+'" ><span style="margin-left: -10px" class="mt-2"><a onclick="removeSelectedExcercise('+"'"+array[i].id+"'"+')"><img src="img/exerciseMinus.svg" class="img-fluid mt-3"></a>'
-			+'</span><span class=" mt-3" style="z-index: 1"><p >'+array[i].videoName+'</p></span><span class="row mt-2" style="position: absolute;margin-left: 90px;"><p class="sortable-blur-text mr-4 " style="">'+i+'</p></span></li>';
+		 str+= '<li class="card sortable-card white-text row" id="'+array[i].id+'" ><span style="margin-left: -10px" class="mt-2"><a onclick="removeSelectedExcercise('+"'"+array[i].id+"'"+','+"'"+array[i].category+"'"+')"><img src="img/exerciseMinus.svg" class="img-fluid mt-3"></a>'
+			+'</span><span class=" mt-3" style="z-index: 1"><p >'+array[i].exerciseName+'</p></span><span class="row mt-2" style="position: absolute;margin-left: 90px;"><p class="sortable-blur-text mr-4 " style="">'+i+'</p></span></li>';
 			console.log(str);
 	}
-	if(category == currentCategory)
-	if(document.getElementById(selectedExcerciseId+"borderClass").classList.contains("select-border")){
-	document.getElementById(selectedExcerciseId+"borderClass").classList.remove("select-border");
+	console.log("category",selectedCategory);
+	console.log(currentCategory,selectedCategory);
+	if(selectedCategory == currentCategory){
+		if(document.getElementById(selectedExcerciseId+"borderClass").classList.contains("select-border")){
+			document.getElementById(selectedExcerciseId+"borderClass").classList.remove("select-border");
+		}
 	}
 	  document.getElementById('sortable').innerHTML=str;//printing the elements in the specified id
   }
   /*method to change the category to retrieve the file based upon the category name*/
   function changeCategoryName(category){
 	/*adding and removing the category style based on the conditions*/
-	  if(currentCategory == ''){
-		document.getElementById(category+"id").classList.add("active");
-		document.getElementById(category+"id").classList.remove("zone");
-		currentCategory=category;
-	  }else{
 		document.getElementById(currentCategory+"id").classList.remove("active");
 		document.getElementById(currentCategory+"id").classList.add("zone");
 		document.getElementById(category+"id").classList.add("active");
 		document.getElementById(currentCategory+"id").classList.remove("zone");
 		currentCategory = category;
-	  }
+		selectedCategory=category;
+		
+		
 	/*using the ajax to hit the url and get the filelist*/
 	  $.ajax({
 	        url:"/selectExerciseAjax",
@@ -348,7 +347,7 @@ var currentCategory ='',category='';
 	         var str='',path='';
 	         for(var i=0;i<responseArray.length;i++){
 	        	 path="../../exercises/"+category.toLowerCase()+"/"+responseArray[i];
-	       		 str+='<div class="col-md-3 mt-2 d-flex justify-content-center ml-5" id='+'"'+category+i+'borderClass"'+'  onclick="myFunction(this,'+"'"+category+i+"'"+','+"'"+responseArray[i].substring(0,responseArray[i].indexOf('.'))+"'"+','+"'"+path+"'"+')">'
+	       		 str+='<div class="col-md-3 mt-2 d-flex justify-content-center ml-5" id='+'"'+category+i+'borderClass"'+'  onclick="myFunction(this,'+"'"+category+i+"'"+','+"'"+responseArray[i].substring(0,responseArray[i].indexOf('.'))+"'"+','+"'"+path+"'"+','+"'"+category+"'"+')">'
                             +'<div class="card text-center mb-3 border-0 mt-3 card-color" >'+
                                 '<div class="card-body">'
                                     +'<h5 class="card-title">'+responseArray[i].substring(0,responseArray[i].indexOf('.'))+'</h5>'
@@ -394,7 +393,7 @@ var currentCategory ='',category='';
         url:"/saveSelectedExerciseAjax",
         method:"POST",
         data:{
-        	selectedExcerciseArray: JSON.stringify(selectedExcerciseArray), // Second add quotes on the value.
+        	selectedExcerciseArray: JSON.stringify(selectedExcerciseArray),
         },
         success:function(response) {
          alert("success");
@@ -407,25 +406,31 @@ var currentCategory ='',category='';
 	
   }
   /*method to add the object in the array */
-function addList(category,objectName,objectPath){
+function addList(categoryId,objectName,objectPath,categoryName){
       var object={
-		id : category,
-		videoName: objectName,
+		id : categoryId,
+		exerciseName: objectName,
 		url:objectPath,
+	    category:categoryName
 	  }
 	  array.push(object);
-	 console.log(object.id,object.videoName,object.url);
+	 console.log(object.id,object.exerciseName,object.url);
 	  var str='';
 	   for(var i=0;i<array.length;i++){
-		   console.log(array[i].id,array[i].videoName,array[i].url);
-		   str+= '<li class="card sortable-card white-text row" id="'+array[i].id+'" ><span style="margin-left: -10px" class="mt-2"><a onclick="removeSelectedExcercise('+"'"+array[i].id+"'"+')"><img src="img/exerciseMinus.svg" class="img-fluid mt-3"></a>'
-     			+'</span><span class=" mt-3" style="z-t type="hidden" name="categoryHidden" id="categoryHidden" ><p >'+array[i].videoName+'</p></span><span class="row mt-2" style="position: absolute;margin-left: 90px;"><p class="sortable-blur-text mr-4 " style="">'+i+'</p></span></li>';
+		   console.log(array[i].id,array[i].exerciseName,array[i].url);
+		   str+= '<li class="card sortable-card white-text row" id="'+array[i].id+'" ><span style="margin-left: -10px" class="mt-2"><a onclick="removeSelectedExcercise('+"'"+array[i].id+"'"+','+"'"+array[i].category+"'"+')"><img src="img/exerciseMinus.svg" class="img-fluid mt-3"></a>'
+     			+'</span><span class=" mt-3" style="z-t" ><p >'+array[i].exerciseName+'</p></span><span class="row mt-2" style="position: absolute;margin-left: 90px;"><p class="sortable-blur-text mr-4 " style="">'+i+'</p></span></li>';
        }
 	   document.getElementById('sortable').innerHTML=str;
 	  } 	
-    function myFunction(a,id,name,path) {
+    function myFunction(a,id,name,path,category) {
         // alert("ram");
         // alert(allowedNumberOfExerciseToSelect);
+        currentCategory = category;
+        selectedCategory = category;       
+     	console.log(currentCategory);
+        
+        
         var count = document.querySelectorAll(".select-border").length;
         if(count>=allowedNumberOfExerciseToSelect && !(a.classList.contains("select-border"))){
             alert("Sorry! you can select only "+allowedNumberOfExerciseToSelect+" Exercises");
@@ -433,10 +438,10 @@ function addList(category,objectName,objectPath){
         else{
         	if(a.classList.contains("select-border")){
         	   a.classList.remove("select-border");
-        	   removeSelectedExcercise(id);//removing the object
+        	   removeSelectedExcercise(id,category);//removing the object
         	}else{
             	a.classList.add("select-border");
-            	addList(id,name,path)//adding the object
+            	addList(id,name,path,category);//adding the object
         	}
         }
      /*    a.stopPropagation? a.stopPropagation() : a.cancelBubble = true; */
@@ -448,9 +453,9 @@ function addList(category,objectName,objectPath){
     function activeOnLoad(){
     	
      var count = document.querySelectorAll("active").length;
-     alert(count);
+     console.log(${template.getTemplateId()});
       if(count == 0){
-    	  alert(count);
+    	  currentCategory="Chest";
     	  document.getElementById("Chestid").classList.remove("zone");
     	  document.getElementById("Chestid").classList.add("active");
       }

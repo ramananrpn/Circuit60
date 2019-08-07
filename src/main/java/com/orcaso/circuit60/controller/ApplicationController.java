@@ -1,5 +1,6 @@
 package com.orcaso.circuit60.controller;
 
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.orcaso.circuit60.model.Gym;
 import com.orcaso.circuit60.model.SocketMessage;
 import com.orcaso.circuit60.model.Templates;
@@ -11,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.json.JsonParseException;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -175,8 +177,10 @@ public class ApplicationController {
 
      /*method to save the selectedExerciseArray using ajax */
     @PostMapping("/saveSelectedExerciseAjax")
-    public @ResponseBody String saveSelectExerciseAjax(HttpServletRequest request ,HttpServletResponse response,Model model,@RequestParam(value="selectedExcerciseArray") String saveselectedExcerciseArray) throws IOException{
+    public @ResponseBody String saveSelectExerciseAjax(HttpServletRequest request ,HttpServletResponse response,Model model,@RequestParam(value="selectedExcerciseArray") String saveselectedExcerciseArray) throws IOException,JsonParseException{
     	System.out.println("hello"+saveselectedExcerciseArray);
+    	 
+    	
 	return "success";
     }
 
