@@ -149,7 +149,7 @@
                             </button>
                             <%--  Disabling Start Section button when a Template/Section is already started  --%>
                             <c:if test="${isTemplateActive!='true'}">
-                                <button type="button" class="btn-md btn-white btn-rounded" style="width: 150px" onclick="location.href='/adminCommand/${template.getTemplateId()}/pause?zoneId=${zoneId}'">
+                                <button type="submit" class="btn-md btn-white btn-rounded" style="width: 150px" onclick="location.href='/adminCommand/${template.getTemplateId()}/pause?zoneId=${zoneId}'">
                                     Start Section
                                 </button>
                             </c:if>
@@ -230,96 +230,95 @@
                 <div class="container-fluid">
                     <br>
                     <%--         Excersie time reps brefore configure           --%>
-                    <div class="row d-flex justify-content-center md-form">
-                        <div class="col-md-4 ">
-                            <span class="card exerciseCustomise-card flex-center">
-                                <div class="row">
-                                    <span class="flex-center">
-                                        <img src="../img/clock.svg">
-                                        <p class="ml-2">Seconds Per Exercise</p>
-                                        <a class="button mt-2" onclick="decreaseExerciseSeconds()">
-                                            <img src="../img/minusButton.svg">
-                                        </a>
-                                        <span style="color: #707070" class="flex-center ml-1">
-                                            <input type="number" id="exerciseMins" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="00"
-                                                   onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
-<%--                                            <p id="mins" >00</p>--%>
-                                            <p >:</p>
-<%--                                            <p id="secs" >45</p>--%>
-                                            <input type="number" id="exerciseSecs" class="form-control form-control-sm text-center" min="00" max="60" style="width: 25px" value="00"
-                                                   onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
-                                        </span>
-                                       <a class="button mt-2" onclick="increaseExerciseSeconds()">
-                                           <img src="../img/plusButton.svg">
-                                       </a>
-                                    </span>
-                                </div>
-                            </span>
-                        </div>
-                        <div class="col-md-3 d-flex justify-content-center">
-                            <span class="card exerciseCustomise-card flex-center" style="width: 240px;" >
-                                <div class="row">
-                                    <span class="flex-center">
-                                        <img src="../img/reps.svg">
-                                        <p class="ml-2">Reps</p>
-                                        <a class="button mt-2" onclick="decreaseReps()">
-                                            <img src="../img/minusButton.svg">
-                                        </a>
-                                        <span style="color: #707070" class="flex-center ml-1">
-                                           <input type="number" id="repsCount" class="form-control form-control-sm text-center" min="0" style="width: 25px" value="1">
-                                        </span>
-                                       <a class="button mt-2" onclick="increaseReps()">
-                                           <img src="../img/plusButton.svg">
-                                       </a>
-                                    </span>
-                                </div>
-                            </span>
-                        </div>
-                        <div class="col-md-3 d-flex justify-content-center">
-                            <span class="card exerciseCustomise-card flex-center" style="width: 283px;" >
-                                <div class="row">
-                                    <span class="flex-center">
-                                        <img src="../img/break.svg">
-                                        <p class="ml-2">Break</p>
-                                        <a class="button mt-2" onclick="decreaseBreakSeconds()">
-                                            <img src="../img/minusButton.svg">
-                                        </a>
+                    <form >
+                        <div class="row d-flex justify-content-center md-form">
+                            <div class="col-md-4 ">
+                                <span class="card exerciseCustomise-card flex-center">
+                                    <div class="row">
+                                        <span class="flex-center">
+                                            <img src="../img/clock.svg">
+                                            <p class="ml-2">Seconds Per Exercise</p>
+                                            <a class="button mt-2" onclick="decreaseExerciseSeconds()">
+                                                <img src="../img/minusButton.svg">
+                                            </a>
                                             <span style="color: #707070" class="flex-center ml-1">
-                                            <input type="number" id="breakMins" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="00"
-                                                   onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
-                                            <%--   <p id="mins" >00</p>--%>
+                                                <input type="number" id="exerciseMins" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="00"
+                                                       onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
+    <%--                                            <p id="mins" >00</p>--%>
                                                 <p >:</p>
-                                            <%--                                            <p id="secs" >45</p>--%>
-                                            <input type="number" id="breakSecs" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="00"
-                                                   onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
-                                             </span>
-                                       <a class="button mt-2" onclick="increaseBreakSeconds()">
-                                           <img src="../img/plusButton.svg">
-                                       </a>
-                                    </span>
-                                </div>
-                            </span>
+    <%--                                            <p id="secs" >45</p>--%>
+                                                <input type="number" id="exerciseSecs" class="form-control form-control-sm text-center" min="00" max="60" style="width: 25px" value="00"
+                                                       onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
+                                            </span>
+                                           <a class="button mt-2" onclick="increaseExerciseSeconds()">
+                                               <img src="../img/plusButton.svg">
+                                           </a>
+                                        </span>
+                                    </div>
+                                </span>
+                            </div>
+                            <div class="col-md-3 d-flex justify-content-center">
+                                <span class="card exerciseCustomise-card flex-center" style="width: 240px;" >
+                                    <div class="row">
+                                        <span class="flex-center">
+                                            <img src="../img/reps.svg">
+                                            <p class="ml-2">Reps</p>
+                                            <a class="button mt-2" onclick="decreaseReps()">
+                                                <img src="../img/minusButton.svg">
+                                            </a>
+                                            <span style="color: #707070" class="flex-center ml-1">
+                                               <input type="number" id="repsCount" class="form-control form-control-sm text-center" min="0" style="width: 25px" value="1">
+                                            </span>
+                                           <a class="button mt-2" onclick="increaseReps()">
+                                               <img src="../img/plusButton.svg">
+                                           </a>
+                                        </span>
+                                    </div>
+                                </span>
+                            </div>
+                            <div class="col-md-3 d-flex justify-content-center">
+                                <span class="card exerciseCustomise-card flex-center" style="width: 283px;" >
+                                    <div class="row">
+                                        <span class="flex-center">
+                                            <img src="../img/break.svg">
+                                            <p class="ml-2">Break</p>
+                                            <a class="button mt-2" onclick="decreaseBreakSeconds()">
+                                                <img src="../img/minusButton.svg">
+                                            </a>
+                                                <span style="color: #707070" class="flex-center ml-1">
+                                                <input type="number" id="breakMins" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="00"
+                                                       onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
+                                                <%--   <p id="mins" >00</p>--%>
+                                                    <p >:</p>
+                                                <%--                                            <p id="secs" >45</p>--%>
+                                                <input type="number" id="breakSecs" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="00"
+                                                       onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
+                                                 </span>
+                                           <a class="button mt-2" onclick="increaseBreakSeconds()">
+                                               <img src="../img/plusButton.svg">
+                                           </a>
+                                        </span>
+                                    </div>
+                                </span>
+                            </div>
                         </div>
-                    </div>
+                    </form>
+
 
                     <hr>
                     <%--       Exercise Display         --%>
                     <div class="row">
-                        <%for(int i=0; i<4 ;i++){%>
-                         <div class="col-md-3 col-sm-1 col-xs-1 d-flex justify-content-center " >
-                            <div class="card text-center mb-3 border-0 card-color" >
-                                <div class="card-body">
-                                    <h5 class="card-title">Push Ups</h5>
-                                    <p class="card-text mt-4"><video class="video-fluid z-depth-1" src="../../exercises/chest/Pull%20Ups.mp4" autoplay loop muted></video></p>
+                        <%--        Loop to display fetched exercise                --%>
+                        <c:forEach items="${exerciseList}" var="exercise">
+                           <div class="col-md-3 col-sm-1 col-xs-1 d-flex justify-content-center " >
+                                <div class="card text-center mb-3 border-0 card-color" >
+                                    <div class="card-body">
+                                        <h5 class="card-title">${exercise.getExerciseName()}</h5>
+                                        <p class="card-text mt-4"><video class="video-fluid z-depth-1" src="${exercise.getUrl()}" autoplay loop muted></video></p>
+                                    </div>
                                 </div>
-                            </div>
-                             <%if(i!=3){%>
-                                <div class="d-flex flex-center">
-                                    <div class="divider"></div>
-                                </div>
-                             <%}%>
-                         </div>
-                        <%}%>
+                           </div>
+                        </c:forEach>
                     </div>
 
                     <%--        Progress Bar      --%>
