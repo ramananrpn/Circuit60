@@ -151,11 +151,15 @@ public class ApplicationController {
                 if(currentTemplate!=null){
                     logger.info("Current TemplateID - " + currentTemplate.getTemplateId());
                     model.addAttribute("template" , currentTemplate);
+                    List<Exercise> exerciseList = getSavedExercisesForZone(currentTemplate , zoneId);
+                    model.addAttribute("exerciseList" , exerciseList) ;
+                    if(exerciseList.size()<=0){
+                        logger.warn("** exerciseList sending as EMPTY **");
+                    }
                 }
                 else{
                     logger.warn("Current Template Object is null - check");
                 }
-//
     //            if(zoneRepository.existsZonesByTemplateIdAndZone())
                 return "selectExercise";
             }catch(Exception ex){
@@ -172,7 +176,7 @@ public class ApplicationController {
     	logger.info("path : "+ directory.toString());
          String[] fileList = directory.list();
          for(String name : fileList) {
-        	 System.out.println(name);
+        	 logger.info("FileName : " + name);
          }
 	return fileList;
     }
@@ -202,12 +206,6 @@ public class ApplicationController {
                 zoneDetails.setExerciseDetails(selectedExerciseList);
                 zoneRepository.save(zoneDetails);
             }
-//            zoneDetails = zoneRepository.findZonesByTemplateIdAndZone(currentTemplate,zone);
-//            List<Exercise> exerciseList = zoneDetails.getExerciseDetails();
-//            logger.info("Length : " + exerciseList.size());
-//            for(Exercise ex : exerciseList){
-//                logger.info(ex.getExerciseName() +" "+ex.getUrl());
-//            }
         } catch (Exception e) {
             logger.error("Exception Occurred while saving selected exercise to database");
             e.printStackTrace();
@@ -312,5 +310,24 @@ public class ApplicationController {
         return templateList;
     }
 
+//    Get saved exercise for template - zone :: zoneDetails
+    public List<Exercise> getSavedExercisesForZone(Templates templateId , String zone ){
+            List<Exercise> exerciseList = new ArrayList<>();
+            try{
+                Zones zoneDetails = zoneRepository.findZonesByTemplateIdAndZone(currentTemplate,zone);
+                if(zoneDetails!=null){
+                    exerciseList = zoneDetails.getExerciseDetails();
+                    logger.info("Length of ZoneDetails exerciseList  : " + exerciseList.size());
+                    logger.info("------Exercise List :: " + exerciseList +" -------");
+//                    for(Exercise ex : exerciseList){
+//                        logger.info(ex.getExerciseName() +" "+ex.getUrl());
+//                    }
+                }
+            }
+            catch(Exception e){
+                logger.warn("Exception occurred while get zone Details - getSavedExercisesForZone() :: " + e);
+            }
+            return exerciseList;
+    }
 
 }
