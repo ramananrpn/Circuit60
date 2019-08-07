@@ -240,7 +240,7 @@
                             System.out.println(name);
                             path="../../exercises/"+categoryName.toLowerCase()+"/"+name; %>
                            
-                    <div class="col-md-3 mt-2 d-flex justify-content-center ml-5" id="<%=categoryName+number+"borderClass"%>"   onclick="myFunction(this,'<%=categoryName+number%>','<%=name.substring(0,name.indexOf('.')) %>','<%=path%>')">
+                    <div class="col-md-3 mt-2 d-flex justify-content-center ml-5" id="<%=categoryName+number+"borderClass"%>"   onclick="surroundSelectedGreenBorder(this,'<%=categoryName+number%>','<%=name.substring(0,name.indexOf('.')) %>','<%=path%>')">
 <%--                        <label>--%>
                             <%-- <input type="checkbox" name="chk1" id="ex<%=i%>" value="val1" class="hidden" autocomplete="off"> --%>
                             <div class="card text-center mb-3 border-0 mt-3 card-color" >
@@ -348,7 +348,7 @@ var currentCategory ='',category='';
 	         var str='',path='';
 	         for(var i=0;i<responseArray.length;i++){
 	        	 path="../../exercises/"+category.toLowerCase()+"/"+responseArray[i];
-	       		 str+='<div class="col-md-3 mt-2 d-flex justify-content-center ml-5" id='+'"'+category+i+'borderClass"'+'  onclick="myFunction(this,'+"'"+category+i+"'"+','+"'"+responseArray[i].substring(0,responseArray[i].indexOf('.'))+"'"+','+"'"+path+"'"+')">'
+	       		 str+='<div class="col-md-3 mt-2 d-flex justify-content-center ml-5" id='+'"'+category+i+'borderClass"'+'  onclick="surroundSelectedGreenBorder(this,'+"'"+category+i+"'"+','+"'"+responseArray[i].substring(0,responseArray[i].indexOf('.'))+"'"+','+"'"+path+"'"+')">'
                             +'<div class="card text-center mb-3 border-0 mt-3 card-color" >'+
                                 '<div class="card-body">'
                                     +'<h5 class="card-title">'+responseArray[i].substring(0,responseArray[i].indexOf('.'))+'</h5>'
@@ -422,8 +422,10 @@ function addList(category,objectName,objectPath){
      			+'</span><span class=" mt-3" style="z-t type="hidden" name="categoryHidden" id="categoryHidden" ><p >'+array[i].videoName+'</p></span><span class="row mt-2" style="position: absolute;margin-left: 90px;"><p class="sortable-blur-text mr-4 " style="">'+i+'</p></span></li>';
        }
 	   document.getElementById('sortable').innerHTML=str;
-	  } 	
-    function myFunction(a,id,name,path) {
+	  }
+
+	//  Function to add selected green border ofr the exercise card
+    function surroundSelectedGreenBorder(a,id,name,path) {
         // alert("ram");
         // alert(allowedNumberOfExerciseToSelect);
         var count = document.querySelectorAll(".select-border").length;
