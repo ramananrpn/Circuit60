@@ -55,6 +55,11 @@ public class ApplicationController {
         return "home";
     }
 
+    @RequestMapping("/video")
+    public String video(){
+        return "video";
+    }
+
 
     @PostMapping("/adminLogin")
     public String checkAdmin(Gym gym , Model model,HttpServletRequest request) {
@@ -166,19 +171,36 @@ public class ApplicationController {
 
     //    When Admin start Section
     //    Mapped when admin starts session
-    @RequestMapping("/startSection/{templateId}")
-    public String startSection(@PathVariable Long templateId , HttpServletRequest request ,Model model){
+    @RequestMapping("/adminCommand/{templateId}/{command}")
+    public String startSection(@PathVariable Long templateId , @PathVariable String command,HttpServletRequest request){
         SocketMessage adminCommand = new SocketMessage();
-        logger.info("working" + templateId);
-        adminCommand.setCommand("start");
+        logger.info("Getting templateId " + templateId);
+        adminCommand.setCommand(command);
         adminCommand.setTemplateId(templateId);
         messagingTemplate.convertAndSend("/zone/client" , adminCommand);
         String zoneId= getZoneId(request);
         logger.info("Active zone ID - " + zoneId);
-        Templates templateToUpdate = templateRepository.findTemplatesByTemplateId(templateId);
-        templateToUpdate.setActive(1);
+
+//        To update active column in database
+        switch (command){
+            case "start" : {
+                Templates templateToUpdate = templateRepository.findTemplatesByTemplateId(templateId);
+                templateToUpdate.setActive(1);
+                break;
+            }
+            case "pause" :
+            case "stop" : {
+                Templates templateToUpdate = templateRepository.findTemplatesByTemplateId(templateId);
+                templateToUpdate.setActive(0);
+                break;
+            }
+        }
+
         return "redirect:/templateDashboard/"+templateId+"?zoneId="+zoneId;
     }
+
+//    -----------------
+
 
 //   ERROR
     @RequestMapping("/invalidUser")

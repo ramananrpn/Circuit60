@@ -42,9 +42,15 @@ var zone = null;
         var message = JSON.parse(payload.body);
         if(message.command == 'newZoneClient'){
             console.log("New User connected to the  - " + message.zone);
-        }else if(message.command == 'start'){
+        }
+        else if(message.command == 'start'){
             showSessionTimerAndStartSession();
             // alert("Session Started");
+        }
+        else if(message.command == 'pause'){
+
+        }
+        else if(message.command == 'stop'){
 
         }
     }

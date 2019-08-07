@@ -135,10 +135,10 @@
                     <c:choose>
 <%--                        if Section is Started--%>
                         <c:when test="${(isTemplateActive=='true') && (activeTemplate.getTemplateId()==template.getTemplateId())}">
-                            <button type="button" class="btn-md set-btn-outline-orange white-text" style="width: 150px" onclick="location.href='/selectExercise?zoneId=${zoneId}'" >
+                            <button type="button" class="btn-md set-btn-outline-orange white-text" style="width: 150px" onclick="location.href='/adminCommand/${template.getTemplateId()}/stop?zoneId=${zoneId}'" >
                                 Stop Section
                             </button>
-                            <button type="button" class="btn-md btn-white btn-rounded" style="width: 150px" onclick="location.href='/startSection/${template.getTemplateId()}?zoneId=${zoneId}'">
+                            <button type="button" class="btn-md btn-white btn-rounded" style="width: 150px" onclick="location.href='/adminCommand/${template.getTemplateId()}/start?zoneId=${zoneId}'">
                                 Pause Section
                             </button>
                         </c:when>
@@ -149,7 +149,7 @@
                             </button>
                             <%--  Disabling Start Section button when a Template/Section is already started  --%>
                             <c:if test="${isTemplateActive!='true'}">
-                                <button type="button" class="btn-md btn-white btn-rounded" style="width: 150px" onclick="location.href='/startSection/${template.getTemplateId()}?zoneId=${zoneId}'">
+                                <button type="button" class="btn-md btn-white btn-rounded" style="width: 150px" onclick="location.href='/adminCommand/${template.getTemplateId()}/pause?zoneId=${zoneId}'">
                                     Start Section
                                 </button>
                             </c:if>
@@ -334,7 +334,7 @@
                     <div class="d-flex flex-row-reverse">
                         <c:choose>
                             <c:when test="${(isTemplateActive=='true') && (activeTemplate.getTemplateId()==template.getTemplateId())}">
-                                <button type="button" class="btn-sm set-text-violet set-btn-outline" style="width: 180px;">
+                                <button type="button" class="btn-sm set-text-violet set-btn-outline" style="width: 180px;" onclick="location.href='/adminCommand/${template.getTemplateId()}?zoneId=${zoneId}'">
                                     Pause Section
                                 </button>
                             </c:when>

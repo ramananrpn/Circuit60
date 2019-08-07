@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="134" height="768" viewBox="0 0 134 768">
+    <defs>
+        <style>
+            .cls-1{fill:#fff;stroke:#707070}.cls-2{clip-path:url(#clip-path)}.cls-3{fill:#1cea36}
+        </style>
+        <clipPath id="clip-path">
+            <path id="Rectangle_1395" d="M0 0h134v768H0z" class="cls-1" data-name="Rectangle 1395" transform="translate(831)"/>
+        </clipPath>
+    </defs>
+    <g id="GreenStrip" class="cls-2" transform="translate(-831)">
+        <path id="Union_8" d="M0 1151V847l33-37.129V263h17v888zM8.851-10.939h12v814L9.292 816.682z" class="cls-3" data-name="Union 8" transform="rotate(6.02 3807.982 8860.7)"/>
+    </g>
+</svg>
