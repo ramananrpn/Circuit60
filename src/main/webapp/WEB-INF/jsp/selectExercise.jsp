@@ -41,8 +41,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
     <%--Sortable to make draggable components (selected exercise need to be sorted)--%>
-    <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
-    <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+    <script src="../../js/jquery-1.10.2.js"></script>
+    <script src="../../js/jquery-ui.js"></script>
 
 </head>
 <style>
