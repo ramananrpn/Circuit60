@@ -1,13 +1,12 @@
 package com.orcaso.circuit60.controller;
 
 import com.fasterxml.jackson.databind.util.JSONPObject;
-import com.orcaso.circuit60.model.Gym;
-import com.orcaso.circuit60.model.SocketMessage;
-import com.orcaso.circuit60.model.Templates;
-import com.orcaso.circuit60.model.Zones;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.orcaso.circuit60.model.*;
 import com.orcaso.circuit60.repository.GymRepository;
 import com.orcaso.circuit60.repository.TemplateRepository;
 import com.orcaso.circuit60.repository.ZoneRepository;
+import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +21,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.ui.Model;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
+import java.util.*;
 
 @SpringBootApplication
 @Controller
@@ -61,6 +59,11 @@ public class ApplicationController {
     @RequestMapping("/adminLogin")
     public String adminLogin(){
         return "home";
+    }
+
+    @RequestMapping("/video")
+    public String video(){
+        return "video";
     }
 
 
@@ -108,10 +111,9 @@ public class ApplicationController {
 
             if(validUser(request)!=null){
                 try{
-                    Templates template = templateRepository.findTemplatesByTemplateId(templateId);
-                    currentTemplate = template;
-                    logger.info("Selected template Name = "+template.getTemplateName());
-                    model.addAttribute("template" , template);
+                    currentTemplate = getTemplateById(templateId);
+                    logger.info("Selected template Name = "+currentTemplate.getTemplateName());
+                    model.addAttribute("template" , currentTemplate);
                     List<Templates> templateList = getTemplates();
                     logger.info("List of all templates to be passed : " + templateList);
                     model.addAttribute("templateList" , templateList);
@@ -140,22 +142,28 @@ public class ApplicationController {
     }
 
 //    Select Exercise Dashboard
-    @RequestMapping("/selectExercise")
-    public String selectExercise(HttpServletRequest request , Model model){
+    @RequestMapping("/selectExercise/{templateId}")
+    public String selectExercise(@PathVariable Long templateId , HttpServletRequest request , Model model){
         if(validUser(request)!=null) {
             try{
-            String zoneId= getZoneId(request);
-            model.addAttribute("zoneId" , zoneId);
-            logger.info("Active zone ID - " + zoneId);
-            if(currentTemplate!=null){
-                model.addAttribute("template" , currentTemplate);
-            }
-            else{
-                logger.warn("Current Template Object is null - check");
-            }
-            model.addAttribute("template" , currentTemplate);
-//            if(zoneRepository.existsZonesByTemplateIdAndZone())
-            return "selectExercise";
+                String zoneId= getZoneId(request);
+                model.addAttribute("zoneId" , zoneId);
+                logger.info("Active zone ID - " + zoneId);
+                currentTemplate = getTemplateById(templateId);
+                if(currentTemplate!=null){
+                    logger.info("Current TemplateID - " + currentTemplate.getTemplateId());
+                    model.addAttribute("template" , currentTemplate);
+                    List<Exercise> exerciseList = getSavedExercisesForZone(currentTemplate , zoneId);
+                    model.addAttribute("exerciseList" , exerciseList) ;
+                    if(exerciseList.size()<=0){
+                        logger.warn("** exerciseList sending as EMPTY **");
+                    }
+                }
+                else{
+                    logger.warn("Current Template Object is null - check");
+                }
+    //            if(zoneRepository.existsZonesByTemplateIdAndZone())
+                return "selectExercise";
             }catch(Exception ex){
                 logger.warn("Exception Caught :: " + ex);
             }
@@ -165,21 +173,46 @@ public class ApplicationController {
     
     /*method to change the category name in file path and return fileList based on the filePath*/
     @PostMapping("/selectExerciseAjax")
-    public @ResponseBody String[] selectExerciseAjax(HttpServletRequest request ,HttpServletResponse response,Model model,@RequestParam(value="category") String category) throws IOException{
+    public @ResponseBody String[] selectExerciseAjax(@RequestParam(value="category") String category) throws IOException{
     	File directory = new File(System.getProperty("user.dir")+"/src/main/webapp/exercises/"+category.toLowerCase()+"/");
     	logger.info("path : "+ directory.toString());
          String[] fileList = directory.list();
          for(String name : fileList) {
-        	 System.out.println(name);
+        	 logger.info("FileName : " + name);
          }
 	return fileList;
     }
 
-     /*method to save the selectedExerciseArray using ajax */
+    /*method to save the selectedExerciseArray using ajax */
     @PostMapping("/saveSelectedExerciseAjax")
-    public @ResponseBody String saveSelectExerciseAjax(HttpServletRequest request ,HttpServletResponse response,Model model,@RequestParam(value="selectedExcerciseArray") String saveselectedExcerciseArray) throws IOException,JsonParseException{
-    	System.out.println("hello"+saveselectedExcerciseArray);
-    	 return "success";
+    public @ResponseBody String saveSelectExerciseAjax(@RequestParam(value="selectedExcerciseArray") String saveSelectedExcerciseArray, @RequestParam(value="templateId") Long templateId , @RequestParam(value = "zoneId") String zone ) throws IOException{
+    	logger.info("---------  Selected exerciseArray - " + saveSelectedExcerciseArray + "------------");
+    	currentTemplate = getTemplateById(templateId);
+    	logger.info("currentTemplate Id - " + currentTemplate.getTemplateId() + " Current Zone - "+ zone);
+    	ObjectMapper mapper = new ObjectMapper();
+        try {
+            List<Exercise> selectedExerciseList = Arrays.asList(mapper.readValue(saveSelectedExcerciseArray, Exercise[].class));
+            logger.info("------======Exercise Map to DATABASE :: " + selectedExerciseList +" =======------");
+            Zones zoneDetails ;
+//            Saving Exercise in Database
+//            Update
+            if(zoneRepository.existsZonesByTemplateIdAndZone(currentTemplate , zone)){
+                zoneDetails = zoneRepository.findZonesByTemplateIdAndZone(currentTemplate , zone);
+                zoneDetails.setExerciseDetails(selectedExerciseList);
+            }
+//            create
+            else{
+                zoneDetails = new Zones();
+                zoneDetails.setTemplateId(currentTemplate);
+                zoneDetails.setZone(zone);
+                zoneDetails.setExerciseDetails(selectedExerciseList);
+                zoneRepository.save(zoneDetails);
+            }
+        } catch (Exception e) {
+            logger.error("Exception Occurred while saving selected exercise to database");
+            e.printStackTrace();
+        }
+        return "success";
     }
 
 //    CLIENT SIDE CONTROLLERS
@@ -193,19 +226,36 @@ public class ApplicationController {
 
     //    When Admin start Section
     //    Mapped when admin starts session
-    @RequestMapping("/startSection/{templateId}")
-    public String startSection(@PathVariable Long templateId , HttpServletRequest request ,Model model){
+    @RequestMapping("/adminCommand/{templateId}/{command}")
+    public String startSection(@PathVariable Long templateId , @PathVariable String command,HttpServletRequest request){
         SocketMessage adminCommand = new SocketMessage();
-        logger.info("working" + templateId);
-        adminCommand.setCommand("start");
+        logger.info("Getting templateId " + templateId);
+        adminCommand.setCommand(command);
         adminCommand.setTemplateId(templateId);
         messagingTemplate.convertAndSend("/zone/client" , adminCommand);
         String zoneId= getZoneId(request);
         logger.info("Active zone ID - " + zoneId);
-        Templates templateToUpdate = templateRepository.findTemplatesByTemplateId(templateId);
-        templateToUpdate.setActive(1);
+
+//        To update active column in database
+        switch (command){
+            case "start" : {
+                Templates templateToUpdate = templateRepository.findTemplatesByTemplateId(templateId);
+                templateToUpdate.setActive(1);
+                break;
+            }
+            case "pause" :
+            case "stop" : {
+                Templates templateToUpdate = templateRepository.findTemplatesByTemplateId(templateId);
+                templateToUpdate.setActive(0);
+                break;
+            }
+        }
+
         return "redirect:/templateDashboard/"+templateId+"?zoneId="+zoneId;
     }
+
+//    -----------------
+
 
 //   ERROR
     @RequestMapping("/invalidUser")
@@ -235,6 +285,12 @@ public class ApplicationController {
         return null;
     }
 
+//    get Template with templateId
+    public Templates getTemplateById(Long templateId){
+        Templates currentTemplate = templateRepository.findTemplatesByTemplateId(templateId);
+        return currentTemplate;
+    }
+
 //    Checking Template is active and fetching details - add model attribute
     public Model checkAndGetActiveTemplateDetails(Model model){
         //  Checking ant template is started/active
@@ -254,5 +310,24 @@ public class ApplicationController {
         return templateList;
     }
 
+//    Get saved exercise for template - zone :: zoneDetails
+    public List<Exercise> getSavedExercisesForZone(Templates templateId , String zone ){
+            List<Exercise> exerciseList = new ArrayList<>();
+            try{
+                Zones zoneDetails = zoneRepository.findZonesByTemplateIdAndZone(currentTemplate,zone);
+                if(zoneDetails!=null){
+                    exerciseList = zoneDetails.getExerciseDetails();
+                    logger.info("Length of ZoneDetails exerciseList  : " + exerciseList.size());
+                    logger.info("------Exercise List :: " + exerciseList +" -------");
+//                    for(Exercise ex : exerciseList){
+//                        logger.info(ex.getExerciseName() +" "+ex.getUrl());
+//                    }
+                }
+            }
+            catch(Exception e){
+                logger.warn("Exception occurred while get zone Details - getSavedExercisesForZone() :: " + e);
+            }
+            return exerciseList;
+    }
 
 }

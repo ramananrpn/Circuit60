@@ -32,11 +32,11 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
     <!-- Bootstrap core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
     <!-- Material Design Bootstrap -->
-    <link href="css/mdb.min.css" rel="stylesheet">
+    <link href="../css/mdb.min.css" rel="stylesheet">
     <!-- custom styles  -->
-    <link href="css/style.css" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
     <!--Jquery for ajax-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
@@ -112,7 +112,7 @@
                 <%-- BELL--%>
                 <li class="nav-item">
                     <a class="nav-link waves-effect waves-light">
-                        <img src="img/notification.svg">
+                        <img src="../../img/notification.svg">
                     </a>
                 </li>
                 <li class="nav-item avatar">
@@ -180,7 +180,7 @@
             <div class="row">
                 <div class="col-md-6 row d-flex justify-content-center" style="font-size: 24px">
                     <a class="mt-2" href="/templateDashboard/${template.getTemplateId()}?zoneId=${zoneId}">
-                        <img src="img/left.svg" class="img-fluid" style="width: 25px">
+                        <img src="../../img/left.svg" class="img-fluid" style="width: 25px">
                     </a>
                     <%--       Getting zone excercise ocunt value from property file         --%>
                     <%
@@ -207,7 +207,7 @@
                                 %>
                                       <a class="dropdown-item"
                                          <% if(!request.getParameter("zoneId").equals("zone"+zoneCount)){%>}
-                                         href="/selectExercise?zoneId=zone<%=zoneCount%>"
+                                         href="/selectExercise/${template.getTemplateId()}?zoneId=zone<%=zoneCount%>"
                                          <%}%>
                                       >
                                            Zone <%if (zoneCount < 10) {%><%=0%><%}%><%=zoneCount%>
@@ -240,7 +240,9 @@
                             System.out.println(name);
                             path="../../exercises/"+categoryName.toLowerCase()+"/"+name; %>
                            
-                    <div class="col-md-3 mt-2 d-flex justify-content-center ml-5" id="<%=categoryName+number+"borderClass"%>"   onclick="myFunction(this,'<%=categoryName+number%>','<%=name.substring(0,name.indexOf('.'))%>','<%=path%>','<%=categoryName%>')">
+                    <div class="col-md-3 mt-2 d-flex justify-content-center ml-5" id="<%=categoryName+number+"borderClass"%>"   onclick="surroundSelectedGreenBorder(this,'<%=categoryName+number%>','<%=name.substring(0,name.indexOf('.')) %>','<%=path%>','<%=categoryName%>')">
+<%--                        <label>--%>
+                            <%-- <input type="checkbox" name="chk1" id="ex<%=i%>" value="val1" class="hidden" autocomplete="off"> --%>
                             <div class="card text-center mb-3 border-0 mt-3 card-color" >
                                 <div class="card-body">
                                     <h5 class="card-title"><%=name.substring(0,name.indexOf('.')) %></h5>
@@ -310,7 +312,7 @@ var currentCategory ='',selectedcategory='';
 	}  
 	//checking condition 
 	for(var i=0;i<array.length;i++){
-		 str+= '<li class="card sortable-card white-text row" id="'+array[i].id+'" ><span style="margin-left: -10px" class="mt-2"><a onclick="removeSelectedExcercise('+"'"+array[i].id+"'"+','+"'"+array[i].category+"'"+')"><img src="img/exerciseMinus.svg" class="img-fluid mt-3"></a>'
+		 str+= '<li class="card sortable-card white-text row" id="'+array[i].id+'" ><span style="margin-left: -10px" class="mt-2"><a onclick="removeSelectedExcercise('+"'"+array[i].id+"'"+','+"'"+array[i].category+"'"+')"><img src="../../img/exerciseMinus.svg" class="img-fluid mt-3"></a>'
 			+'</span><span class=" mt-3" style="z-index: 1"><p >'+array[i].exerciseName+'</p></span><span class="row mt-2" style="position: absolute;margin-left: 90px;"><p class="sortable-blur-text mr-4 " style="">'+i+'</p></span></li>';
 			console.log(str);
 	}
@@ -347,14 +349,14 @@ var currentCategory ='',selectedcategory='';
 	         var str='',path='';
 	         for(var i=0;i<responseArray.length;i++){
 	        	 path="../../exercises/"+category.toLowerCase()+"/"+responseArray[i];
-	       		 str+='<div class="col-md-3 mt-2 d-flex justify-content-center ml-5" id='+'"'+category+i+'borderClass"'+'  onclick="myFunction(this,'+"'"+category+i+"'"+','+"'"+responseArray[i].substring(0,responseArray[i].indexOf('.'))+"'"+','+"'"+path+"'"+','+"'"+category+"'"+')">'
+	       		 str+='<div class="col-md-3 mt-2 d-flex justify-content-center ml-5" id='+'"'+category+i+'borderClass"'+'  onclick="surroundSelectedGreenBorder(this,'+"'"+category+i+"'"+','+"'"+responseArray[i].substring(0,responseArray[i].indexOf('.'))+"'"+','+"'"+path+"'"+','+"'"+category+"'"+')">'
                             +'<div class="card text-center mb-3 border-0 mt-3 card-color" >'+
                                 '<div class="card-body">'
                                     +'<h5 class="card-title">'+responseArray[i].substring(0,responseArray[i].indexOf('.'))+'</h5>'
                                     +'<p class="card-text mt-4">'+
                                         '<video class="video-fluid z-depth-1" id='+'"'+category+i+'"'+'src='+'"'+path+'"'+' autoplay loop muted></video>'+
                                          '</p></div></div></div>';
-               
+        
                }
 	         
 	         document.getElementById('videofiles').innerHTML=str;//printing the elements in the specified id
@@ -389,17 +391,20 @@ var currentCategory ='',selectedcategory='';
 	  }
 	}
 /* 	console.log("selectedExcerciseArray",selectedExcerciseArray); */
-	 $.ajax({
+	 $.ajax(
+	     {
         url:"/saveSelectedExerciseAjax",
         method:"POST",
         data:{
         	selectedExcerciseArray: JSON.stringify(selectedExcerciseArray),
+          templateId:${template.getTemplateId()},// Second add quotes on the value.
+          zoneId:"${zoneId}",
         },
         success:function(response) {
-         alert("success");
+         alert("Saved Successfully !!");
        },
        error:function(){
-        alert("error");
+        alert("Error Occured while saving. Please try again.");
        }
 
       }); 
@@ -408,39 +413,39 @@ var currentCategory ='',selectedcategory='';
   /*method to add the object in the array */
 function addList(categoryId,objectName,objectPath,categoryName){
       var object={
-		id : categoryId,
-		exerciseName: objectName,
-		url:objectPath,
-	    category:categoryName
-	  }
+                    id : categoryId,
+                    exerciseName: objectName,
+                    url:objectPath,
+                    category:categoryName
+	                }
 	  array.push(object);
 	 console.log(object.id,object.exerciseName,object.url);
 	  var str='';
 	   for(var i=0;i<array.length;i++){
 		   console.log(array[i].id,array[i].exerciseName,array[i].url);
-		   str+= '<li class="card sortable-card white-text row" id="'+array[i].id+'" ><span style="margin-left: -10px" class="mt-2"><a onclick="removeSelectedExcercise('+"'"+array[i].id+"'"+','+"'"+array[i].category+"'"+')"><img src="img/exerciseMinus.svg" class="img-fluid mt-3"></a>'
-     			+'</span><span class=" mt-3" style="z-t" ><p >'+array[i].exerciseName+'</p></span><span class="row mt-2" style="position: absolute;margin-left: 90px;"><p class="sortable-blur-text mr-4 " style="">'+i+'</p></span></li>';
+		   str+= '<li class="card sortable-card white-text row" id="'+array[i].id+'" ><span style="margin-left: -10px" class="mt-2"><a onclick="removeSelectedExcercise('+"'"+array[i].id+"'"+')"><img src="../../img/exerciseMinus.svg" class="img-fluid mt-3"></a>'
+     			+'</span><span class=" mt-3" ><p >'+array[i].exerciseName+'</p></span><span class="row mt-2" style="position: absolute;margin-left: 90px;"><p class="sortable-blur-text mr-4 " style="">'+i+'</p></span></li>';
        }
 	   document.getElementById('sortable').innerHTML=str;
-	  } 	
-    function myFunction(a,id,name,path,category) {
+	  } 
+  
+    //  Function to add selected green border ofr the exercise card
+    function surroundSelectedGreenBorder(event,id,name,path,category) {
         // alert("ram");
         // alert(allowedNumberOfExerciseToSelect);
         currentCategory = category;
         selectedCategory = category;       
-     	console.log(currentCategory);
-        
-        
-        var count = document.querySelectorAll(".select-border").length;
-        if(count>=allowedNumberOfExerciseToSelect && !(a.classList.contains("select-border"))){
+     	  console.log(currentCategory);
+//         var count = document.querySelectorAll(".select-border").length;
+        if(array.length >=allowedNumberOfExerciseToSelect && !(event.classList.contains("select-border"))){
             alert("Sorry! you can select only "+allowedNumberOfExerciseToSelect+" Exercises");
         }
         else{
-        	if(a.classList.contains("select-border")){
-        	   a.classList.remove("select-border");
+        	if(event.classList.contains("select-border")){
+        	   event.classList.remove("select-border");
         	   removeSelectedExcercise(id,category);//removing the object
         	}else{
-            	a.classList.add("select-border");
+            	event.classList.add("select-border");
             	addList(id,name,path,category);//adding the object
         	}
         }
