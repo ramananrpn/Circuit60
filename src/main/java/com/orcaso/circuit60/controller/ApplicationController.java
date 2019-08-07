@@ -16,8 +16,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.ui.Model;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 @SpringBootApplication
@@ -158,6 +164,25 @@ public class ApplicationController {
             }
         }
         return "redirect:/invalidUser";
+    }
+    
+    /*method to change the category name in file path and return fileList based on the filePath*/
+    @PostMapping("/selectExerciseAjax")
+    public @ResponseBody String[] selectExerciseAjax(HttpServletRequest request ,HttpServletResponse response,Model model,@RequestParam(value="category") String category) throws IOException{
+    	File directory = new File(System.getProperty("user.dir")+"/src/main/webapp/exercises/"+category.toLowerCase()+"/");
+    	logger.info("path : "+ directory.toString());
+         String[] fileList = directory.list();
+         for(String name : fileList) {
+        	 System.out.println(name);
+         }
+	return fileList;
+    }
+
+     /*method to save the selectedExerciseArray using ajax */
+    @PostMapping("/saveSelectedExerciseAjax")
+    public @ResponseBody String saveSelectExerciseAjax(HttpServletRequest request ,HttpServletResponse response,Model model,@RequestParam(value="selectedExcerciseArray") String saveselectedExcerciseArray) throws IOException{
+    	System.out.println("hello"+saveselectedExcerciseArray);
+	return "success";
     }
 
 //    CLIENT SIDE CONTROLLERS
