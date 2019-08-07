@@ -179,9 +179,7 @@ public class ApplicationController {
     @PostMapping("/saveSelectedExerciseAjax")
     public @ResponseBody String saveSelectExerciseAjax(HttpServletRequest request ,HttpServletResponse response,Model model,@RequestParam(value="selectedExcerciseArray") String saveselectedExcerciseArray) throws IOException,JsonParseException{
     	System.out.println("hello"+saveselectedExcerciseArray);
-    	 
-    	
-	return "success";
+    	 return "success";
     }
 
 //    CLIENT SIDE CONTROLLERS

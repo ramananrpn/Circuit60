@@ -451,14 +451,12 @@ function addList(categoryId,objectName,objectPath,categoryName){
     }
     /*to make chest active*/
     function activeOnLoad(){
-    	
-     var count = document.querySelectorAll("active").length;
-     console.log(${template.getTemplateId()});
-      if(count == 0){
+    	var count = document.querySelectorAll("active").length;
+    	if(count == 0){
     	  currentCategory="Chest";
     	  document.getElementById("Chestid").classList.remove("zone");
     	  document.getElementById("Chestid").classList.add("active");
-      }
+      	}
     }
     
 </script>
