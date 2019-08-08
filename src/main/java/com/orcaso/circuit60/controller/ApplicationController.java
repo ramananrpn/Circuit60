@@ -122,14 +122,17 @@ public class ApplicationController {
                     logger.info("Active zone ID - " + zoneId);
                     model.addAttribute("zoneId" , zoneId);
 //                    checking if exercise present for current zone
-                    Boolean isZonePresent = true ;
-//                    Boolean isZonePresent = zoneRepository.existsZonesByTemplateIdAndZone(currentTemplate ,zoneId) ;
+//                    Boolean isZonePresent = true ;
+                    Boolean isZonePresent = zoneRepository.existsZonesByTemplateIdAndZone(currentTemplate ,zoneId) ;
                     logger.info(zoneId+" found for Template : " + isZonePresent);
                     model.addAttribute("isZonePresent",isZonePresent);
-//                    If exercise added for current zone - fetching the exercuse details to display
+//                    If exercise added for current zone - fetching the exercise details to display
                     if(isZonePresent){
                         Zones zoneDetails = zoneRepository.findZonesByTemplateIdAndZone(currentTemplate,zoneId);
                         model.addAttribute("zoneDetails" , zoneDetails);
+//                        Fetching Saved exercise Details List
+                        List<Exercise> exerciseList = zoneDetails.getExerciseDetails();
+                        model.addAttribute("exerciseList" , exerciseList);
                         //        Checking if is any template session started and getting details
                         model = checkAndGetActiveTemplateDetails(model);
                     }
