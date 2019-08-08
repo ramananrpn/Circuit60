@@ -1,6 +1,8 @@
 package com.orcaso.circuit60.controller;
 
-import com.orcaso.circuit60.model.SocketMessage;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.orcaso.circuit60.model.*;
+import com.orcaso.circuit60.repository.TemplateRepository;
 import com.orcaso.circuit60.repository.ZoneRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +23,9 @@ public class AdminClientWebSocketController {
     @Autowired
     ZoneRepository zoneRepository;
 
+    @Autowired
+    TemplateRepository templateRepository;
+
 //    New Client Joins a zone
     @MessageMapping("/newZoneClient")
     @SendTo("/zone/client")
@@ -35,6 +40,32 @@ public class AdminClientWebSocketController {
             logger.error("Exception Occurred at webSocket :: " + e);
         }
         return clientMessage;
+    }
+
+//    Exercise Display
+    @MessageMapping("/fetchExerciseDetails")
+    @SendTo("/zone/client")
+    public Display fetchExerciseDetails(@Payload SocketMessage clientMessage) {
+        ObjectMapper mapper = new ObjectMapper();
+        Display display = new Display();
+        try{
+            logger.info("----------- FetchExerciseDetails ControllerProcessing -------------");
+            logger.info(" ===== zone :: " + clientMessage.getZone() + " ; templateId :: " + clientMessage.getTemplateId() + " =====");
+            Templates currentTemplate = templateRepository.findTemplatesByTemplateId(clientMessage.getTemplateId());
+            Zones currentZone = zoneRepository.findZonesByTemplateIdAndZone(currentTemplate , clientMessage.getZone());
+            display.setTemplates(currentTemplate);
+            display.setZones(currentZone);
+            display.setCommand("display");
+//            ApplicationController applicationController = new ApplicationController();
+//            display.setExerciseDetails(applicationController.getSavedExercisesForZone(currentTemplate,clientMessage.getZone()));
+            logger.info(currentZone.getExerciseDetails().toString());
+            display.setExerciseDetails(currentZone.getExerciseDetails());
+//            logger.info("!!!!!!!!!----------  EXCERCISE DETAILS :: " + exerciseDetails + " ------------!!!!!!!!!! ");
+        }
+        catch(Exception e){
+            logger.error("Exception Occurred at fetchExerciseDetails :: " + e);
+        }
+        return  display;
     }
 
     public SocketMessage SendStartSessionCommand(@Payload SocketMessage adminCommand){

@@ -1,9 +1,12 @@
 package com.orcaso.circuit60.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.orcaso.circuit60.converter.StringMapConverter;
 
 import javax.persistence.*;
 import java.util.List;
+
 
 @Entity
 @Table(name = "template_zone_details")
@@ -36,9 +39,10 @@ public class Zones {
 
     //    USED JSON DATATYPE - MAP to store exercise
 //    Convert is used to convert Data from entity to dbcolumn and viceversa
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "exercise_relation", joinColumns = @JoinColumn(name = "zoneId"))
     @Column(name="exercise_details")
+    @JsonIgnore
     private List<Exercise> exerciseDetails;
 
 

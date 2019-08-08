@@ -4,7 +4,6 @@ public class SocketMessage {
     private Long templateId;
     private String command;
     private String zone;
-
 //    getters & setters
 
     public Long getTemplateId() {

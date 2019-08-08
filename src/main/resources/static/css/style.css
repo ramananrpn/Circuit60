@@ -209,3 +209,15 @@
     background-color: #fafafa;
     border-radius: 50%
 }
+.display-orange-button{
+    width: 241.8px;
+    height: 90.5px;
+    border-radius: 20px;
+    background-color: #ffa700;
+}
+
+/*FONTS*/
+@font-face {
+    font-family: "whiteOn";
+    src: url("../font/White On Black.ttf");
+}

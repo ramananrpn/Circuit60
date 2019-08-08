@@ -237,7 +237,7 @@
                         int number=0;
                         String path="";
                      	for(String name:fileList){
-                            System.out.println(name);
+//                            System.out.println(name);
                             path="../../exercises/"+categoryName.toLowerCase()+"/"+name; %>
                            
                     <div class="col-md-3 mt-2 d-flex justify-content-center ml-5" id="<%=categoryName+number+"borderClass"%>"   onclick="surroundSelectedGreenBorder(this,'<%=categoryName+number%>','<%=name.substring(0,name.indexOf('.')) %>','<%=path%>','<%=categoryName%>')">

@@ -46,6 +46,9 @@ public class ApplicationController {
     //    template object
     Templates currentTemplate ;
 
+//    Zone object
+    Zones currentZone;
+
     @RequestMapping("/")
     public String index(HttpServletRequest request){
         if(validUser(request)!=null){
@@ -144,6 +147,31 @@ public class ApplicationController {
             return "redirect:/invalidUser";
     }
 
+//    Saving the Template Time config
+    @PostMapping("/templateDashboard/{templateId}/{zoneId}")
+    public String saveTemplateTimeConfig(@PathVariable("templateId") Long templateId ,@PathVariable("zoneId") String zone ,@RequestParam(value = "exerciseMins") Long exerciseMins ,
+                                         @RequestParam(value = "exerciseSecs") Long exerciseSecs , @RequestParam(value = "repsCount") int repsCount ,
+                                         @RequestParam(value = "breakMins") Long breakMins , @RequestParam(value = "breakSecs") Long breakSecs)
+    {
+        try{
+            exerciseSecs += (exerciseMins*60);
+            breakSecs += (breakMins*60);
+            currentTemplate = getTemplateById(templateId);
+            if(currentTemplate!=null){
+                Zones zoneDetails = zoneRepository.findZonesByTemplateIdAndZone(currentTemplate , zone);
+                zoneDetails.setSeconds(exerciseSecs);
+                zoneDetails.setReps(repsCount);
+                zoneDetails.setBreakTime(breakSecs);
+                logger.info("----- Saving template time Configuration --- Seconds - " +exerciseSecs + " ; Reps - " +repsCount+ " ; BreakTime - " + breakSecs);
+                zoneRepository.save(zoneDetails);
+            }
+        }
+        catch(Exception ex){
+            logger.error("Exception while saving template time Configuration :: " + ex);
+        }
+        return  "redirect:/templateDashboard/"+templateId+"?zoneId="+zone;
+    }
+
 //    Select Exercise Dashboard
     @RequestMapping("/selectExercise/{templateId}")
     public String selectExercise(@PathVariable Long templateId , HttpServletRequest request , Model model){
@@ -158,6 +186,7 @@ public class ApplicationController {
                     model.addAttribute("template" , currentTemplate);
                     List<Exercise> exerciseList = getSavedExercisesForZone(currentTemplate , zoneId);
                     model.addAttribute("exerciseList" , exerciseList) ;
+                    logger.info("ExerciseList Size : " + exerciseList.size());
                     if(exerciseList.size()<=0){
                         logger.warn("** exerciseList sending as EMPTY **");
                     }
@@ -218,7 +247,8 @@ public class ApplicationController {
         return "success";
     }
 
-//    CLIENT SIDE CONTROLLERS
+//    ----------------========   CLIENT SIDE CONTROLLERS  =======-------------------------
+
 //    home to connect - displays zones
     @RequestMapping("/connect")
     public String connectHome(Model model){
@@ -233,6 +263,7 @@ public class ApplicationController {
     public String startSection(@PathVariable Long templateId , @PathVariable String command,HttpServletRequest request){
         SocketMessage adminCommand = new SocketMessage();
         logger.info("Getting templateId " + templateId);
+        logger.info("--------------------:: RECEIVED COMMAND - " + command + ":: --------------------");
         adminCommand.setCommand(command);
         adminCommand.setTemplateId(templateId);
         messagingTemplate.convertAndSend("/zone/client" , adminCommand);
@@ -255,6 +286,26 @@ public class ApplicationController {
         }
 
         return "redirect:/templateDashboard/"+templateId+"?zoneId="+zoneId;
+    }
+
+//    FETCH Exercise to Display AJAX
+    @PostMapping("/fetchExerciseDetailsToDisplay")
+    public String fetchExerciseDetailsToDisplay(@RequestParam(value = "zone") String zone , @RequestParam(value = "templateId") Long templateId){
+        logger.info("--------------Ajax controller called -- zone :: " +zone + " ; templateId :: " +templateId+" --------------");
+        Display display = new Display();
+        ObjectMapper mapper = new ObjectMapper();
+        String exerciseDetails = "";
+        try{
+            currentTemplate = templateRepository.findTemplatesByTemplateId(templateId);
+            currentZone = zoneRepository.findZonesByTemplateIdAndZone(currentTemplate , zone);
+            display.setTemplates(currentTemplate);
+            display.setZones(currentZone);
+             exerciseDetails = mapper.writeValueAsString(display);
+        }
+        catch(Exception ex){
+            logger.error("Exception occurred while DISPLAY EXERCISE AJAX CONTROLLER processing :: " + ex);
+        }
+        return exerciseDetails;
     }
 
 //    -----------------
@@ -314,8 +365,9 @@ public class ApplicationController {
     }
 
 //    Get saved exercise for template - zone :: zoneDetails
-    public List<Exercise> getSavedExercisesForZone(Templates templateId , String zone ){
+    public List<Exercise> getSavedExercisesForZone(Templates currentTemplate , String zone ){
             List<Exercise> exerciseList = new ArrayList<>();
+            logger.info("--- TemplateId :: " + currentTemplate.getTemplateId() +" ; zone ::"+ zone + "---");
             try{
                 Zones zoneDetails = zoneRepository.findZonesByTemplateIdAndZone(currentTemplate,zone);
                 if(zoneDetails!=null){
