@@ -138,18 +138,18 @@
                             <button type="button" class="btn-md set-btn-outline-orange white-text" style="width: 150px" onclick="location.href='/adminCommand/${template.getTemplateId()}/stop?zoneId=${zoneId}'" >
                                 Stop Section
                             </button>
-                            <button type="button" class="btn-md btn-white btn-rounded" style="width: 150px" onclick="location.href='/adminCommand/${template.getTemplateId()}/start?zoneId=${zoneId}'">
+                            <button type="button" class="btn-md btn-white btn-rounded" style="width: 150px" onclick="location.href='/adminCommand/${template.getTemplateId()}/pause?zoneId=${zoneId}'">
                                 Pause Section
                             </button>
                         </c:when>
 <%--                        else section is not started--%>
                         <c:otherwise>
-                            <button type="button" class="btn-md set-btn-outline-orange white-text" style="width: 150px" onclick="location.href='/selectExercise/${template.getTemplateId()}?zoneId=${zoneId}'" >
+                            <button type="submit" form="timeConfigForm" class="btn-md set-btn-outline-orange white-text" style="width: 150px" onclick="location.href='/selectExercise/${template.getTemplateId()}?zoneId=${zoneId}'" >
                                 Save Section
                             </button>
                             <%--  Disabling Start Section button when a Template/Section is already started  --%>
                             <c:if test="${isTemplateActive!='true'}">
-                                <button type="submit" class="btn-md btn-white btn-rounded" style="width: 150px" onclick="location.href='/adminCommand/${template.getTemplateId()}/pause?zoneId=${zoneId}'">
+                                <button type="button" class="btn-md btn-white btn-rounded" style="width: 150px" onclick="location.href='/adminCommand/${template.getTemplateId()}/start?zoneId=${zoneId}'">
                                     Start Section
                                 </button>
                             </c:if>
@@ -230,7 +230,7 @@
                 <div class="container-fluid">
                     <br>
                     <%--         Excersie time reps brefore configure           --%>
-                    <form >
+                    <form id="timeConfigForm" method="post" action="/templateDashboard/${template.getTemplateId()}/${zoneId}">
                         <div class="row d-flex justify-content-center md-form">
                             <div class="col-md-4 ">
                                 <span class="card exerciseCustomise-card flex-center">
@@ -242,12 +242,12 @@
                                                 <img src="../img/minusButton.svg">
                                             </a>
                                             <span style="color: #707070" class="flex-center ml-1">
-                                                <input type="number" id="exerciseMins" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="00"
+                                                <input type="number" id="exerciseMins" name="exerciseMins" class="form-control form-control-sm text-center" min="00" style="width: 25px" value=""
                                                        onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
     <%--                                            <p id="mins" >00</p>--%>
                                                 <p >:</p>
     <%--                                            <p id="secs" >45</p>--%>
-                                                <input type="number" id="exerciseSecs" class="form-control form-control-sm text-center" min="00" max="60" style="width: 25px" value="00"
+                                                <input type="number" id="exerciseSecs" name="exerciseSecs" class="form-control form-control-sm text-center" min="00" max="60" style="width: 25px" value="00"
                                                        onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
                                             </span>
                                            <a class="button mt-2" onclick="increaseExerciseSeconds()">
@@ -267,7 +267,7 @@
                                                 <img src="../img/minusButton.svg">
                                             </a>
                                             <span style="color: #707070" class="flex-center ml-1">
-                                               <input type="number" id="repsCount" class="form-control form-control-sm text-center" min="0" style="width: 25px" value="1">
+                                               <input type="number" id="repsCount" name="repsCount" class="form-control form-control-sm text-center" min="0" style="width: 25px" value="1">
                                             </span>
                                            <a class="button mt-2" onclick="increaseReps()">
                                                <img src="../img/plusButton.svg">
@@ -286,12 +286,12 @@
                                                 <img src="../img/minusButton.svg">
                                             </a>
                                                 <span style="color: #707070" class="flex-center ml-1">
-                                                <input type="number" id="breakMins" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="00"
+                                                <input type="number" id="breakMins" name="breakMins" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="00"
                                                        onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
                                                 <%--   <p id="mins" >00</p>--%>
                                                     <p >:</p>
                                                 <%--                                            <p id="secs" >45</p>--%>
-                                                <input type="number" id="breakSecs" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="00"
+                                                <input type="number" id="breakSecs" name="breakSecs" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="00"
                                                        onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
                                                  </span>
                                            <a class="button mt-2" onclick="increaseBreakSeconds()">
@@ -397,7 +397,7 @@
         // alert(secs +" "+mins);
         if(secs==59){
             document.getElementById('exerciseSecs').value = "00";
-            document.getElementById('exerciseMins').value = (mins+1<=10)?"0"+(mins+1):mins+1;
+            document.getElementById('exerciseMins').value = (mins+1<10)?"0"+(mins+1):mins+1;
         }
         else {
             document.getElementById('exerciseSecs').value = ((secs + 1 < 10) ? ( "0" + (secs + 1)) :  (secs + 1));
@@ -414,7 +414,7 @@
                 document.getElementById('exerciseMins').value = (mins-1<10)?"0"+(mins-1):mins-1;
             }
             else {
-                document.getElementById('exerciseSecs').value = ((secs - 1 <= 10) ? ( "0" + (secs - 1)) :  (secs - 1));
+                document.getElementById('exerciseSecs').value = ((secs - 1 < 10) ? ( "0" + (secs - 1)) :  (secs - 1));
             }
         }
     }
@@ -436,10 +436,10 @@ function increaseBreakSeconds() {
     // alert(secs +" "+mins);
     if(secs==59){
         document.getElementById('breakSecs').value = "00";
-        document.getElementById('breakMins').value = (mins+1<=10)?"0"+(mins+1):mins+1;
+        document.getElementById('breakMins').value = (mins+1<10)?"0"+(mins+1):mins+1;
     }
     else {
-        document.getElementById('breakSecs').value = ((secs + 1 <= 10) ? ( "0" + (secs + 1)) :  (secs + 1));
+        document.getElementById('breakSecs').value = ((secs + 1 < 10) ? ( "0" + (secs + 1)) :  (secs + 1));
     }
 }
 function decreaseBreakSeconds() {
@@ -450,10 +450,10 @@ function decreaseBreakSeconds() {
         if(secs==1){
             document.getElementById('breakSecs').value = "00";
             if(mins>0)
-                document.getElementById('breakMins').value = (mins-1<=10)?"0"+(mins-1):mins-1;
+                document.getElementById('breakMins').value = (mins-1<10)?"0"+(mins-1):mins-1;
         }
         else {
-            document.getElementById('breakSecs').value = ((secs - 1 <= 10) ? ( "0" + (secs - 1)) :  (secs - 1));
+            document.getElementById('breakSecs').value = ((secs - 1 < 10) ? ( "0" + (secs - 1)) :  (secs - 1));
         }
     }
 }

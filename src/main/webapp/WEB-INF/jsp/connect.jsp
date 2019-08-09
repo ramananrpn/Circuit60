@@ -101,9 +101,99 @@
 <%--        <img src="/img/sessionStartBg.svg" alt="sessionTimer" class="img-fluid">--%>
 </div>
 
+
+                <%--  ---------------------   EXERCISE DISPLAY SCREEN  ------------------------------   --%>
 <%--Section Video Player--%>
-<div class="container-fluid hidden" id="exercisePlayer">
-    <h1>SECTION RUNNING</h1>
+
+<div class="row overflow-hidden hidden" id="exerciseDisplayScreen">
+    <%--Videos - Exercise--%>
+    <div class="col-md-8 d-flex ">
+        <div class="row">
+            <%for(int i=0 ; i < 4 ; i++){%>
+            <div class="col-md-6 card text-center border-0  card-color" >
+                <div class="card-body">
+                    <h3 class="card-title" style="font-family: whiteOn" id="name-<%=i%>">Push Ups</h3>
+                    <p class="card-text mt-4">
+                        <video class="video-fluid z-depth-1" id="video-<%=i%>" src="../../exercises/chest/Pull%20Ups.mp4" loop muted></video>
+                    </p>
+                </div>
+            </div>
+            <%}%>
+        </div>
+    </div>
+
+    <%--    Right BAR - - TIMER , REPS , TEMPLATED    --%>
+    <div class="col-md-4 d-flex flex-row-reverse  ml-auto" >
+        <div class="view text-center">
+            <%--     BR IMAGE - GREEN STRIP       --%>
+            <img src="/img/greenstrip.svg" class="img-fluid" style="width: auto;height: 100vh">
+
+            <%--        TEMPLATE , ZONE         --%>
+            <div class="mask center-block  ml-5 mt-3">
+                <div class="container-fluid mt-5">
+                    <span class=" ">
+                        <b><p class="position-absolute text-center" style="color: #ffa700;margin-left: 110px;margin-top: -18px;font-size: 23px">ZONE 01</p></b>
+                    </span>
+                    <a class="btn display-orange-button flex-center">
+                        <span class="d-flex align-content-start">
+                            <div>
+                                <span class="Path-12197 flex-center" style="width: 57px;height: 57px;box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);border-radius: 20px;margin-left: -10px"><img class="img-fluid" src="img/templateLogo.png" ></span>
+                            </div>
+                            &nbsp;
+                            <div class="mt-2  ">
+                                    <span class="d-flex align-content-start">
+                                        <p class="white-text">Circuit60's</p>
+                                    </span>
+                                    <span class="d-flex align-content-start">
+                                        <h5 class="black-text"><b>Super Arm</b></h5>
+                                    </span>
+                            </div>
+                        </span>
+                    </a>
+
+                    <%--        HR LINE 1            --%>
+                    <hr style="color: greenyellow; background-color: greenyellow ;width: 150px;margin-top: 50px" class="center-block">
+
+                    <%--        REPS            --%>
+                    <div class="flex-center">
+                        <span class="d-flex align-content-start white-text">
+                            <div>
+                                    <p style="font-size: 70px"><b>02</b></p>
+                            </div>
+
+                            <div class="mt-3 ml-3">
+                                    <span class="d-flex align-content-start">
+                                        <p style="font-size: 25px">MORE REPS</p>
+                                    </span>
+                                    <span class="d-flex align-content-start">
+                                        <p style="font-size: 25px">TO GO</p>
+                                    </span>
+                            </div>
+                        </span>
+                    </div>
+
+                    <%--        HR Line 2            --%>
+                    <hr style="color: greenyellow; background-color: greenyellow ;width: 150px;margin-top: 10px" class="center-block">
+
+                    <%--    TIMER   --%>
+                    <div class="view flex-center mt-5">
+                        <img src="/img/watch.svg" class="img-fluid">
+                        <div class="mask flex-center white-text">
+                            <h1 style="font-weight: 800;font-size: 50px">02</h1>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<%-- ON ERROR --%>
+<div class="row flex-center hidden" id="error">
+    <h5 class="black-text">Sorry , Error Occurred . Please try again. </h5>
+
 </div>
 
 

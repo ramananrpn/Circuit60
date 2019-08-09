@@ -5,11 +5,12 @@ var connectedZonePage = document.querySelector('#zoneConnected');
 var connectedZoneText = document.getElementById('connectedZoneText');
 var beforeStart = document.querySelector('#beforeStart');
 var sessionStartTimer = document.querySelector('#sessionStartTimer');
-var exercisePlayer = document.querySelector('#exercisePlayer');
+var exercisePlayer = document.querySelector('#exerciseDisplayScreen');
+var error = document.querySelector('#error');
 
 var stompClient = null;
 var zone = null;
-
+var loaded=0;
 //connect function
     function connect(event) {
         // alert("yes");
@@ -44,7 +45,11 @@ var zone = null;
             console.log("New User connected to the  - " + message.zone);
         }
         else if(message.command == 'start'){
-            showSessionTimerAndStartSession();
+            console.log("Template Started :: "+message.templateId);
+            setExerciseOnDisplay(message.templateId,zone);
+            if(loaded==1){
+                showSessionTimerAndStartSession();
+            }
             // alert("Session Started");
         }
         else if(message.command == 'pause'){
@@ -53,6 +58,35 @@ var zone = null;
         else if(message.command == 'stop'){
 
         }
+        else if(message.command == 'display'){
+            console.log(message.exerciseDetails[0].exerciseName);
+        }
+    }
+
+//    Exercise for Template Fetch AJAX
+
+    function setExerciseOnDisplay(templateId , zone){
+        console.log("....AJAX FUNCTION CALLED... zone - " +zone + " ; TemplateId - " + templateId);
+        // $.ajax({
+        //     type : "POST" ,
+        //     url : "/fetchExerciseDetailsToDisplay" ,
+        //     data : {
+        //         zone : zone,
+        //         templateId : templateId
+        //     },
+        //     success : function (exercise){
+        //         alert(exercise);
+        //     },
+        //     error : function () {
+        //         showOnError();
+        //         console.log("ERROR OCCURRED");
+        //     }
+        //
+        // })
+        stompClient.send("/admin/fetchExerciseDetails" , {} , JSON.stringify({
+            zone : zone,
+            templateId : templateId
+        }))
     }
 
 //    showZoneConnected
@@ -61,6 +95,8 @@ var zone = null;
         connectedZonePage.classList.remove('hidden');
         connectedZoneText.innerHTML = zone;
     }
+
+    //Show session Timer
 
     function showSessionTimerAndStartSession(){
         beforeStart.classList.add('hidden');
@@ -84,6 +120,12 @@ function startSessionTimer(sessionStartTimer , exercisePlayer) {
         i--;
     }, 1000)
 }
+
+//ERROR
+    function showOnError(){
+        beforeStart.classList.add('hidden');
+        error.classList.remove('hidden');
+    }
 
 //Event Listeners
 selectZonePage.addEventListener('click' , connect , true)
