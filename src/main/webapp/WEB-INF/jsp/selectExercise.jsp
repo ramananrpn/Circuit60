@@ -4,6 +4,9 @@
   Time: 14:27
   To change this template use File | Settings | File Templates.
 --%>
+<%@page import="org.springframework.ui.Model"%>
+<%@page import="com.orcaso.circuit60.model.Exercise"%>
+<%@page import="java.util.List"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="java.io.File" %>
 <%@ page import="java.util.ResourceBundle" %>
@@ -240,14 +243,14 @@
                             System.out.println(name);
                             path="../../exercises/"+categoryName.toLowerCase()+"/"+name; %>
                            
-                    <div class="col-md-3 mt-2 d-flex justify-content-center ml-5" id="<%=categoryName+number+"borderClass"%>"   onclick="surroundSelectedGreenBorder(this,'<%=categoryName+number%>','<%=name.substring(0,name.indexOf('.')) %>','<%=path%>','<%=categoryName%>')">
+                    <div class="col-md-3 mt-2 d-flex justify-content-center ml-5" id="<%=categoryName+"-"+name.substring(0,name.indexOf('.')).replaceAll(" ","")+"borderClass"%>"   onclick="surroundSelectedGreenBorder(this,'<%=categoryName+"-"+name.substring(0,name.indexOf('.')).replaceAll(" ","")%>','<%=name.substring(0,name.indexOf('.')) %>','<%=path%>','<%=categoryName%>')">
 <%--                        <label>--%>
                             <%-- <input type="checkbox" name="chk1" id="ex<%=i%>" value="val1" class="hidden" autocomplete="off"> --%>
                             <div class="card text-center mb-3 border-0 mt-3 card-color" >
                                 <div class="card-body">
-                                    <h5 class="card-title"><%=name.substring(0,name.indexOf('.')) %></h5>
+                                    <h5 class="card-title"><%=name.substring(0,name.indexOf('.'))%></h5>
                                     <p class="card-text mt-4">
-                                        <video class="video-fluid z-depth-1" id="<%=categoryName+number++%>" src="<%=path%>"  autoplay loop muted></video>
+                                        <video class="video-fluid z-depth-1" id="<%=categoryName+"-"+name.substring(0,name.indexOf('.')).replace(" ","")%>" src="<%=path%>"  autoplay loop muted></video>
                                       </p>
                                 </div>
                             </div>
@@ -263,6 +266,7 @@
                 <section class="row ">
                     <span class="d-flex flex-row-reverse">
                         <ul id="sortable" >
+                        ${exerciseListString}
        <%--                  <%for(int i=1 ; i<6 ;i++){%>
                         <li class="card sortable-card white-text row" id="'+array[i].id+'" >
                                 <span style=categoryArray"margin-left: -10px" class="mt-2">
@@ -294,7 +298,7 @@ var array= new Array();
 var flag="notSelected";
 var currentCategory ='',selectedcategory='';
   /*method to remove the selectedExercise using execise Id*/
-  function removeSelectedExcercise(selectedExcerciseId,category){
+  function removeSelectedExcercise(selectedExcerciseId){
 	var str='';
 	console.log(selectedExcerciseId);
 	for(var i=0;i<array.length;i++){
@@ -312,7 +316,7 @@ var currentCategory ='',selectedcategory='';
 	}  
 	//checking condition 
 	for(var i=0;i<array.length;i++){
-		 str+= '<li class="card sortable-card white-text row" id="'+array[i].id+'" ><span style="margin-left: -10px" class="mt-2"><a onclick="removeSelectedExcercise('+"'"+array[i].id+"'"+','+"'"+array[i].category+"'"+')"><img src="../../img/exerciseMinus.svg" class="img-fluid mt-3"></a>'
+		 str+= '<li class="card sortable-card white-text row" id="'+array[i].id+'" ><span style="margin-left: -10px" class="mt-2"><a onclick="removeSelectedExcercise('+"'"+array[i].id+"'"+')"><img src="../../img/exerciseMinus.svg" class="img-fluid mt-3"></a>'
 			+'</span><span class=" mt-3" style="z-index: 1"><p >'+array[i].exerciseName+'</p></span><span class="row mt-2" style="position: absolute;margin-left: 90px;"><p class="sortable-blur-text mr-4 " style="">'+i+'</p></span></li>';
 			console.log(str);
 	}
@@ -340,8 +344,7 @@ var currentCategory ='',selectedcategory='';
 	  $.ajax({
 	        url:"/selectExerciseAjax",
 	        method:"POST", 
-
-	        data:{
+			data:{
 	        	category: category, 
 	        },
 	        success:function(response) {
@@ -349,25 +352,25 @@ var currentCategory ='',selectedcategory='';
 	         var str='',path='';
 	         for(var i=0;i<responseArray.length;i++){
 	        	 path="../../exercises/"+category.toLowerCase()+"/"+responseArray[i];
-	       		 str+='<div class="col-md-3 mt-2 d-flex justify-content-center ml-5" id='+'"'+category+i+'borderClass"'+'  onclick="surroundSelectedGreenBorder(this,'+"'"+category+i+"'"+','+"'"+responseArray[i].substring(0,responseArray[i].indexOf('.'))+"'"+','+"'"+path+"'"+','+"'"+category+"'"+')">'
+	        	 console.log(responseArray[i].split(" ").join(""));
+	       		 str+='<div class="col-md-3 mt-2 d-flex justify-content-center ml-5" id='+'"'+category+'-'+responseArray[i].substring(0,responseArray[i].indexOf('.')).split(' ').join('')+'borderClass"'+'  onclick="surroundSelectedGreenBorder(this,'+"'"+category+'-'+responseArray[i].substring(0,responseArray[i].indexOf('.')).split(' ').join('')+"'"+','+"'"+responseArray[i].substring(0,responseArray[i].indexOf('.'))+"'"+','+"'"+path+"'"+','+"'"+category+"'"+')">'
                             +'<div class="card text-center mb-3 border-0 mt-3 card-color" >'+
                                 '<div class="card-body">'
                                     +'<h5 class="card-title">'+responseArray[i].substring(0,responseArray[i].indexOf('.'))+'</h5>'
                                     +'<p class="card-text mt-4">'+
-                                        '<video class="video-fluid z-depth-1" id='+'"'+category+i+'"'+'src='+'"'+path+'"'+' autoplay loop muted></video>'+
+                                        '<video class="video-fluid z-depth-1" id='+'"'+category+'-'+responseArray[i].substring(0,responseArray[i].indexOf('.')).replace(' ','')+'"'+'src='+'"'+path+'"'+' autoplay loop muted></video>'+
                                          '</p></div></div></div>';
         
                }
 	         
 	         document.getElementById('videofiles').innerHTML=str;//printing the elements in the specified id
-	         for(var i=0;i<responseArray.length;i++){
+	        
 	         	for(var j=0;j<array.length;j++){
-	           	  if(array[j].id == category+i){
+	           	  if(array[j].category == currentCategory){
 	           		  console.log(array[j].id);
 	           		  document.getElementById(array[j].id+"borderClass").classList.add("select-border");
 	           	  }
 	             }
-	         }
 	        },
 	       error:function(){
 	        alert("error");
@@ -397,8 +400,8 @@ var currentCategory ='',selectedcategory='';
         method:"POST",
         data:{
         	selectedExcerciseArray: JSON.stringify(selectedExcerciseArray),
-          templateId:${template.getTemplateId()},// Second add quotes on the value.
-          zoneId:"${zoneId}",
+          	templateId:${template.getTemplateId()},// Second add quotes on the value.
+            zoneId:"${zoneId}",
         },
         success:function(response) {
          alert("Saved Successfully !!");
@@ -443,7 +446,7 @@ function addList(categoryId,objectName,objectPath,categoryName){
         else{
         	if(event.classList.contains("select-border")){
         	   event.classList.remove("select-border");
-        	   removeSelectedExcercise(id,category);//removing the object
+        	   removeSelectedExcercise(id);//removing the object
         	}else{
             	event.classList.add("select-border");
             	addList(id,name,path,category);//adding the object
@@ -455,13 +458,28 @@ function addList(categoryId,objectName,objectPath,categoryName){
         alert(id);
     }
     /*to make chest active*/
+    
     function activeOnLoad(){
+    	var str='';
+    	alert("fdh");
+    	
+    	console.log(${exerciseArray});
     	var count = document.querySelectorAll("active").length;
     	if(count == 0){
     	  currentCategory="Chest";
     	  document.getElementById("Chestid").classList.remove("zone");
     	  document.getElementById("Chestid").classList.add("active");
+    	 
+    	  array = ${exerciseArray} == "empty"?'':${exerciseArray};
+    	  if(array.length > 0){
+	    	  for(var i=0;i<array.length;i++){
+	    		  if(array[i].category == currentCategory){
+	    			  document.getElementById(array[i].id+"borderClass").classList.add("select-border");  
+	    		  }
+	    	  }
+    	  }
       	}
+    	
     }
     
 </script>

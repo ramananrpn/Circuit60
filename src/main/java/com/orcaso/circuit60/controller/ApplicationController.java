@@ -1,6 +1,7 @@
 package com.orcaso.circuit60.controller;
 
 import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.google.gson.Gson;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orcaso.circuit60.model.*;
 import com.orcaso.circuit60.repository.GymRepository;
@@ -11,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration;
+import org.springframework.boot.json.GsonJsonParser;
 import org.springframework.boot.json.JsonParseException;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
@@ -157,9 +160,24 @@ public class ApplicationController {
                     logger.info("Current TemplateID - " + currentTemplate.getTemplateId());
                     model.addAttribute("template" , currentTemplate);
                     List<Exercise> exerciseList = getSavedExercisesForZone(currentTemplate , zoneId);
+                    System.out.print("size"+exerciseList.size());
                     model.addAttribute("exerciseList" , exerciseList) ;
                     if(exerciseList.size()<=0){
                         logger.warn("** exerciseList sending as EMPTY **");
+                        model.addAttribute("exerciseArray","empty");
+                    }else {
+                    	String exerciseListString="";
+                    	String[] exerciseIdArray=new String[5];
+                    	int i=0;
+                    	for(Exercise exercise:exerciseList) {
+                    		exerciseIdArray[i++]=exercise.getId();
+                    		exerciseListString+="<li class=\"card sortable-card white-text row\" id=\""+exercise.getId()+"\" ><span style=\"margin-left: -10px\" class=\"mt-2\"><a onclick=\"removeSelectedExcercise('"+exercise.getId()+"')\"><img src=\"../../img/exerciseMinus.svg\" class=\"img-fluid mt-3\"></a>"
+                    	     			+"</span><span class=\"mt-3\" ><p >"+exercise.getExerciseName()+"</p></span><span class=\"row mt-2\" style=\"position: absolute;margin-left: 90px;\"><p class=\"sortable-blur-text mr-4\" style=''>"+i+"</p></span></li>";
+                    	}
+                    	ObjectMapper mapper = new ObjectMapper();
+                    	System.out.print(mapper.writeValueAsString(exerciseList));
+                    	model.addAttribute("exerciseListString",exerciseListString);
+                    	model.addAttribute("exerciseArray",mapper.writeValueAsString(exerciseList));
                     }
                 }
                 else{
