@@ -233,80 +233,151 @@
                 <div class="container-fluid">
                     <br>
                     <%--         Excersie time reps brefore configure           --%>
-                    <form id="timeConfigForm" method="post" action="/templateDashboard/${template.getTemplateId()}/${zoneId}">
-                        <div class="row d-flex justify-content-center md-form">
-                            <div class="col-md-4 ">
-                                <span class="card exerciseCustomise-card flex-center">
-                                    <div class="row">
-                                        <span class="flex-center">
-                                            <img src="../img/clock.svg">
-                                            <p class="ml-2">Seconds Per Exercise</p>
-                                            <a class="button mt-2" onclick="decreaseExerciseSeconds()">
-                                                <img src="../img/minusButton.svg">
-                                            </a>
-                                            <span style="color: #707070" class="flex-center ml-1">
-                                                <input type="number" id="exerciseMins" name="exerciseMins" class="form-control form-control-sm text-center" min="00" style="width: 25px" value=""
-                                                       onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
-    <%--                                            <p id="mins" >00</p>--%>
-                                                <p >:</p>
-    <%--                                            <p id="secs" >45</p>--%>
-                                                <input type="number" id="exerciseSecs" name="exerciseSecs" class="form-control form-control-sm text-center" min="00" max="60" style="width: 25px" value="00"
-                                                       onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
-                                            </span>
-                                           <a class="button mt-2" onclick="increaseExerciseSeconds()">
-                                               <img src="../img/plusButton.svg">
-                                           </a>
-                                        </span>
-                                    </div>
-                                </span>
-                            </div>
-                            <div class="col-md-3 d-flex justify-content-center">
-                                <span class="card exerciseCustomise-card flex-center" style="width: 240px;" >
-                                    <div class="row">
-                                        <span class="flex-center">
-                                            <img src="../img/reps.svg">
-                                            <p class="ml-2">Reps</p>
-                                            <a class="button mt-2" onclick="decreaseReps()">
-                                                <img src="../img/minusButton.svg">
-                                            </a>
-                                            <span style="color: #707070" class="flex-center ml-1">
-                                               <input type="number" id="repsCount" name="repsCount" class="form-control form-control-sm text-center" min="0" style="width: 25px" value="1">
-                                            </span>
-                                           <a class="button mt-2" onclick="increaseReps()">
-                                               <img src="../img/plusButton.svg">
-                                           </a>
-                                        </span>
-                                    </div>
-                                </span>
-                            </div>
-                            <div class="col-md-3 d-flex justify-content-center">
-                                <span class="card exerciseCustomise-card flex-center" style="width: 283px;" >
-                                    <div class="row">
-                                        <span class="flex-center">
-                                            <img src="../img/break.svg">
-                                            <p class="ml-2">Break</p>
-                                            <a class="button mt-2" onclick="decreaseBreakSeconds()">
-                                                <img src="../img/minusButton.svg">
-                                            </a>
-                                                <span style="color: #707070" class="flex-center ml-1">
-                                                <input type="number" id="breakMins" name="breakMins" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="00"
-                                                       onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
-                                                <%--   <p id="mins" >00</p>--%>
-                                                    <p >:</p>
-                                                <%--                                            <p id="secs" >45</p>--%>
-                                                <input type="number" id="breakSecs" name="breakSecs" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="00"
-                                                       onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
-                                                 </span>
-                                           <a class="button mt-2" onclick="increaseBreakSeconds()">
-                                               <img src="../img/plusButton.svg">
-                                           </a>
-                                        </span>
-                                    </div>
-                                </span>
-                            </div>
-                        </div>
-                    </form>
-
+                     <c:choose>
+                         <c:when test="${(isTemplateActive=='true') && (activeTemplate.getTemplateId()==template.getTemplateId())}">
+		                        <div class="row d-flex justify-content-center md-form">
+		                            <div class="col-md-4 ">
+		                                <span class="card exerciseCustomise-card flex-center">
+		                                    <div class="row">
+		                                        <span class="flex-center">
+		                                            <img src="../img/clock.svg">
+		                                            <p class="ml-2">Seconds Per Exercise</p>
+		                                     <!--        <a class="button mt-2" onclick="decreaseExerciseSeconds()">
+		                                                <img src="../img/minusButton.svg">
+		                                            </a> -->
+		                                            <span style="color: #707070" class="flex-center ml-1">
+		                                               <p id="mins" >${zoneDetails.getSeconds()/60}</p>
+		                                                <p >:</p>
+		                                                <p id="secs">${zoneDetails.getSeconds()%60}</p>
+			                                            </span>
+		                                           <!-- <a class="button mt-2" onclick="increaseExerciseSeconds()">
+		                                               <img src="../img/plusButton.svg">
+		                                           </a> -->
+		                                        </span>
+		                                    </div>
+		                                </span>
+		                            </div>
+		                            <div class="col-md-3 d-flex justify-content-center">
+		                                <span class="card exerciseCustomise-card flex-center" style="width: 240px;" >
+		                                    <div class="row">
+		                                        <span class="flex-center">
+		                                            <img src="../img/reps.svg">
+		                                            <p class="ml-2">Reps</p>
+		                                           <!--  <a class="button mt-2" onclick="decreaseReps()">
+		                                                <img src="../img/minusButton.svg">
+		                                            </a> -->
+		                                            <span style="color: #707070" class="flex-center ml-1">
+		                                               <p>${zoneDetails.getReps()}</p>
+		                                            </span>
+		                                        <!--    <a class="button mt-2" onclick="increaseReps()">
+		                                               <img src="../img/plusButton.svg">
+		                                           </a> -->
+		                                        </span>
+		                                    </div>
+		                                </span>
+		                            </div>
+		                            <div class="col-md-3 d-flex justify-content-center">
+		                                <span class="card exerciseCustomise-card flex-center" style="width: 283px;" >
+		                                    <div class="row">
+		                                        <span class="flex-center">
+		                                            <img src="../img/break.svg">
+		                                            <p class="ml-2">Break</p>
+		                                           <!--  <a class="button mt-2" onclick="decreaseBreakSeconds()">
+		                                                <img src="../img/minusButton.svg">
+		                                            </a> -->
+		                                                <span style="color: #707070" class="flex-center ml-1">
+		                          
+		                                                  <p id="mins" >${zoneDetails.getBreakTime()/60}</p>
+		                                                    <p >:</p>
+		                                                  <p id="secs" >${zoneDetails.getBreakTime()%60}</p>
+		                            
+		                                                 </span>
+		                                           <!-- <a class="button mt-2" onclick="increaseBreakSeconds()">
+		                                               <img src="../img/plusButton.svg">
+		                                           </a> -->
+		                                        </span>
+		                                    </div>
+		                                </span>
+		                            </div>
+		                        </div>
+		                    
+						</c:when>
+						<c:otherwise>
+						<form id="timeConfigForm" method="post" action="/templateDashboard/${template.getTemplateId()}/${zoneId}">
+		                        <div class="row d-flex justify-content-center md-form">
+		                            <div class="col-md-4 ">
+		                                <span class="card exerciseCustomise-card flex-center">
+		                                    <div class="row">
+		                                        <span class="flex-center">
+		                                            <img src="../img/clock.svg">
+		                                            <p class="ml-2">Seconds Per Exercise</p>
+		                                            <a class="button mt-2" onclick="decreaseExerciseSeconds()">
+		                                                <img src="../img/minusButton.svg">
+		                                            </a>
+		                                            <span style="color: #707070" class="flex-center ml-1">
+		                                                <input type="number" id="exerciseMins" name="exerciseMins" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="${zoneDetails.getSeconds()/60}"
+		                                                       onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
+		    <%--                                            <p id="mins" >00</p>--%>
+		                                                <p >:</p>
+		    <%--                                            <p id="secs" >45</p>--%>
+		                                                <input type="number" id="exerciseSecs" name="exerciseSecs" class="form-control form-control-sm text-center" min="00" max="60" style="width: 25px" value="${zoneDetails.getSeconds()%60}"
+		                                                       onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
+		                                            </span>
+		                                           <a class="button mt-2" onclick="increaseExerciseSeconds()">
+		                                               <img src="../img/plusButton.svg">
+		                                           </a>
+		                                        </span>
+		                                    </div>
+		                                </span>
+		                            </div>
+		                            <div class="col-md-3 d-flex justify-content-center">
+		                                <span class="card exerciseCustomise-card flex-center" style="width: 240px;" >
+		                                    <div class="row">
+		                                        <span class="flex-center">
+		                                            <img src="../img/reps.svg">
+		                                            <p class="ml-2">Reps</p>
+		                                            <a class="button mt-2" onclick="decreaseReps()">
+		                                                <img src="../img/minusButton.svg">
+		                                            </a>
+		                                            <span style="color: #707070" class="flex-center ml-1">
+		                                               <input type="number" id="repsCount" name="repsCount" class="form-control form-control-sm text-center" min="0" style="width: 25px" value="${zoneDetails.getReps()}">
+		                                            </span>
+		                                           <a class="button mt-2" onclick="increaseReps()">
+		                                               <img src="../img/plusButton.svg">
+		                                           </a>
+		                                        </span>
+		                                    </div>
+		                                </span>
+		                            </div>
+		                            <div class="col-md-3 d-flex justify-content-center">
+		                                <span class="card exerciseCustomise-card flex-center" style="width: 283px;" >
+		                                    <div class="row">
+		                                        <span class="flex-center">
+		                                            <img src="../img/break.svg">
+		                                            <p class="ml-2">Break</p>
+		                                            <a class="button mt-2" onclick="decreaseBreakSeconds()">
+		                                                <img src="../img/minusButton.svg">
+		                                            </a>
+		                                                <span style="color: #707070" class="flex-center ml-1">
+		                                                <input type="number" id="breakMins" name="breakMins" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="${zoneDetails.getBreakTime()/60}"
+		                                                       onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
+		                                                <%--   <p id="mins" >00</p>--%>
+		                                                    <p >:</p>
+		                                                <%--                                            <p id="secs" >45</p>--%>
+		                                                <input type="number" id="breakSecs" name="breakSecs" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="${zoneDetails.getBreakTime()%60}"
+		                                                       onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
+		                                                 </span>
+		                                           <a class="button mt-2" onclick="increaseBreakSeconds()">
+		                                               <img src="../img/plusButton.svg">
+		                                           </a>
+		                                        </span>
+		                                    </div>
+		                                </span>
+		                            </div>
+		                        </div>
+		                    </form>
+						</c:otherwise>
+					</c:choose>
 
                     <hr>
                     <%--       Exercise Display         --%>
@@ -325,9 +396,11 @@
                     </div>
 
                     <%--        Progress Bar      --%>
-                    <div class="row d-flex align-content-start">
+
+  
+                       <div class="row d-flex align-content-start">
                          <span class="ml-4">
-                            <p >dddds</p>
+                           <p >00:00</p>
                         </span>
                         <div class="container-fluid" style="width: 900px" >
                                <div class="progress " >
@@ -336,8 +409,11 @@
                                         </div>
                                  </div>
                         </div>
-                        <span class="mr-4">
+                         <span class="mr-4">
+
                             <p >ddddds</p>
+                        </span>
+                            <p >00:00</p>
                         </span>
 
                     </div>
