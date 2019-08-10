@@ -89,23 +89,24 @@
                             <%---------------------      SESSION START TIMER        ---------------------------%>
 
 <%--After Start Screen - SESSION START TIMER --%>
-
-<div id="sessionStartTimer" class="container-fluid text-center hidden mt-5" >
-    <h2>The Session will start in </h2>
-    <!--Grid column-->
-        <div class="container-fluid img-fluid mt-5" style="background-image: url(/img/sessionStartBg.svg);background-repeat: no-repeat;width: auto;height: auto;background-position: center center;">
-            <div class="flex-center">
-                <span class="draw-ellipse flex-center" style="z-index: 1">
-                     <span class="draw-circle flex-center " >
-                        <h1 id="sectionStartTimerSeconds" class="white-text" ></h1>
+<div class="flex-center hidden" id="sessionStartTimer" style="height: 100vh;width: 100%">
+    <div  class="container-fluid text-center" >
+        <h2>The Session will start in </h2>
+        <!--Grid column-->
+            <div class="container-fluid img-fluid mt-5" style="background-image: url(/img/sessionStartBg.svg);background-repeat: no-repeat;width: auto;height: auto;background-position: center center;">
+                <div class="flex-center">
+                    <span class="draw-ellipse flex-center" style="z-index: 1">
+                         <span class="draw-circle flex-center " >
+                            <h1 id="sectionStartTimerSeconds" class="white-text" ></h1>
+                        </span>
                     </span>
-                </span>
 
+                </div>
             </div>
-        </div>
-    <!--Grid column-->
-<%--    <div class="card card-image img-fluid" style="background-image: url(/img/sessionStartBg.svg);">--%>
-<%--        <img src="/img/sessionStartBg.svg" alt="sessionTimer" class="img-fluid">--%>
+        <!--Grid column-->
+    <%--    <div class="card card-image img-fluid" style="background-image: url(/img/sessionStartBg.svg);">--%>
+    <%--        <img src="/img/sessionStartBg.svg" alt="sessionTimer" class="img-fluid">--%>
+    </div>
 </div>
 
 
@@ -261,6 +262,15 @@
 </div>
 <%----%>
 
+<%----   -----------------   SWITCH SCREEN    ------  --------- ---%>
+
+<%--       SWITCH SCREEN     --%>
+
+<div class="flex-center hidden" id="switchScreen" style="height: 100vh;width: 100%">
+    <img src="/img/switch.svg" class="img-fluid">
+</div>
+
+<%----%>
 <%-- -------------      ON ERROR       -------------%>
 <div class="row flex-center hidden" id="error">
     <h5 class="black-text" id="displayErrorText"></h5>

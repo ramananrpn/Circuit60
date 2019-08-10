@@ -399,22 +399,19 @@
 
   
                        <div class="row d-flex align-content-start">
-                         <span class="ml-4">
-                           <p >00:00</p>
-                        </span>
-                        <div class="container-fluid" style="width: 900px" >
-                               <div class="progress " >
-                                        <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="40"
-                                             aria-valuemin="0" aria-valuemax="100" style="width:70%;">
-                                        </div>
-                                 </div>
-                        </div>
-                         <span class="mr-4">
-
-                            <p >ddddds</p>
-                        </span>
-                            <p >00:00</p>
-                        </span>
+                             <span class="ml-4">
+                               <p >00:00</p>
+                            </span>
+                            <div class="container-fluid" style="width: 900px" >
+                                   <div class="progress " >
+                                            <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="40"
+                                                 aria-valuemin="0" aria-valuemax="100" style="width:70%;">
+                                            </div>
+                                   </div>
+                            </div>
+                             <span class="mr-4">
+                                <p >00:00</p>
+                             </span>
 
                     </div>
 

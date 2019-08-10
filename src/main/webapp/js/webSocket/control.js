@@ -14,16 +14,23 @@ var repsIteratorText = document.getElementById('repsIteratorText');
 var displayRepsCount = document.getElementById('displayRepsCount');
 //Exercise Timer
 var displayExerciseSecondsTimer = document.getElementById('displayExerciseSecondsTimer');
+//switch screen
+var switchScreen = document.querySelector('#switchScreen');
+var isSwitchScreen = 0;
 
 var stompClient = null;
 var timestamp;
 var jsZone = null;
+var jsTemplateId= null;
 var loaded=0;
 var exerciseTimer;
 var exerciseSeconds;
 var repsCount;
+var totalReps;
 var breakSeconds;
 
+// Screen Delay Time Config Constants
+var switchScreenDelay = 5000;
 
 
 //connect function
@@ -70,6 +77,7 @@ var breakSeconds;
         }
         else if(message.command == 'start'){
             console.log("Template Started :: "+message.templateId);
+            jsTemplateId = message.templateId;
             var selectedZone = document.getElementById("currentZoneHidden").value;
             console.log("Selected Zone Hidden field = " + selectedZone) ;
             setExerciseOnDisplay(message.templateId,selectedZone);
@@ -97,7 +105,7 @@ var breakSeconds;
             //TemplateName
             var displayTemplateName = document.getElementById('displayTemplateName');
             var repsTemplateNameText = document.getElementById('repsTemplateNameText');
-            repsCount =  message.zones.reps;
+            repsCount = totalReps = message.zones.reps;
             //exercise count
             var exerciseCount = message.exerciseDetails.length;
             exerciseSeconds = (message.zones.seconds)*exerciseCount;
@@ -118,7 +126,7 @@ var breakSeconds;
                     displayExerciseSecondsTimer.innerHTML = exerciseSeconds;
 
                     for(var i = 0; i< message.exerciseDetails.length ; i++){
-                        //Exrecise Player
+                        //Exercise Player
                         // Assign exercise Name
                         var displayExerciseName = document.getElementById("displayExerciseName-"+i);
                         displayExerciseName.innerHTML = message.exerciseDetails[i].exerciseName;
@@ -196,8 +204,8 @@ var breakSeconds;
 
     //REPS ITERATION SCREEN AND START SESSION
     function showRepsCountAndStartSession() {
-        repsIteratorText.innerHTML = parseInt(repsIteratorText.innerHTML)+1;
-        console.log("Reps Ierator Text : " + repsIteratorText.innerHTML);
+        repsIteratorText.innerHTML = (parseInt(repsIteratorText.innerHTML)+1) + " REPS";
+        console.log("Reps Iterator Text : " + repsIteratorText.innerHTML);
         displayRepsCount.innerHTML = parseInt(displayRepsCount.innerHTML)-1;
         breakTimer.classList.add('hidden');
         repsIteratorScreen.classList.remove('hidden');
@@ -238,7 +246,6 @@ var breakSeconds;
             $("#breakTimerSeconds").text(seconds);
             if (seconds == 0){
                 clearInterval(startTimer);
-                repsCount--;
                 console.log("RepCount in break Timer : " +repsCount);
                 if(repsCount>0){
                     document.getElementById('breakTimerSeconds').innerHTML = breakSeconds;
@@ -257,13 +264,25 @@ var breakSeconds;
             $("#displayExerciseSecondsTimer").text(seconds);
             if (seconds == 0 || mode!='start') {
                 clearInterval(exerciseTimer);
+                repsCount--;
                 if(repsCount>=1) {
+                    console.log("Reps Count in start exercise Timer : " + repsCount);
                     displayExerciseSecondsTimer.innerHTML = exerciseTimer;
+                    document.getElementById('breakTimerSeconds').innerHTML = breakSeconds;
                     showWaterBreakScreen(breakSeconds);
                 }
                 else {
-                    stompClient.disconnect();
-                    location.reload();
+                    console.log("---SHOWING SWITCH SCREEN --");
+                    exercisePlayer.classList.add('hidden');
+                    switchScreen.classList.remove('hidden');
+                    repsIteratorText.innerHTML = 1;
+                    console.log("Reps Iterator Text : " + repsIteratorText.innerHTML);
+                    displayRepsCount.innerHTML = totalReps;
+                    setTimeout(function(){
+                        switchScreen.classList.add('hidden');
+                        exercisePlayer.classList.remove('hidden');
+                        loadVideoElements(exerciseSeconds);
+                    }, switchScreenDelay);
                 }
                 return;
             }
@@ -291,6 +310,7 @@ var breakSeconds;
         var videoElements = document.querySelectorAll('.running');
         [].forEach.call(videoElements, function (vidElement) {
             vidElement.load();
+            vidElement.play();
         });
         startExerciseTimer(seconds , "start");
     }

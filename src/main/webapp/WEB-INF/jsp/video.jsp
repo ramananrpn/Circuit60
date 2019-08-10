@@ -141,7 +141,7 @@
 </div>
 
 <%-- Water Break SCREEN --%>
-<div class="flex-center" id="breakTimer" style="height: 100vh;width: 100%">
+<div class="flex-center hidden" id="breakTimer" style="height: 100vh;width: 100%">
     <div  class=" text-center " >
         <h2> Water Break end in </h2>
         <!--Grid column-->
@@ -166,7 +166,11 @@
     </div>
 </div>
 
+<%--       SWITCH SCREEN     --%>
 
+<div class="flex-center " id="switchScreen" style="height: 100vh;width: 100%">
+    <img src="/img/switch.svg" class="img-fluid">
+</div>
 
 
 
