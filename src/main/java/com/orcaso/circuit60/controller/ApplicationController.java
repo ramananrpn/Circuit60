@@ -152,7 +152,7 @@ public class ApplicationController {
                     }
                     return "templateDashboard";
                 }catch (Exception e){
-                    logger.warn("Exception Caught :: " + e);
+                    logger.error("Exception Caught at /templateDashboard :: " + e);
                 }
             }
             return "redirect:/invalidUser";
