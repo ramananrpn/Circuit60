@@ -138,8 +138,11 @@
                             <button type="button" class="btn-md set-btn-outline-orange white-text" style="width: 150px" onclick="location.href='/adminCommand/${template.getTemplateId()}/stop?zoneId=${zoneId}'" >
                                 Stop Section
                             </button>
-                            <button type="button" class="btn-md btn-white btn-rounded" style="width: 150px" onclick="location.href='/adminCommand/${template.getTemplateId()}/pause?zoneId=${zoneId}'">
+                            <button type="button" class="btn-md btn-white btn-rounded pauseButton" style="width: 150px" onclick="pauseCommand()">
                                 Pause Section
+                            </button>
+                            <button type="button" class="btn-md btn-white btn-rounded resumeButton hidden" style="width: 150px" onclick="resumeCommand()">
+                                Resume Section
                             </button>
                         </c:when>
 <%--                        else section is not started--%>
@@ -322,19 +325,37 @@
                     </div>
 
                     <%--        Progress Bar      --%>
-                    <div class="progress">
-                        <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="40"
-                                   aria-valuemin="0" aria-valuemax="100" style="width:70%">
+                    <div class="row d-flex align-content-start">
+                         <span class="ml-4">
+                            <p >dddds</p>
+                        </span>
+                        <div class="container-fluid" style="width: 900px" >
+                               <div class="progress " >
+                                        <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="40"
+                                             aria-valuemin="0" aria-valuemax="100" style="width:70%;">
+                                        </div>
+                                 </div>
                         </div>
+                        <span class="mr-4">
+                            <p >ddddds</p>
+                        </span>
+
                     </div>
+
+
+
+
                     <br>
                     <hr>
                     <%--       Bottom button             --%>
                     <div class="d-flex flex-row-reverse">
                         <c:choose>
                             <c:when test="${(isTemplateActive=='true') && (activeTemplate.getTemplateId()==template.getTemplateId())}">
-                                <button type="button" class="btn-sm set-text-violet set-btn-outline" style="width: 180px;" onclick="location.href='/adminCommand/${template.getTemplateId()}?zoneId=${zoneId}'">
+                                <button type="button" class="btn-sm set-text-violet pauseButton set-btn-outline" style="width: 180px;" onclick="pauseCommand()">
                                     Pause Section
+                                </button>
+                                <button type="button" class="btn-sm set-text-violet resumeButton set-btn-outline hidden" style="width: 180px;" onclick="resumeCommand()">
+                                    Resume Section
                                 </button>
                             </c:when>
                             <c:otherwise>
@@ -458,6 +479,45 @@ function decreaseBreakSeconds() {
     }
 }
 
+//TOGGLE PAUSE and RESUME Button
+    function pauseCommand() {
+        alert
+        $.ajax({
+            url:"/adminCommand/${template.getTemplateId()}/pause?zoneId=${zoneId}",
+            method:"GET",
+        success: function(response) {
+            var pause = document.querySelectorAll(".pauseButton");
+            [].forEach.call(pause, function (pauseButton) {
+                pauseButton.classList.toggle('hidden');
+            });
+            var resume = document.querySelectorAll(".resumeButton");
+            [].forEach.call(resume, function (resumeButton) {
+                resumeButton.classList.toggle('hidden');
+            });
+        },
+        error : function(){
+        }
+        });
+    }
+
+    function resumeCommand() {
+        $.ajax({
+            url:"/adminCommand/${template.getTemplateId()}/resume?zoneId=${zoneId}",
+            method:"GET",
+            success: function(response) {
+                var pause = document.querySelectorAll(".pauseButton");
+                [].forEach.call(pause, function (pauseButton) {
+                    pauseButton.classList.toggle('hidden');
+                });
+                var resume = document.querySelectorAll(".resumeButton");
+                [].forEach.call(resume, function (resumeButton) {
+                    resumeButton.classList.toggle('hidden');
+                });
+            },
+            error : function(){
+            }
+        });
+    }
 </script>
 <%----%>
 </body>
