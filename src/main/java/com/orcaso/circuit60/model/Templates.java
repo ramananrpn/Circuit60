@@ -11,7 +11,15 @@ import java.util.Date;
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "gym_templates")
 public class Templates {
-    @Id
+    public int getExerciseDuration() {
+		return exerciseDuration;
+	}
+
+	public void setExerciseDuration(int exerciseDuration) {
+		this.exerciseDuration = exerciseDuration;
+	}
+
+	@Id
     @Column(name = "template_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long templateId;
@@ -34,13 +42,23 @@ public class Templates {
     @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
     private Date lastUpdatedDate;
-
+    
+    private int exerciseCount;
+    private int exerciseDuration;
 //    Getters & Setters
 
-    public long getTemplateId() {
+    public int getExerciseCount() {
+		return exerciseCount;
+	}
+
+	public void setExerciseCount(int exerciseCount) {
+		this.exerciseCount = exerciseCount;
+	}
+	
+	public long getTemplateId() {
         return templateId;
     }
-
+	
     public void setTemplateId(long templateId) {
         this.templateId = templateId;
     }

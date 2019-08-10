@@ -1,12 +1,14 @@
 package com.orcaso.circuit60.controller;
 
 import com.fasterxml.jackson.databind.util.JSONPObject;
-import com.google.gson.Gson;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orcaso.circuit60.model.*;
 import com.orcaso.circuit60.repository.GymRepository;
 import com.orcaso.circuit60.repository.TemplateRepository;
 import com.orcaso.circuit60.repository.ZoneRepository;
+
+import org.hibernate.sql.Template;
 import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,17 +98,29 @@ public class ApplicationController {
         if(validUser(request)!=null){
             //      Retrieve Template
             List<Templates> templateList = getTemplates();
+            Templates temporaryObject=null;
             logger.info("List of all templates to be passed : " + templateList);
+            for(Templates templateObject: templateList) {
+            	//getting the exerciseCount and the exerciseDuration and setting inside template List
+            	temporaryObject=getExcerciseCountAndExerciseDuration(templateObject);
+            	templateObject.setExerciseCount(temporaryObject.getExerciseCount());
+            	templateObject.setExerciseDuration(temporaryObject.getExerciseDuration());
+            	logger.info("templateObject"+templateObject.getExerciseCount());
+            }
             model.addAttribute("templateList" , templateList);
+            
             return "adminDashboard";
         }
         return "redirect:/";
     }
 
+
+
 //    Create Template
     @PostMapping("/adminDashboard")
     public String addTemplate(Templates template){
-        templateRepository.save(template);
+    	logger.info("templateLogo"+template.getTemplateLogo());
+    	templateRepository.save(template);
         logger.info("Template "+ template.getTemplateName() +" - saved successfully ");
         return "redirect:/adminDashboard";
     }
@@ -196,10 +210,8 @@ public class ApplicationController {
                         model.addAttribute("exerciseArray","empty");
                     }else {
                     	String exerciseListString="";
-                    	String[] exerciseIdArray=new String[5];
                     	int i=0;
                     	for(Exercise exercise:exerciseList) {
-                    		exerciseIdArray[i++]=exercise.getId();
                     		exerciseListString+="<li class=\"card sortable-card white-text row\" id=\""+exercise.getId()+"\" ><span style=\"margin-left: -10px\" class=\"mt-2\"><a onclick=\"removeSelectedExcercise('"+exercise.getId()+"')\"><img src=\"../../img/exerciseMinus.svg\" class=\"img-fluid mt-3\"></a>"
                     	     			+"</span><span class=\"mt-3\" ><p >"+exercise.getExerciseName()+"</p></span><span class=\"row mt-2\" style=\"position: absolute;margin-left: 90px;\"><p class=\"sortable-blur-text mr-4\" style=''>"+i+"</p></span></li>";
                     	}
@@ -380,6 +392,30 @@ public class ApplicationController {
     public  List<Templates> getTemplates(){
         List<Templates> templateList = (List<Templates>) templateRepository.findAll();
         return templateList;
+    }
+    //adding all saved Exercises and their Respective time duration
+    private Templates getExcerciseCountAndExerciseDuration(Templates currenTemplate) {
+    	ResourceBundle resource = ResourceBundle.getBundle("application-settings");
+    	int exerciseCount = 0;
+    	int exerciseTimeDuration = 0;
+        String zoneCount = resource.getString("zone.count");
+    	Zones zoneDetails=null;
+    	logger.info("templateId"+currenTemplate.getTemplateId());
+    	for(int zone=1;zone<Integer.parseInt(zoneCount);zone++) {
+    		logger.info("templateId"+currenTemplate.getTemplateId());
+    		if(zoneRepository.existsZonesByTemplateIdAndZone(currenTemplate,"zone"+zone)){
+    			logger.info("zoneId"+zone);
+	    		zoneDetails = zoneRepository.findZonesByTemplateIdAndZone(currenTemplate,"zone"+zone);
+	    		exerciseCount+=zoneDetails.getExerciseDetails().size();
+	    		exerciseTimeDuration +=zoneDetails.getSeconds();
+	    		logger.info("ExerciseCount"+exerciseCount);
+    		}
+    	}
+    	
+    	Templates tempObject = new Templates();
+    	tempObject.setExerciseCount(exerciseCount);
+    	tempObject.setExerciseDuration(exerciseTimeDuration);
+    	return tempObject;
     }
 
 //    Get saved exercise for template - zone :: zoneDetails
