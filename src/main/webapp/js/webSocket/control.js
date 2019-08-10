@@ -7,11 +7,24 @@ var beforeStart = document.querySelector('#beforeStart');
 var sessionStartTimer = document.querySelector('#sessionStartTimer');
 var exercisePlayer = document.querySelector('#exerciseDisplayScreen');
 var error = document.querySelector('#error');
+var repsIteratorScreen = document.querySelector('#repsIteratorScreen');
+var breakTimer = document.querySelector('#breakTimer');
+var repsIteratorText = document.getElementById('repsIteratorText');
+//repsCount in Session Screen
+var displayRepsCount = document.getElementById('displayRepsCount');
+//Exercise Timer
+var displayExerciseSecondsTimer = document.getElementById('displayExerciseSecondsTimer');
 
 var stompClient = null;
+var timestamp;
 var jsZone = null;
 var loaded=0;
 var exerciseTimer;
+var exerciseSeconds;
+var repsCount;
+var breakSeconds;
+
+
 
 //connect function
     function connect(event) {
@@ -35,8 +48,10 @@ var exerciseTimer;
     function connectionSuccess() {
         var selectedZone = document.getElementById("currentZoneHidden").value;
         console.log("Selected Zone Hidden field = " + selectedZone) ;
-        stompClient.subscribe('/zone/client.'+selectedZone, onMessageReceived);
-        stompClient.send("/admin/newZoneClient."+selectedZone, {}, JSON.stringify({
+        var d = new Date();
+        timestamp = d.getTime();
+        stompClient.subscribe('/zone/client.'+selectedZone+'.'+timestamp, onMessageReceived);
+        stompClient.send("/admin/newZoneClient."+selectedZone+'.'+timestamp, {}, JSON.stringify({
             zone : jsZone,
             command : 'newZoneClient'
         }))
@@ -79,35 +94,51 @@ var exerciseTimer;
             console.log(message.zones.templateId.templateName);
             console.log(message.zones.reps);
             console.log(message.zones.seconds);
+            //TemplateName
             var displayTemplateName = document.getElementById('displayTemplateName');
-            var displayRepsCount = document.getElementById('displayRepsCount');
-            var displayExerciseSecondsTimer = document.getElementById('displayExerciseSecondsTimer');
-            var displayZone = document.getElementById('displayZone');
-            var repsCount =  message.zones.reps;
+            var repsTemplateNameText = document.getElementById('repsTemplateNameText');
+            repsCount =  message.zones.reps;
+            //exercise count
             var exerciseCount = message.exerciseDetails.length;
-            try{
+            exerciseSeconds = (message.zones.seconds)*exerciseCount;
 
-                while(repsCount!=0){
-                    displayTemplateName.innerHTML = message.zones.templateId.templateName;
+            //Current Zone
+            var displayZone = document.getElementById('displayZone');
+            var repsZoneText = document.getElementById('repsZoneText');
+
+            //water Break
+            breakSeconds = message.zones.breakTime;
+            try{
+                    //Assign Template Name
+                    displayTemplateName.innerHTML = repsTemplateNameText.innerHTML = message.zones.templateId.templateName;
+                    //Assign reps count
                     displayRepsCount.innerHTML = repsCount;
-                    displayExerciseSecondsTimer.innerHTML = (message.zones.seconds)*exerciseCount;
+                    repsIteratorText.innerHTML =1;
+                    //Assign Exercise Seconds in timer
+                    displayExerciseSecondsTimer.innerHTML = exerciseSeconds;
+
                     for(var i = 0; i< message.exerciseDetails.length ; i++){
+                        //Exrecise Player
+                        // Assign exercise Name
                         var displayExerciseName = document.getElementById("displayExerciseName-"+i);
                         displayExerciseName.innerHTML = message.exerciseDetails[i].exerciseName;
                         displayExerciseName.classList.remove('hidden');
+
+                        //Assign Video path in src of VIDEO tag
                         var mediaPath = message.exerciseDetails[i].url.substring(5,message.exerciseDetails[i].url.length);
                         console.log("URL - " + mediaPath);
                         var videoPlayer = document.getElementById("video-"+i);
                         videoPlayer.src=mediaPath;
                         videoPlayer.classList.remove('hidden');
                         videoPlayer.classList.add('running');
-                        displayZone.innerHTML = "ZONE 0" + message.zones.zone.match(/\d+/)[0];
+
+                        //assign zone String to display current zone
+                        displayZone.innerHTML = repsZoneText.innerHTML = "ZONE 0" + message.zones.zone.match(/\d+/)[0];
 
                     }
-                        //show DISPLAY SCREEN
-                        showSessionTimerAndStartSession();
-                    repsCount--;
-                }
+                            //show DISPLAY SCREEN
+                            showSessionTimerAndStartSession();
+
             }catch (e) {
                 console.log("Error Occured while Fetching exerciseDetails " + e);
                 loaded= 0;
@@ -141,7 +172,7 @@ var exerciseTimer;
         //     }
         //
         // })
-        stompClient.send("/admin/fetchExerciseDetails."+zone , {} , JSON.stringify({
+        stompClient.send("/admin/fetchExerciseDetails."+zone+'.'+timestamp , {} , JSON.stringify({
             zone : zone,
             templateId : templateId
         }))
@@ -159,31 +190,65 @@ var exerciseTimer;
     function showSessionTimerAndStartSession(){
         beforeStart.classList.add('hidden');
         sessionStartTimer.classList.remove('hidden');
-        startSessionTimer(sessionStartTimer, exercisePlayer);
+        startSessionTimer();
         console.log("Session Started");
     }
 
+    //REPS ITERATION SCREEN AND START SESSION
     function showRepsCountAndStartSession() {
-        exercisePlayer.classList.add('hidden');
+        repsIteratorText.innerHTML = parseInt(repsIteratorText.innerHTML)+1;
+        console.log("Reps Ierator Text : " + repsIteratorText.innerHTML);
+        displayRepsCount.innerHTML = parseInt(displayRepsCount.innerHTML)-1;
+        breakTimer.classList.add('hidden');
+        repsIteratorScreen.classList.remove('hidden');
+        setTimeout(function(){
+            repsIteratorScreen.classList.add('hidden');
+            exercisePlayer.classList.remove('hidden');
+            loadVideoElements(exerciseSeconds);
+        }, 5000);
+
     }
 
 // Time Spinner
-function startSessionTimer(sessionStartTimer , exercisePlayer) {
-    var time = 0;
-    var i = 2;
-    var startTimer = setInterval(function () {
-        $("#sectionStartTimerSeconds").text(i);
-        if (i == time) {
-            clearInterval(startTimer);
-            sessionStartTimer.classList.add('hidden');
-            exercisePlayer.classList.remove('hidden');
-            var seconds = document.getElementById('displayExerciseSecondsTimer').innerHTML;
-            playVideoElements(seconds);
-            return;
-        }
-        i--;
-    }, 1000)
-}
+    //SESSION START TIMER
+    function startSessionTimer() {
+        var time = 0;
+        var i = 2;
+        var startTimer = setInterval(function () {
+            $("#sectionStartTimerSeconds").text(i);
+            if (i == time) {
+                clearInterval(startTimer);
+                sessionStartTimer.classList.add('hidden');
+                exercisePlayer.classList.remove('hidden');
+                var seconds = document.getElementById('displayExerciseSecondsTimer').innerHTML;
+                playVideoElements(seconds);
+                return;
+            }
+            i--;
+        }, 1000)
+    }
+
+
+    // WATER BREAK SCREEN and TIMER
+    function showWaterBreakScreen(seconds) {
+        exercisePlayer.classList.add('hidden');
+        breakTimer.classList.remove('hidden');
+        //BREAK TIMER
+        var startTimer = setInterval(function () {
+            $("#breakTimerSeconds").text(seconds);
+            if (seconds == 0){
+                clearInterval(startTimer);
+                repsCount--;
+                console.log("RepCount in break Timer : " +repsCount);
+                if(repsCount>0){
+                    document.getElementById('breakTimerSeconds').innerHTML = breakSeconds;
+                    showRepsCountAndStartSession();
+                }
+                return;
+            }
+            seconds--;
+        }, 1000)
+    }
 
     //Exercise Timer
     //Start
@@ -192,8 +257,14 @@ function startSessionTimer(sessionStartTimer , exercisePlayer) {
             $("#displayExerciseSecondsTimer").text(seconds);
             if (seconds == 0 || mode!='start') {
                 clearInterval(exerciseTimer);
-                stompClient.disconnect();
-                location.reload();
+                if(repsCount>=1) {
+                    displayExerciseSecondsTimer.innerHTML = exerciseTimer;
+                    showWaterBreakScreen(breakSeconds);
+                }
+                else {
+                    stompClient.disconnect();
+                    location.reload();
+                }
                 return;
             }
             seconds--;
@@ -204,11 +275,22 @@ function startSessionTimer(sessionStartTimer , exercisePlayer) {
         clearInterval(exerciseTimer);
     }
 
+    //        ------------ VIDEO CONTROL --------------
     //Pause Play Video Elements
+    //PLAY
     function playVideoElements(seconds) {
         var videoElements = document.querySelectorAll('.running');
         [].forEach.call(videoElements, function (vidElement) {
             vidElement.play();
+        });
+        startExerciseTimer(seconds , "start");
+    }
+
+    // LOAD
+    function loadVideoElements(seconds) {
+        var videoElements = document.querySelectorAll('.running');
+        [].forEach.call(videoElements, function (vidElement) {
+            vidElement.load();
         });
         startExerciseTimer(seconds , "start");
     }

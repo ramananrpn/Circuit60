@@ -34,7 +34,7 @@ public class Zones {
     @Column(name="reps" , columnDefinition = "int default 1")
     private int reps;
 
-    @Column(name = "break_time" , columnDefinition = "bigint default 00")
+    @Column(name = "break_time" , columnDefinition = "int default 00")
     private int breakTime;
 
     //    USED JSON DATATYPE - MAP to store exercise
