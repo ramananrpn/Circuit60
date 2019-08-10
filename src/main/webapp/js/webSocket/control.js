@@ -28,9 +28,13 @@ var exerciseSeconds;
 var repsCount;
 var totalReps;
 var breakSeconds;
+var totalExercise;
+var exerciseCount;
 
 // Screen Delay Time Config Constants
-var switchScreenDelay = 5000;
+var switchScreenDelay = 5000;  // in milliseconds
+
+var sessionStartTimerDelay = 10;  // in seconds
 
 
 //connect function
@@ -107,8 +111,8 @@ var switchScreenDelay = 5000;
             var repsTemplateNameText = document.getElementById('repsTemplateNameText');
             repsCount = totalReps = message.zones.reps;
             //exercise count
-            var exerciseCount = message.exerciseDetails.length;
-            exerciseSeconds = (message.zones.seconds)*exerciseCount;
+            totalExercise = exerciseCount = message.exerciseDetails.length;
+            exerciseSeconds = (message.zones.seconds);
 
             //Current Zone
             var displayZone = document.getElementById('displayZone');
@@ -125,6 +129,8 @@ var switchScreenDelay = 5000;
                     //Assign Exercise Seconds in timer
                     displayExerciseSecondsTimer.innerHTML = exerciseSeconds;
 
+                    //switch screen delay
+                    // switchScreenDelay = message.templates.switchScreenDuration * 1000;
                     for(var i = 0; i< message.exerciseDetails.length ; i++){
                         //Exercise Player
                         // Assign exercise Name
@@ -207,7 +213,8 @@ var switchScreenDelay = 5000;
         repsIteratorText.innerHTML = (parseInt(repsIteratorText.innerHTML)+1) + " REPS";
         console.log("Reps Iterator Text : " + repsIteratorText.innerHTML);
         displayRepsCount.innerHTML = parseInt(displayRepsCount.innerHTML)-1;
-        breakTimer.classList.add('hidden');
+        // breakTimer.classList.add('hidden');
+        exercisePlayer.classList.add('hidden');
         repsIteratorScreen.classList.remove('hidden');
         setTimeout(function(){
             repsIteratorScreen.classList.add('hidden');
@@ -220,16 +227,17 @@ var switchScreenDelay = 5000;
 // Time Spinner
     //SESSION START TIMER
     function startSessionTimer() {
+        document.getElementById("sectionStartTimerSeconds").innerHTML = sessionStartTimerDelay;
         var time = 0;
-        var i = 2;
+        var i = sessionStartTimerDelay;
         var startTimer = setInterval(function () {
             $("#sectionStartTimerSeconds").text(i);
             if (i == time) {
                 clearInterval(startTimer);
                 sessionStartTimer.classList.add('hidden');
                 exercisePlayer.classList.remove('hidden');
-                var seconds = document.getElementById('displayExerciseSecondsTimer').innerHTML;
-                playVideoElements(seconds);
+                // var seconds = document.getElementById('displayExerciseSecondsTimer').innerHTML;
+                playVideoElements(exerciseSeconds);
                 return;
             }
             i--;
@@ -246,11 +254,15 @@ var switchScreenDelay = 5000;
             $("#breakTimerSeconds").text(seconds);
             if (seconds == 0){
                 clearInterval(startTimer);
-                console.log("RepCount in break Timer : " +repsCount);
-                if(repsCount>0){
-                    document.getElementById('breakTimerSeconds').innerHTML = breakSeconds;
-                    showRepsCountAndStartSession();
-                }
+                document.getElementById('breakTimerSeconds').innerHTML = breakSeconds;
+                displayExerciseSecondsTimer.innerHTML = exerciseSeconds;
+                repsIteratorText.innerHTML = 1;
+                console.log("Reps Iterator Text : " + repsIteratorText.innerHTML);
+                displayRepsCount.innerHTML = totalReps;
+                exerciseCount = totalExercise;
+                breakTimer.classList.add('hidden');
+                sessionStartTimer.classList.remove('hidden');
+                startSessionTimer();
                 return;
             }
             seconds--;
@@ -264,26 +276,51 @@ var switchScreenDelay = 5000;
             $("#displayExerciseSecondsTimer").text(seconds);
             if (seconds == 0 || mode!='start') {
                 clearInterval(exerciseTimer);
-                repsCount--;
-                if(repsCount>=1) {
-                    console.log("Reps Count in start exercise Timer : " + repsCount);
-                    displayExerciseSecondsTimer.innerHTML = exerciseTimer;
-                    document.getElementById('breakTimerSeconds').innerHTML = breakSeconds;
-                    showWaterBreakScreen(breakSeconds);
-                }
-                else {
+                exerciseCount--;
+                // exercise iteration - showing switch screen
+                if(exerciseCount>0){
                     console.log("---SHOWING SWITCH SCREEN --");
                     exercisePlayer.classList.add('hidden');
                     switchScreen.classList.remove('hidden');
-                    repsIteratorText.innerHTML = 1;
-                    console.log("Reps Iterator Text : " + repsIteratorText.innerHTML);
-                    displayRepsCount.innerHTML = totalReps;
                     setTimeout(function(){
+                        displayExerciseSecondsTimer.innerHTML = exerciseSeconds;
                         switchScreen.classList.add('hidden');
                         exercisePlayer.classList.remove('hidden');
                         loadVideoElements(exerciseSeconds);
                     }, switchScreenDelay);
                 }
+                // ALL Exercise Iterations completed - checking for reps iteration
+                else{
+                    repsCount--;
+                    exerciseCount = totalExercise;
+                    if(repsCount>=1) {
+                        showRepsCountAndStartSession();
+                    }
+                    else{
+                        document.getElementById('breakTimerSeconds').innerHTML = breakSeconds;
+                        showWaterBreakScreen(breakSeconds);
+                    }
+                }
+                // repsCount--;
+                // if(repsCount>=1) {
+                //     console.log("Reps Count in start exercise Timer : " + repsCount);
+                //     displayExerciseSecondsTimer.innerHTML = exerciseTimer;
+                //     document.getElementById('breakTimerSeconds').innerHTML = breakSeconds;
+                //     showWaterBreakScreen(breakSeconds);
+                // }
+                // else {
+                //     console.log("---SHOWING SWITCH SCREEN --");
+                //     exercisePlayer.classList.add('hidden');
+                //     switchScreen.classList.remove('hidden');
+                //     repsIteratorText.innerHTML = 1;
+                //     console.log("Reps Iterator Text : " + repsIteratorText.innerHTML);
+                //     displayRepsCount.innerHTML = totalReps;
+                //     setTimeout(function(){
+                //         switchScreen.classList.add('hidden');
+                //         exercisePlayer.classList.remove('hidden');
+                //         loadVideoElements(exerciseSeconds);
+                //     }, switchScreenDelay);
+                // }
                 return;
             }
             seconds--;
