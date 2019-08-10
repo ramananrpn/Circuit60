@@ -1,22 +1,14 @@
 package com.orcaso.circuit60.controller;
 
-import com.fasterxml.jackson.databind.util.JSONPObject;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orcaso.circuit60.model.*;
 import com.orcaso.circuit60.repository.GymRepository;
 import com.orcaso.circuit60.repository.TemplateRepository;
 import com.orcaso.circuit60.repository.ZoneRepository;
-
-import org.hibernate.sql.Template;
-import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration;
-import org.springframework.boot.json.GsonJsonParser;
-import org.springframework.boot.json.JsonParseException;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,6 +26,8 @@ import java.util.*;
 @SpringBootApplication
 @Controller
 public class ApplicationController {
+
+    public static List<String> connectedZones = new ArrayList<>();
 
     public static final Logger logger = LoggerFactory.getLogger(ApplicationController.class);
     @Autowired
@@ -166,9 +160,9 @@ public class ApplicationController {
 
 //    Saving the Template Time config
     @PostMapping("/templateDashboard/{templateId}/{zoneId}")
-    public String saveTemplateTimeConfig(@PathVariable("templateId") Long templateId ,@PathVariable("zoneId") String zone ,@RequestParam(value = "exerciseMins") Long exerciseMins ,
-                                         @RequestParam(value = "exerciseSecs") Long exerciseSecs , @RequestParam(value = "repsCount") int repsCount ,
-                                         @RequestParam(value = "breakMins") Long breakMins , @RequestParam(value = "breakSecs") Long breakSecs)
+    public String saveTemplateTimeConfig(@PathVariable("templateId") Long templateId ,@PathVariable("zoneId") String zone ,@RequestParam(value = "exerciseMins") int exerciseMins ,
+                                         @RequestParam(value = "exerciseSecs") int exerciseSecs , @RequestParam(value = "repsCount") int repsCount ,
+                                         @RequestParam(value = "breakMins") int breakMins , @RequestParam(value = "breakSecs") int breakSecs)
     {
         try{
             exerciseSecs += (exerciseMins*60);
@@ -202,7 +196,7 @@ public class ApplicationController {
                     logger.info("Current TemplateID - " + currentTemplate.getTemplateId());
                     model.addAttribute("template" , currentTemplate);
                     List<Exercise> exerciseList = getSavedExercisesForZone(currentTemplate , zoneId);
-                    System.out.print("size"+exerciseList.size());
+//                    logger.info("size"+exerciseList.size());
                     model.addAttribute("exerciseList" , exerciseList) ;
                     logger.info("ExerciseList Size : " + exerciseList.size());
                     if(exerciseList.size()<=0){
@@ -216,7 +210,7 @@ public class ApplicationController {
                     	     			+"</span><span class=\"mt-3\" ><p >"+exercise.getExerciseName()+"</p></span><span class=\"row mt-2\" style=\"position: absolute;margin-left: 90px;\"><p class=\"sortable-blur-text mr-4\" style=''>"+i+"</p></span></li>";
                     	}
                     	ObjectMapper mapper = new ObjectMapper();
-                    	System.out.print(mapper.writeValueAsString(exerciseList));
+                    	logger.info(mapper.writeValueAsString(exerciseList));
                     	model.addAttribute("exerciseListString",exerciseListString);
                     	model.addAttribute("exerciseArray",mapper.writeValueAsString(exerciseList));
                     }
@@ -296,7 +290,9 @@ public class ApplicationController {
         logger.info("--------------------:: RECEIVED COMMAND - " + command + ":: --------------------");
         adminCommand.setCommand(command);
         adminCommand.setTemplateId(templateId);
-        messagingTemplate.convertAndSend("/zone/client" , adminCommand);
+        for(String client : connectedZones){
+            messagingTemplate.convertAndSend("/zone/client."+client , adminCommand);
+        }
         String zoneId= getZoneId(request);
         logger.info("Active zone ID - " + zoneId);
 
@@ -327,10 +323,13 @@ public class ApplicationController {
         String exerciseDetails = "";
         try{
             currentTemplate = templateRepository.findTemplatesByTemplateId(templateId);
-            currentZone = zoneRepository.findZonesByTemplateIdAndZone(currentTemplate , zone);
-            display.setTemplates(currentTemplate);
-            display.setZones(currentZone);
-             exerciseDetails = mapper.writeValueAsString(display);
+            if(zoneRepository.existsZonesByTemplateIdAndZone(currentTemplate,zone)){
+                currentZone = zoneRepository.findZonesByTemplateIdAndZone(currentTemplate , zone);
+                display.setTemplates(currentTemplate);
+                display.setZones(currentZone);
+                exerciseDetails = mapper.writeValueAsString(display);
+            }
+
         }
         catch(Exception ex){
             logger.error("Exception occurred while DISPLAY EXERCISE AJAX CONTROLLER processing :: " + ex);

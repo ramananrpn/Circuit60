@@ -28,14 +28,14 @@ public class Zones {
     @Column(name = "zone")
     private String zone;
 
-    @Column(name = "seconds" , columnDefinition = "bigint default 0")
-    private long seconds;
+    @Column(name = "seconds" , columnDefinition = "int default 00")
+    private int seconds;
 
-    @Column(name="reps" , columnDefinition = "int default 0")
+    @Column(name="reps" , columnDefinition = "int default 1")
     private int reps;
 
-    @Column(name = "break_time" , columnDefinition = "bigint default 0")
-    private long breakTime;
+    @Column(name = "break_time" , columnDefinition = "bigint default 00")
+    private int breakTime;
 
     //    USED JSON DATATYPE - MAP to store exercise
 //    Convert is used to convert Data from entity to dbcolumn and viceversa
@@ -73,11 +73,11 @@ public class Zones {
         this.zone = zone;
     }
 
-    public long getSeconds() {
+    public int getSeconds() {
         return seconds;
     }
 
-    public void setSeconds(long seconds) {
+    public void setSeconds(int seconds) {
         this.seconds = seconds;
     }
 
@@ -89,11 +89,11 @@ public class Zones {
         this.reps = reps;
     }
 
-    public long getBreakTime() {
+    public int getBreakTime() {
         return breakTime;
     }
 
-    public void setBreakTime(long breakTime) {
+    public void setBreakTime(int breakTime) {
         this.breakTime = breakTime;
     }
 

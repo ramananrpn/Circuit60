@@ -461,8 +461,6 @@ function addList(categoryId,objectName,objectPath,categoryName){
     
     function activeOnLoad(){
     	var str='';
-    	alert("fdh");
-    	
     	console.log(${exerciseArray});
     	var count = document.querySelectorAll("active").length;
     	if(count == 0){
