@@ -165,7 +165,6 @@ var exerciseTimer;
 
     function showRepsCountAndStartSession() {
         exercisePlayer.classList.add('hidden');
-
     }
 
 // Time Spinner
