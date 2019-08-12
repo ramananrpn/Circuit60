@@ -48,9 +48,18 @@ public class Templates {
 
     private int exerciseCount;
     private int exerciseDuration;
+    private int exerciseDurationSeconds;
 //    Getters & Setters
 
-    public int getExerciseCount() {
+    public int getExerciseDurationSeconds() {
+		return exerciseDurationSeconds;
+	}
+
+	public void setExerciseDurationSeconds(int exerciseDurationSeconds) {
+		this.exerciseDurationSeconds = exerciseDurationSeconds;
+	}
+
+	public int getExerciseCount() {
 		return exerciseCount;
 	}
 

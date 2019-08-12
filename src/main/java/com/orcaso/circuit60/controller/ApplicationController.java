@@ -93,16 +93,17 @@ public class ApplicationController {
             //      Retrieve Template
             List<Templates> templateList = getTemplates();
             Templates temporaryObject=null;
+            int duration = 0;
             logger.info("List of all templates to be passed : " + templateList);
             for(Templates templateObject: templateList) {
             	//getting the exerciseCount and the exerciseDuration and setting inside template List
             	temporaryObject=getExcerciseCountAndExerciseDuration(templateObject);
             	templateObject.setExerciseCount(temporaryObject.getExerciseCount());
-            	templateObject.setExerciseDuration(temporaryObject.getExerciseDuration());
+            	templateObject.setExerciseDuration(temporaryObject.getExerciseDuration()/60);
+            	templateObject.setExerciseDurationSeconds(temporaryObject.getExerciseDuration()%60);
             	logger.info("templateObject"+templateObject.getExerciseCount());
             }
             model.addAttribute("templateList" , templateList);
-            
             return "adminDashboard";
         }
         return "redirect:/";
@@ -167,6 +168,8 @@ public class ApplicationController {
         try{
             exerciseSecs += (exerciseMins*60);
             breakSecs += (breakMins*60);
+            logger.info("exerciseSecs"+exerciseSecs);
+            logger.info("exerciseSecs"+exerciseMins);
             currentTemplate = getTemplateById(templateId);
             if(currentTemplate!=null){
                 Zones zoneDetails = zoneRepository.findZonesByTemplateIdAndZone(currentTemplate , zone);
