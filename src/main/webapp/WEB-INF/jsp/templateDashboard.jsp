@@ -229,23 +229,22 @@
         </c:if>
 
 <%--    Display Exercise CRUD screen when exercise found for the current zone   --%>
-
-<%--       Fetching Saved TIME CONFIG   --%>
-        <%
-            //exercise time
-            Zones zones = (Zones) request.getAttribute("zoneDetails");
-            int exMins = zones.getSeconds()/60;
-            String exerciseMins = exMins < 10 ? "0"+exMins : ""+exMins ;
-            int exSecs = zones.getSeconds()%60;
-            String exerciseSeconds = exSecs < 10 ? "0"+exSecs : ""+exSecs ;
-
-            // Break Time
-            int brMins = zones.getBreakTime()/60;
-            String breakMins = brMins < 10 ? "0"+brMins : ""+brMins ;
-            int brSecs = zones.getSeconds()%60;
-            String breakSeconds = brSecs < 10 ? "0"+brSecs : ""+brSecs ;
-        %>
         <c:if test="${isZonePresent=='true'}">
+            <%--       Fetching Saved TIME CONFIG   --%>
+            <%
+                //exercise time
+                Zones zones = (Zones) request.getAttribute("zoneDetails");
+                int exMins = zones.getSeconds()/60;
+                String exerciseMins = exMins < 10 ? "0"+exMins : ""+exMins ;
+                int exSecs = zones.getSeconds()%60;
+                String exerciseSeconds = exSecs < 10 ? "0"+exSecs : ""+exSecs ;
+
+                // Break Time
+                int brMins = zones.getBreakTime()/60;
+                String breakMins = brMins < 10 ? "0"+brMins : ""+brMins ;
+                int brSecs = zones.getSeconds()%60;
+                String breakSeconds = brSecs < 10 ? "0"+brSecs : ""+brSecs ;
+            %>
             <span class="col-md-9 col-sm-5 card base-r1 "  style="margin-left: -30px;z-index: 2;height: auto">
                 <div class="container-fluid">
                     <br>
