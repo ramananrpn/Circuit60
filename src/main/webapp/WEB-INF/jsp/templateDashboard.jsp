@@ -74,6 +74,7 @@
 
 <body onload="changeActiveOnload()">
 
+
 <header>
 <%--  TopBar  --%>
     <!--Navbar -->
@@ -104,8 +105,7 @@
     <%--   Navbar     --%>
     <div class="container-fluid" style="margin-top: -15px;z-index: 2;position: absolute">
         <nav class="text-center navbar navbar-expand-lg fixed navbar-light navbar-custom white-text" style="background-color: #ffa700;">
-
-                        <div class="nav nav-text mr-auto ">
+						<div class="nav nav-text mr-auto ">
                             <a class="nav-item black-text  ml-4" href="/adminDashboard"><img src="../img/left.svg" class="img-fluid" style="width: 25px"></a>
                             <!--Template Name Dropdown -->
                             <span class="nav-item dropdown" style="margin-top: -10px"  >
@@ -400,8 +400,8 @@
   
                        <div class="row d-flex align-content-start">
                          <span class="ml-4">
-                           <p >00:00</p>
-                        </span>
+                           <p id="exerciseIncreasingMinutes">00</p> <p id="exerciseIncreasingSeconds">:00</p>
+                          </span>
                         <div class="container-fluid" style="width: 900px" >
                                <div class="progress " >
                                         <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="40"
@@ -410,11 +410,9 @@
                                  </div>
                         </div>
                          <span class="mr-4">
-
-                            <p >ddddds</p>
-                        </span>
-                            <p >00:00</p>
-                        </span>
+                            <p id="exerciseDecreasingMinutes">00</p><p id="exerciseDecreasingSeconds">:00</p>
+                            
+                         </span>
 
                     </div>
 
@@ -460,7 +458,8 @@
 <script type="text/javascript" src="../js/mdb.min.js"></script>
 
 <script>
-
+var currentSeconds='',increasingTimer='0';
+var increaseAndDecreaseTimer='';
     <%--function changeActive(e) {--%>
     <%--    &lt;%&ndash;alert("<c:out value="${templateName}"/>");&ndash;%&gt;--%>
     <%--    alert("<c:out value="${templateName}"/> " + e.target.id);--%>
@@ -473,8 +472,27 @@
     <%--    e.target.classList.add('active');--%>
     <%--    // alert(e.target.classList);--%>
     <%--}--%>
-
-
+   <%-- <% if(${(isTemplateActive==true) && (activeTemplate.getTemplateId()==template.getTemplateId())})%> --%>
+	function printIncreasingAndDecreasingTime(totalTime){
+		 document.getElementById('exerciseDecreasingSeconds').innerHTML = totalTime%60;
+		 increaseAndDecreaseTimer = setInterval(function () {
+					if(totalTime%60==0){
+						document.getElementById('exerciseIncreasingMinutes').innerHTML=increasingTimer <10 ? '0'+increasingTimer :increasingTimer;
+						document.getElementById('exerciseDecreasingMinutes').innerHTML=totalTime/60 < 10 ? '0'+totalTime/60 : totalTime/60;
+						increasingTimer++;
+					}
+					document.getElementById('exerciseIncreasingSeconds').innerHTML = (60-totalTime%60) < 10 ? '0'+(60-totalTime%60) :(totalTime%60==0?'00':60-totalTime%60) ;
+					document.getElementById('exerciseDecreasingSeconds').innerHTML = totalTime%60 < 10 ? '0'+totalTime%60 : totalTime%60;
+					console.log((60-totalTime%60 < 10) ? '0'+60-totalTime%60 :60-totalTime%60);
+					currentSeconds=totalTime;
+	            if (totalTime == 0) {
+	                clearInterval(increaseAndDecreaseTimer);
+	                return;
+	            }
+	            totalTime--;
+	        }, 1000)
+		
+	}
 <%--Function get called on page load to make corresponding zone active--%>
     function changeActiveOnload(){
         var activeZone = "<c:out value="${zoneId}"/>";
@@ -569,11 +587,13 @@ function decreaseBreakSeconds() {
             var resume = document.querySelectorAll(".resumeButton");
             [].forEach.call(resume, function (resumeButton) {
                 resumeButton.classList.toggle('hidden');
-            });
+            }); 
+            
         },
         error : function(){
         }
         });
+        clearInterval(increaseAndDecreaseTimer);
     }
 
     function resumeCommand() {
@@ -593,8 +613,15 @@ function decreaseBreakSeconds() {
             error : function(){
             }
         });
+        printIncreasingAndDecreasingTime(currentSeconds);
+        
     }
 </script>
+<c:if test="${(isTemplateActive=='true') && (activeTemplate.getTemplateId()==template.getTemplateId())}">
+<script>
+printIncreasingAndDecreasingTime(${zoneDetails.getSeconds()});
+</script>
+</c:if>
 <%----%>
 </body>
 </html>

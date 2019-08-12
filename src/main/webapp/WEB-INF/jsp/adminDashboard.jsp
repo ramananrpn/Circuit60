@@ -160,7 +160,7 @@
                             <p style="padding: 1px">Edited on <%=dateFormat1.format(pageContext.getAttribute("updatedDate"))%></p>
                             <hr>
                             <p style="padding: 1px">No. of exercises :  <b>${template.getExerciseCount()}</b></p>
-                            <p style="padding: 1px">Total duration : <b>${template.getExerciseDuration()}</b></p>
+                            <p style="padding: 1px">Total duration : <b>${template.getExerciseDuration()} mins${template.getExerciseDurationSeconds()} secs</b></p>
                         </div>
                     </div>
                 </div>
