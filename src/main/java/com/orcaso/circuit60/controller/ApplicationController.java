@@ -298,12 +298,20 @@ public class ApplicationController {
 
 //        To update active column in database
         switch (command){
-            case "start" : {
+            // DB - 1 active
+//                  2 pause
+//                  3 stop/ inactive
+            case "start" :
+            case "resume": {
                 Templates templateToUpdate = templateRepository.findTemplatesByTemplateId(templateId);
                 templateToUpdate.setActive(1);
                 break;
             }
-            case "pause" :
+            case "pause" :{
+                Templates templateToUpdate = templateRepository.findTemplatesByTemplateId(templateId);
+                templateToUpdate.setActive(2);
+                break;
+            }
             case "stop" : {
                 Templates templateToUpdate = templateRepository.findTemplatesByTemplateId(templateId);
                 templateToUpdate.setActive(0);
