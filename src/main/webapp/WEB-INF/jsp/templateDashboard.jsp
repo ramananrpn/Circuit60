@@ -1,4 +1,5 @@
 <%@ page import="java.util.ResourceBundle" %>
+<%@ page import="com.orcaso.circuit60.model.Zones" %>
 <%--Developer Notes
     Specify ../ for all static files before context path
      --%>
@@ -126,19 +127,44 @@
                         </div>
             <div class="ml-auto mr-4">
                 <%--Checking whether to show add exercise button or Start Section button--%>
-                <c:if test="${isZonePresent=='false'}">
-                    <button type="button" class="btn-sm btn-white btn-rounded" style="width: 150px" onclick="location.href='/selectExercise?zoneId=${zoneId}'" >
-                    Add Excercise
-                    </button>
-                </c:if>
-                <c:if test="${isZonePresent=='true'}">
-                    <button type="button" class="btn-md set-btn-outline-orange white-text" style="width: 150px" onclick="location.href='/selectExercise?zoneId=${zoneId}'" >
-                        Save Section
-                    </button>
-                    <button type="button" class="btn-md btn-white btn-rounded" style="width: 150px" onclick="location.href='/selectExercise?zoneId=${zoneId}'" >
-                        Start Section
-                    </button>
-                </c:if>
+                <c:choose>
+                    <c:when test="${isZonePresent=='true' || (isTemplateActive == 'true' && (activeTemplate.getTemplateId()==template.getTemplateId()))}">
+                        <c:choose>
+                            <%--                        if Section is Started--%>
+                            <c:when test="${(isTemplateActive=='true') && (activeTemplate.getTemplateId()==template.getTemplateId())}">
+                                <button type="button" class="btn-md set-btn-outline-orange white-text" style="width: 150px" onclick="location.href='/adminCommand/${template.getTemplateId()}/stop?zoneId=${zoneId}'" >
+                                    Stop Section
+                                </button>
+                                <button type="button" class="btn-md btn-white btn-rounded pauseButton" style="width: 150px" onclick="pauseCommand()">
+                                    Pause Section
+                                </button>
+                                <button type="button" class="btn-md btn-white btn-rounded resumeButton hidden" style="width: 150px" onclick="resumeCommand()">
+                                    Resume Section
+                                </button>
+                            </c:when>
+                            <%--                        else section is not started--%>
+                            <c:otherwise>
+                                <button type="submit" form="timeConfigForm" class="btn-md set-btn-outline-orange white-text" style="width: 150px" onclick="location.href='/selectExercise/${template.getTemplateId()}?zoneId=${zoneId}'" >
+                                    Save Section
+                                </button>
+                                <%--  Disabling Start Section button when a Template/Section is already started  --%>
+                                <c:if test="${isTemplateActive!='true'}">
+                                    <button type="button" class="btn-md btn-white btn-rounded" style="width: 150px" onclick="location.href='/adminCommand/${template.getTemplateId()}/start?zoneId=${zoneId}'">
+                                        Start Section
+                                    </button>
+                                </c:if>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:when>
+
+                    <c:otherwise >
+                        <button type="button" class="btn-sm btn-white btn-rounded" style="width: 150px" onclick="location.href='/selectExercise/${template.getTemplateId()}?zoneId=${zoneId}'" >
+                            Add Excercise
+                        </button>
+                    </c:otherwise>
+
+                </c:choose>
+
                 <a><img src="../img/settings.svg" class="img-fluid"></a>
             </div>
         </nav>
@@ -189,133 +215,238 @@
         </span>
 
 <%--      Display default Add exercide Icon and button when no exercise found for the current zone     --%>
-        <c:if test="${isZonePresent=='true'}">
+        <c:if test="${isZonePresent=='false'}">
             <span class="col-md-9 col-sm-5 card base-r1 "  style="margin-left: -30px;z-index: 2;">
                 <div class=" flex-center">
-                        <div class="text-center">
-                            <%--        Gym Dumbell add exercise LOGO    --%>
-                             <a type="button" href="/selectExercise?zoneId=${zoneId}">
-                                 <img src="../img/gym.svg" style="width: 40px;height: 40px;">
-                             </a>
-                            <br>
-                            <%--     Add Exercise Button   --%>
-                            <button type="button" onclick="location.href='/selectExercise?zoneId=${zoneId}'" class="set-btn-outline btn-rounded waves-effect" style="width: 180px;border: solid 1px #0d0d0d" >
-                                Add Exercise
-                            </button>
+                    <c:choose>
+                        <c:when test="${(isTemplateActive=='true') && (activeTemplate.getTemplateId()==template.getTemplateId())}">
+                            <div class="text-center">
+                                <h2>No Exercise Selected for this zone</h2>
+                            </div>
+                        </c:when>
+                        <c:otherwise>
+                             <div class="text-center">
+                                <%--        Gym Dumbell add exercise LOGO    --%>
+                                 <a type="button" href="/selectExercise/${template.getTemplateId()}?zoneId=${zoneId}">
+                                     <img src="../img/gym.svg" style="width: 40px;height: 40px;">
+                                 </a>
+                                <br>
+                                <%--     Add Exercise Button   --%>
+                                <button type="button" onclick="location.href='/selectExercise/${template.getTemplateId()}?zoneId=${zoneId}'" class="set-btn-outline btn-rounded waves-effect" style="width: 180px;border: solid 1px #0d0d0d" >
+                                    Add Exercise
+                                </button>
                         </div>
+                        </c:otherwise>
+                    </c:choose>
                 </div>
             </span>
         </c:if>
 
 <%--    Display Exercise CRUD screen when exercise found for the current zone   --%>
-        <c:if test="${isZonePresent=='false'}">
+        <c:if test="${isZonePresent=='true'}">
+            <%--       Fetching Saved TIME CONFIG   --%>
+            <%
+                //exercise time
+                Zones zones = (Zones) request.getAttribute("zoneDetails");
+                int exMins = zones.getSeconds()/60;
+                String exerciseMins = exMins < 10 ? "0"+exMins : ""+exMins ;
+                int exSecs = zones.getSeconds()%60;
+                String exerciseSeconds = exSecs < 10 ? "0"+exSecs : ""+exSecs ;
+
+                // Break Time
+                int brMins = zones.getBreakTime()/60;
+                String breakMins = brMins < 10 ? "0"+brMins : ""+brMins ;
+                int brSecs = zones.getSeconds()%60;
+                String breakSeconds = brSecs < 10 ? "0"+brSecs : ""+brSecs ;
+            %>
             <span class="col-md-9 col-sm-5 card base-r1 "  style="margin-left: -30px;z-index: 2;height: auto">
                 <div class="container-fluid">
                     <br>
                     <%--         Excersie time reps brefore configure           --%>
-                    <div class="row d-flex justify-content-center md-form">
-                        <div class="col-md-4 ">
-                            <span class="card exerciseCustomise-card flex-center">
-                                <div class="row">
-                                    <span class="flex-center">
-                                        <img src="../img/clock.svg">
-                                        <p class="ml-2">Seconds Per Exercise</p>
-                                        <a class="button mt-2" onclick="decreaseExerciseSeconds()">
-                                            <img src="../img/minusButton.svg">
-                                        </a>
-                                        <span style="color: #707070" class="flex-center ml-1">
-                                            <input type="number" id="exerciseMins" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="00"
-                                                   onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
-<%--                                            <p id="mins" >00</p>--%>
-                                            <p >:</p>
-<%--                                            <p id="secs" >45</p>--%>
-                                            <input type="number" id="exerciseSecs" class="form-control form-control-sm text-center" min="00" max="60" style="width: 25px" value="00"
-                                                   onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
-                                        </span>
-                                       <a class="button mt-2" onclick="increaseExerciseSeconds()">
-                                           <img src="../img/plusButton.svg">
-                                       </a>
-                                    </span>
-                                </div>
-                            </span>
-                        </div>
-                        <div class="col-md-3 d-flex justify-content-center">
-                            <span class="card exerciseCustomise-card flex-center" style="width: 240px;" >
-                                <div class="row">
-                                    <span class="flex-center">
-                                        <img src="../img/reps.svg">
-                                        <p class="ml-2">Reps</p>
-                                        <a class="button mt-2" onclick="decreaseReps()">
-                                            <img src="../img/minusButton.svg">
-                                        </a>
-                                        <span style="color: #707070" class="flex-center ml-1">
-                                           <input type="number" id="repsCount" class="form-control form-control-sm text-center" min="0" style="width: 25px" value="1">
-                                        </span>
-                                       <a class="button mt-2" onclick="increaseReps()">
-                                           <img src="../img/plusButton.svg">
-                                       </a>
-                                    </span>
-                                </div>
-                            </span>
-                        </div>
-                        <div class="col-md-3 d-flex justify-content-center">
-                            <span class="card exerciseCustomise-card flex-center" style="width: 283px;" >
-                                <div class="row">
-                                    <span class="flex-center">
-                                        <img src="../img/break.svg">
-                                        <p class="ml-2">Break</p>
-                                        <a class="button mt-2" onclick="decreaseBreakSeconds()">
-                                            <img src="../img/minusButton.svg">
-                                        </a>
-                                            <span style="color: #707070" class="flex-center ml-1">
-                                            <input type="number" id="breakMins" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="00"
-                                                   onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
-                                            <%--   <p id="mins" >00</p>--%>
-                                                <p >:</p>
-                                            <%--                                            <p id="secs" >45</p>--%>
-                                            <input type="number" id="breakSecs" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="00"
-                                                   onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
-                                             </span>
-                                       <a class="button mt-2" onclick="increaseBreakSeconds()">
-                                           <img src="../img/plusButton.svg">
-                                       </a>
-                                    </span>
-                                </div>
-                            </span>
-                        </div>
-                    </div>
+                     <c:choose>
+<%--                         WHEN SESSION STARTED - disable time config edit--%>
+                         <c:when test="${(isTemplateActive=='true') && (activeTemplate.getTemplateId()==template.getTemplateId())}">
+		                        <div class="row d-flex justify-content-center md-form">
+		                            <div class="col-md-4 ">
+		                                <span class="card exerciseCustomise-card flex-center">
+		                                    <div class="row">
+		                                        <span class="flex-center">
+		                                            <img src="../img/clock.svg">
+		                                            <p class="ml-2">Seconds Per Exercise</p>
+		                                            <span style="color: #707070" class="flex-center ml-2">
+		                                                <p ><%= exerciseMins%></p>
+		                                                    <p >:</p>
+		                                                <p><%= exerciseSeconds %></p>
+                                                    </span>
+
+		                                        </span>
+		                                    </div>
+		                                </span>
+		                            </div>
+<%--                                    REPS    --%>
+		                            <div class="col-md-3 d-flex justify-content-center">
+		                                <span class="card exerciseCustomise-card flex-center" style="width: 240px;" >
+		                                    <div class="row">
+		                                        <span class="flex-center">
+		                                            <img src="../img/reps.svg">
+                                                    <p class="ml-2">Reps</p>
+		                                            <span style="color: #707070" class="flex-center ml-2">
+		                                               <p>${zoneDetails.getReps()}</p>
+		                                            </span>
+		                                        </span>
+		                                    </div>
+		                                </span>
+		                            </div>
+<%--                                    BREAK   --%>
+		                            <div class="col-md-3 d-flex justify-content-center">
+		                                <span class="card exerciseCustomise-card flex-center" style="width: 283px;" >
+		                                    <div class="row">
+		                                        <span class="flex-center">
+		                                            <img src="../img/break.svg">
+		                                            <p class="ml-2">Break</p>
+		                                                <span style="color: #707070" class="flex-center ml-2">
+		                                                  <p><%=breakMins%></p>
+		                                                    <p >:</p>
+		                                                  <p><%=breakSeconds%>s</p>
+		                                                 </span>
+		                                        </span>
+		                                    </div>
+		                                </span>
+		                            </div>
+		                        </div>
+		                    
+						</c:when>
+						<c:otherwise>
+						<form id="timeConfigForm" method="post" action="/templateDashboard/${template.getTemplateId()}/${zoneId}">
+		                        <div class="row d-flex justify-content-center md-form">
+		                            <div class="col-md-4 ">
+		                                <span class="card exerciseCustomise-card flex-center">
+		                                    <div class="row">
+		                                        <span class="flex-center">
+		                                            <img src="../img/clock.svg">
+		                                            <p class="ml-2">Seconds Per Exercise</p>
+		                                            <a class="button mt-2" onclick="decreaseExerciseSeconds()">
+		                                                <img src="../img/minusButton.svg">
+		                                            </a>
+		                                            <span style="color: #707070" class="flex-center ml-1">
+		                                                <input type="number" id="exerciseMins" name="exerciseMins" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="<%=exerciseMins%>"
+		                                                       onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
+		                                                <p >:</p>
+		                                                <input type="number" id="exerciseSecs" name="exerciseSecs" class="form-control form-control-sm text-center" min="00" max="60" style="width: 25px" value="<%=exerciseSeconds%>"
+		                                                       onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
+		                                            </span>
+		                                           <a class="button mt-2" onclick="increaseExerciseSeconds()">
+		                                               <img src="../img/plusButton.svg">
+		                                           </a>
+		                                        </span>
+		                                    </div>
+		                                </span>
+		                            </div>
+		                            <div class="col-md-3 d-flex justify-content-center">
+		                                <span class="card exerciseCustomise-card flex-center" style="width: 240px;" >
+		                                    <div class="row">
+		                                        <span class="flex-center">
+		                                            <img src="../img/reps.svg">
+		                                            <p class="ml-2">Reps</p>
+		                                            <a class="button mt-2" onclick="decreaseReps()">
+		                                                <img src="../img/minusButton.svg">
+		                                            </a>
+		                                            <span style="color: #707070" class="flex-center ml-1">
+		                                               <input type="number" id="repsCount" name="repsCount" class="form-control form-control-sm text-center" min="0" style="width: 25px" value="${zoneDetails.getReps()}">
+		                                            </span>
+		                                           <a class="button mt-2" onclick="increaseReps()">
+		                                               <img src="../img/plusButton.svg">
+		                                           </a>
+		                                        </span>
+		                                    </div>
+		                                </span>
+		                            </div>
+		                            <div class="col-md-3 d-flex justify-content-center">
+		                                <span class="card exerciseCustomise-card flex-center" style="width: 283px;" >
+		                                    <div class="row">
+		                                        <span class="flex-center">
+		                                            <img src="../img/break.svg">
+		                                            <p class="ml-2">Break</p>
+		                                            <a class="button mt-2" onclick="decreaseBreakSeconds()">
+		                                                <img src="../img/minusButton.svg">
+		                                            </a>
+		                                                <span style="color: #707070" class="flex-center ml-1">
+		                                                <input type="number" id="breakMins" name="breakMins" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="<%=breakMins%>"
+		                                                       onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
+		                                                    <p >:</p>
+		                                                <input type="number" id="breakSecs" name="breakSecs" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="<%=breakSeconds%>"
+		                                                       onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
+		                                                 </span>
+		                                           <a class="button mt-2" onclick="increaseBreakSeconds()">
+		                                               <img src="../img/plusButton.svg">
+		                                           </a>
+		                                        </span>
+		                                    </div>
+		                                </span>
+		                            </div>
+		                        </div>
+		                    </form>
+						</c:otherwise>
+					</c:choose>
 
                     <hr>
                     <%--       Exercise Display         --%>
                     <div class="row">
-                        <%for(int i=0; i<4 ;i++){%>
-                         <div class="col-md-3 col-sm-1 col-xs-1 d-flex justify-content-center " >
-                            <div class="card text-center mb-3 border-0 card-color" >
-                                <div class="card-body">
-                                    <h5 class="card-title">Push Ups</h5>
-                                    <p class="card-text mt-4"><video class="video-fluid z-depth-1" src="../../exercises/chest/Pull%20Ups.mp4" autoplay loop muted></video></p>
+                        <%--        Loop to display fetched exercise                --%>
+                        <c:forEach items="${exerciseList}" var="exercise">
+                           <div class="col-md-3 col-sm-1 col-xs-1 d-flex justify-content-center " >
+                                <div class="card text-center mb-3 border-0 card-color" >
+                                    <div class="card-body">
+                                        <h5 class="card-title">${exercise.getExerciseName()}</h5>
+                                        <p class="card-text mt-4"><video class="video-fluid z-depth-1" src="${exercise.getUrl()}" autoplay loop muted></video></p>
+                                    </div>
                                 </div>
-                            </div>
-                             <%if(i!=3){%>
-                                <div class="d-flex flex-center">
-                                    <div class="divider"></div>
-                                </div>
-                             <%}%>
-                         </div>
-                        <%}%>
+                           </div>
+                        </c:forEach>
                     </div>
 
                     <%--        Progress Bar      --%>
-                    <div class="progress">
-                        <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="40"
-                                   aria-valuemin="0" aria-valuemax="100" style="width:70%">
-                        </div>
+
+  
+                       <div class="row d-flex align-content-start">
+                             <span class="ml-4">
+                               <p >00:00</p>
+                            </span>
+                            <div class="container-fluid" style="width: 900px" >
+                                   <div class="progress " >
+                                            <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="40"
+                                                 aria-valuemin="0" aria-valuemax="100" style="width:70%;">
+                                            </div>
+                                   </div>
+                            </div>
+                             <span class="mr-4">
+                                <p >00:00</p>
+                             </span>
+
                     </div>
+
+
+
+
                     <br>
                     <hr>
                     <%--       Bottom button             --%>
                     <div class="d-flex flex-row-reverse">
-                        <button type="button" class="btn-sm set-text-violet set-btn-outline" style="width: 180px;">Add / customize</button>
+                        <c:choose>
+                            <c:when test="${(isTemplateActive=='true') && (activeTemplate.getTemplateId()==template.getTemplateId())}">
+                                <button type="button" class="btn-sm set-text-violet pauseButton set-btn-outline" style="width: 180px;" onclick="pauseCommand()">
+                                    Pause Section
+                                </button>
+                                <button type="button" class="btn-sm set-text-violet resumeButton set-btn-outline hidden" style="width: 180px;" onclick="resumeCommand()">
+                                    Resume Section
+                                </button>
+                            </c:when>
+                            <c:otherwise>
+                                <button type="button" class="btn-sm set-text-violet set-btn-outline" style="width: 180px;" onclick="location.href='/selectExercise/${template.getTemplateId()}?zoneId=${zoneId}'">
+                                    Add / customize
+                                </button>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                     <br>
                 </div>
@@ -370,7 +501,7 @@
         // alert(secs +" "+mins);
         if(secs==59){
             document.getElementById('exerciseSecs').value = "00";
-            document.getElementById('exerciseMins').value = (mins+1<=10)?"0"+(mins+1):mins+1;
+            document.getElementById('exerciseMins').value = (mins+1<10)?"0"+(mins+1):mins+1;
         }
         else {
             document.getElementById('exerciseSecs').value = ((secs + 1 < 10) ? ( "0" + (secs + 1)) :  (secs + 1));
@@ -387,7 +518,7 @@
                 document.getElementById('exerciseMins').value = (mins-1<10)?"0"+(mins-1):mins-1;
             }
             else {
-                document.getElementById('exerciseSecs').value = ((secs - 1 <= 10) ? ( "0" + (secs - 1)) :  (secs - 1));
+                document.getElementById('exerciseSecs').value = ((secs - 1 < 10) ? ( "0" + (secs - 1)) :  (secs - 1));
             }
         }
     }
@@ -409,10 +540,10 @@ function increaseBreakSeconds() {
     // alert(secs +" "+mins);
     if(secs==59){
         document.getElementById('breakSecs').value = "00";
-        document.getElementById('breakMins').value = (mins+1<=10)?"0"+(mins+1):mins+1;
+        document.getElementById('breakMins').value = (mins+1<10)?"0"+(mins+1):mins+1;
     }
     else {
-        document.getElementById('breakSecs').value = ((secs + 1 <= 10) ? ( "0" + (secs + 1)) :  (secs + 1));
+        document.getElementById('breakSecs').value = ((secs + 1 < 10) ? ( "0" + (secs + 1)) :  (secs + 1));
     }
 }
 function decreaseBreakSeconds() {
@@ -423,14 +554,53 @@ function decreaseBreakSeconds() {
         if(secs==1){
             document.getElementById('breakSecs').value = "00";
             if(mins>0)
-                document.getElementById('breakMins').value = (mins-1<=10)?"0"+(mins-1):mins-1;
+                document.getElementById('breakMins').value = (mins-1<10)?"0"+(mins-1):mins-1;
         }
         else {
-            document.getElementById('breakSecs').value = ((secs - 1 <= 10) ? ( "0" + (secs - 1)) :  (secs - 1));
+            document.getElementById('breakSecs').value = ((secs - 1 < 10) ? ( "0" + (secs - 1)) :  (secs - 1));
         }
     }
 }
 
+//TOGGLE PAUSE and RESUME Button
+    function pauseCommand() {
+        alert
+        $.ajax({
+            url:"/adminCommand/${template.getTemplateId()}/pause?zoneId=${zoneId}",
+            method:"GET",
+        success: function(response) {
+            var pause = document.querySelectorAll(".pauseButton");
+            [].forEach.call(pause, function (pauseButton) {
+                pauseButton.classList.toggle('hidden');
+            });
+            var resume = document.querySelectorAll(".resumeButton");
+            [].forEach.call(resume, function (resumeButton) {
+                resumeButton.classList.toggle('hidden');
+            });
+        },
+        error : function(){
+        }
+        });
+    }
+
+    function resumeCommand() {
+        $.ajax({
+            url:"/adminCommand/${template.getTemplateId()}/resume?zoneId=${zoneId}",
+            method:"GET",
+            success: function(response) {
+                var pause = document.querySelectorAll(".pauseButton");
+                [].forEach.call(pause, function (pauseButton) {
+                    pauseButton.classList.toggle('hidden');
+                });
+                var resume = document.querySelectorAll(".resumeButton");
+                [].forEach.call(resume, function (resumeButton) {
+                    resumeButton.classList.toggle('hidden');
+                });
+            },
+            error : function(){
+            }
+        });
+    }
 </script>
 <%----%>
 </body>

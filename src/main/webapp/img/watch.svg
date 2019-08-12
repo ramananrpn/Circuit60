@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="300" height="300" viewBox="0 0 300 300">
+  <defs>
+    <filter id="Ellipse_533" x="52" y="52" width="196" height="196" filterUnits="userSpaceOnUse">
+      <feOffset input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feFlood flood-color="#181b21"/>
+      <feComposite operator="in" in2="blur"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="Ellipse_535" x="79.992" y="79.992" width="139.075" height="139.075" filterUnits="userSpaceOnUse">
+      <feOffset input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="6" result="blur-2"/>
+      <feFlood flood-opacity="0.443"/>
+      <feComposite operator="in" in2="blur-2"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="Subtraction_2" x="10" y="10" width="280" height="280" filterUnits="userSpaceOnUse">
+      <feOffset input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="6" result="blur-3"/>
+      <feFlood flood-opacity="0.314"/>
+      <feComposite operator="in" in2="blur-3"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+  </defs>
+  <g id="watch" transform="translate(-940 -388)">
+    <ellipse id="Ellipse_534" data-name="Ellipse 534" cx="120" cy="120" rx="120" ry="120" transform="translate(970 418)" fill="none"/>
+    <g transform="matrix(1, 0, 0, 1, 940, 388)" filter="url(#Ellipse_533)">
+      <ellipse id="Ellipse_533-2" data-name="Ellipse 533" cx="80" cy="80" rx="80" ry="80" transform="translate(70 70)" fill="#30305f" opacity="0.4"/>
+    </g>
+    <g transform="matrix(1, 0, 0, 1, 940, 388)" filter="url(#Ellipse_535)">
+      <circle id="Ellipse_535-2" data-name="Ellipse 535" cx="51.538" cy="51.538" r="51.538" transform="translate(97.99 97.99)" fill="#30305f" opacity="0.75"/>
+    </g>
+    <g transform="matrix(1, 0, 0, 1, 940, 388)" filter="url(#Subtraction_2)">
+      <path id="Subtraction_2-2" data-name="Subtraction 2" d="M122,244a122.9,122.9,0,0,1-24.587-2.479,121.332,121.332,0,0,1-43.624-18.357,122.357,122.357,0,0,1-44.2-53.677,121.386,121.386,0,0,1-7.109-22.9,123.189,123.189,0,0,1,0-49.174A121.331,121.331,0,0,1,20.836,53.789a122.357,122.357,0,0,1,53.676-44.2,121.384,121.384,0,0,1,22.9-7.109,123.189,123.189,0,0,1,49.174,0,121.332,121.332,0,0,1,43.624,18.357,122.356,122.356,0,0,1,44.2,53.676,121.381,121.381,0,0,1,7.109,22.9,123.189,123.189,0,0,1,0,49.174,121.334,121.334,0,0,1-18.357,43.624,122.356,122.356,0,0,1-53.677,44.2,121.383,121.383,0,0,1-22.9,7.109A122.9,122.9,0,0,1,122,244ZM122,6.05A116.807,116.807,0,0,0,98.632,8.406,115.314,115.314,0,0,0,57.171,25.852,116.289,116.289,0,0,0,15.162,76.867,115.368,115.368,0,0,0,8.406,98.632a117.081,117.081,0,0,0,0,46.736,115.315,115.315,0,0,0,17.447,41.461,116.288,116.288,0,0,0,51.015,42.01,115.364,115.364,0,0,0,21.765,6.756,117.08,117.08,0,0,0,46.736,0,115.316,115.316,0,0,0,41.461-17.447,116.288,116.288,0,0,0,42.01-51.015,115.364,115.364,0,0,0,6.756-21.765,117.08,117.08,0,0,0,0-46.736,115.315,115.315,0,0,0-17.447-41.461,116.29,116.29,0,0,0-51.015-42.009,115.368,115.368,0,0,0-21.765-6.756A116.81,116.81,0,0,0,122,6.05Z" transform="translate(28 28)" fill="#3b3b67"/>
+    </g>
+    <g id="Ellipse_536" data-name="Ellipse 536" transform="translate(940 388)" fill="none" stroke="#20d38f" stroke-linecap="round" stroke-width="2" stroke-dasharray="0 23">
+      <circle cx="150" cy="150" r="150" stroke="none"/>
+      <circle cx="150" cy="150" r="149" fill="none"/>
+    </g>
+  </g>
+</svg>

@@ -20,6 +20,8 @@
     <link href="css/mdb.min.css" rel="stylesheet">
     <!-- Your custom styles (optional) -->
     <link href="css/style.css" rel="stylesheet">
+    <!-- JQuery -->
+<script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
 </head>
 <style>
 
@@ -106,11 +108,15 @@
                     </div>
                     <div class="row flex-center" >
                         <div class="text-center Rectangle-1379 flex-center">
-                            <div>
+                            <div class="mt-5">
                                 <p>Want to Upload Logo?</p>
                                 <br>
                                 <button type="submit" class="btn-sm set-btn-outline set-text-violet btn-rounded waves-effect" style="width: 80px;" onclick="showTemplate()">Skip</button>
-                                <button type="button" class="btn-sm btn-rounded set-text-white" style="width: 80px;background-color: #5e31e9;" formaction="/">Upload</button>
+                               <!--  <input type="file"  value="upload"class="btn-sm btn-rounded set-text-white" style="width: 80px;background-color: #5e31e9;"> -->
+                              <label class="btn-sm btn-rounded set-text-white" for="customFile" style="width:80px ">upload</label>
+                               <div class="custom-file">
+                               	  <input type="file" class="custom-file-input btn-sm btn-rounded" id="customFile" name="templateLogo">
+								</div>
                             </div>
                         </div>
                     </div>
@@ -125,7 +131,7 @@
 
         <c:forEach items="${templateList}" var="template">
             <%
-//                System.out.println("Hii");
+//                System.out.println("Hi");
                 if(count%5==0){
             %>
             <div class="row">
@@ -153,8 +159,8 @@
                             <p style="padding: 1px">Created on <%=dateFormat1.format(pageContext.getAttribute("createdDate"))%></p>
                             <p style="padding: 1px">Edited on <%=dateFormat1.format(pageContext.getAttribute("updatedDate"))%></p>
                             <hr>
-                            <p style="padding: 1px">No. of exercises :  <b>0</b></p>
-                            <p style="padding: 1px">Total duration : <b>20 mins</b></p>
+                            <p style="padding: 1px">No. of exercises :  <b>${template.getExerciseCount()}</b></p>
+                            <p style="padding: 1px">Total duration : <b>${template.getExerciseDuration()}</b></p>
                         </div>
                     </div>
                 </div>
@@ -177,6 +183,12 @@
 
 <!-- SCRIPTS -->
 <script>
+	
+	$(".custom-file-input").on("change", function() {
+	  var fileName = $(this).val();
+	  alert(fileName);
+	 /*  $(this).siblings(".custom-file-label").addClass("selected").html(fileName); */
+	});
     function show() {
         document.getElementById("createTemplate").style.display = "none";
         document.getElementById("createForm").style.display = "block";
