@@ -404,8 +404,8 @@
                           </span>
                         <div class="container-fluid" style="width: 900px" >
                                <div class="progress " >
-                                        <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="40"
-                                             aria-valuemin="0" aria-valuemax="100" style="width:70%;">
+                                        <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="50"
+                                             id="progressBar"aria-valuemin="0" aria-valuemax="100">
                                         </div>
                                  </div>
                         </div>
@@ -458,7 +458,7 @@
 <script type="text/javascript" src="../js/mdb.min.js"></script>
 
 <script>
-var currentSeconds='',increasingTimer='0';
+var currentSeconds='',increasingTimer='0',timePercentage=0,percentageCount=1;
 var increaseAndDecreaseTimer='';
     <%--function changeActive(e) {--%>
     <%--    &lt;%&ndash;alert("<c:out value="${templateName}"/>");&ndash;%&gt;--%>
@@ -473,23 +473,29 @@ var increaseAndDecreaseTimer='';
     <%--    // alert(e.target.classList);--%>
     <%--}--%>
    <%-- <% if(${(isTemplateActive==true) && (activeTemplate.getTemplateId()==template.getTemplateId())})%> --%>
-	function printIncreasingAndDecreasingTime(totalTime){
-		 document.getElementById('exerciseDecreasingSeconds').innerHTML = totalTime%60;
+	function printIncreasingAndDecreasingTime(totalTimeNow){
+		 document.getElementById('exerciseDecreasingSeconds').innerHTML = totalTimeNow%60;
 		 increaseAndDecreaseTimer = setInterval(function () {
-					if(totalTime%60==0){
+					if(totalTimeNow%60==0){
 						document.getElementById('exerciseIncreasingMinutes').innerHTML=increasingTimer <10 ? '0'+increasingTimer :increasingTimer;
-						document.getElementById('exerciseDecreasingMinutes').innerHTML=totalTime/60 < 10 ? '0'+totalTime/60 : totalTime/60;
+						document.getElementById('exerciseDecreasingMinutes').innerHTML=totalTimeNow/60 < 10 ? '0'+totalTimeNow/60 : totalTimeNow/60;
 						increasingTimer++;
 					}
-					document.getElementById('exerciseIncreasingSeconds').innerHTML = (60-totalTime%60) < 10 ? '0'+(60-totalTime%60) :(totalTime%60==0?'00':60-totalTime%60) ;
-					document.getElementById('exerciseDecreasingSeconds').innerHTML = totalTime%60 < 10 ? '0'+totalTime%60 : totalTime%60;
-					console.log((60-totalTime%60 < 10) ? '0'+60-totalTime%60 :60-totalTime%60);
-					currentSeconds=totalTime;
-	            if (totalTime == 0) {
+					document.getElementById('exerciseIncreasingSeconds').innerHTML = (60-totalTimeNow%60) < 10 ? '0'+(60-totalTimeNow%60) :(totalTimeNow%60==0?'00':60-totalTimeNow%60) ;
+					document.getElementById('exerciseDecreasingSeconds').innerHTML = totalTimeNow%60 < 10 ? '0'+totalTimeNow%60 : totalTimeNow%60;
+					/* console.log((60-totalTime%60 < 10) ? '0'+60-totalTime%60 :60-totalTime%60); */
+					currentSeconds=totalTimeNow;
+					console.log(totalExerciseSeconds-totalTimeNow);
+					if(Math.round(totalExerciseSeconds *(percentageCount/100)) == totalExerciseSeconds-totalTimeNow){
+					  console.log('CONDITION SATISFIED'+' percentage ='+percentageCount);
+					  document.getElementById('progressBar').style.width = percentageCount+'%';
+					  percentageCount++;
+					}
+	            if (totalTimeNow == 0) {
 	                clearInterval(increaseAndDecreaseTimer);
 	                return;
 	            }
-	            totalTime--;
+	            totalTimeNow--;
 	        }, 1000)
 		
 	}
@@ -620,6 +626,8 @@ function decreaseBreakSeconds() {
 <c:if test="${(isTemplateActive=='true') && (activeTemplate.getTemplateId()==template.getTemplateId())}">
 <script>
 printIncreasingAndDecreasingTime(${zoneDetails.getSeconds()});
+var totalExerciseSeconds = ${zoneDetails.getSeconds()}?${zoneDetails.getSeconds()}:'';
+document.getElementById('progressBar').style.width = '0%';
 </script>
 </c:if>
 <%----%>
