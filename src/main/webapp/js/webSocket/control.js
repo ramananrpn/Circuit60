@@ -30,7 +30,7 @@ var totalReps;
 var breakSeconds;
 var totalExercise;
 var exerciseCount;
-
+var isPaused=0;
 // Screen Delay Time Config Constants
 var switchScreenDelay = 5000;  // in milliseconds
 
@@ -89,8 +89,11 @@ var sessionStartTimerDelay = 10;  // in seconds
             // alert("Session Started");
         }
         else if(message.command == 'pause'){
-            var seconds = document.getElementById('displayExerciseSecondsTimer').innerHTML;
-            pauseVideoElements(seconds);
+            if(isPaused==0){
+                isPaused=1;
+                var seconds = document.getElementById('displayExerciseSecondsTimer').innerHTML;
+                pauseVideoElements(seconds);
+            }
         }
         else if(message.command == 'stop'){
             isStarted=false;
@@ -98,8 +101,11 @@ var sessionStartTimerDelay = 10;  // in seconds
             location.reload();
         }
         else if (message.command == 'resume'){
-            var currentSeconds = document.getElementById('displayExerciseSecondsTimer').innerHTML;
-            playVideoElements(currentSeconds);
+            if(isPaused==1){
+                isPaused=0;
+                var currentSeconds = document.getElementById('displayExerciseSecondsTimer').innerHTML;
+                playVideoElements(currentSeconds);
+            }
         }
         else if(message.command == 'display'){
             console.log(message.exerciseDetails.length);
@@ -237,7 +243,9 @@ var sessionStartTimerDelay = 10;  // in seconds
                 sessionStartTimer.classList.add('hidden');
                 exercisePlayer.classList.remove('hidden');
                 // var seconds = document.getElementById('displayExerciseSecondsTimer').innerHTML;
-                playVideoElements(exerciseSeconds);
+                if(isPaused==0){
+                    playVideoElements(exerciseSeconds);
+                }
                 return;
             }
             i--;
@@ -347,9 +355,13 @@ var sessionStartTimerDelay = 10;  // in seconds
         var videoElements = document.querySelectorAll('.running');
         [].forEach.call(videoElements, function (vidElement) {
             vidElement.load();
-            vidElement.play();
+            if(isPaused==0) {
+                vidElement.play();
+            }
         });
-        startExerciseTimer(seconds , "start");
+        if(isPaused==0) {
+            startExerciseTimer(seconds, "start");
+        }
     }
 
     function pauseVideoElements(seconds) {
