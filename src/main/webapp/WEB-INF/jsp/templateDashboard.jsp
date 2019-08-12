@@ -127,39 +127,44 @@
                         </div>
             <div class="ml-auto mr-4">
                 <%--Checking whether to show add exercise button or Start Section button--%>
-                <c:if test="${isZonePresent=='false'}">
-                    <button type="button" class="btn-sm btn-white btn-rounded" style="width: 150px" onclick="location.href='/selectExercise/${template.getTemplateId()}?zoneId=${zoneId}'" >
-                    Add Excercise
-                    </button>
-                </c:if>
-                <c:if test="${isZonePresent=='true'}">
-                    <c:choose>
-<%--                        if Section is Started--%>
-                        <c:when test="${(isTemplateActive=='true') && (activeTemplate.getTemplateId()==template.getTemplateId())}">
-                            <button type="button" class="btn-md set-btn-outline-orange white-text" style="width: 150px" onclick="location.href='/adminCommand/${template.getTemplateId()}/stop?zoneId=${zoneId}'" >
-                                Stop Section
-                            </button>
-                            <button type="button" class="btn-md btn-white btn-rounded pauseButton" style="width: 150px" onclick="pauseCommand()">
-                                Pause Section
-                            </button>
-                            <button type="button" class="btn-md btn-white btn-rounded resumeButton hidden" style="width: 150px" onclick="resumeCommand()">
-                                Resume Section
-                            </button>
-                        </c:when>
-<%--                        else section is not started--%>
-                        <c:otherwise>
-                            <button type="submit" form="timeConfigForm" class="btn-md set-btn-outline-orange white-text" style="width: 150px" onclick="location.href='/selectExercise/${template.getTemplateId()}?zoneId=${zoneId}'" >
-                                Save Section
-                            </button>
-                            <%--  Disabling Start Section button when a Template/Section is already started  --%>
-                            <c:if test="${isTemplateActive!='true'}">
-                                <button type="button" class="btn-md btn-white btn-rounded" style="width: 150px" onclick="location.href='/adminCommand/${template.getTemplateId()}/start?zoneId=${zoneId}'">
-                                    Start Section
+                <c:choose>
+                    <c:when test="${isZonePresent=='true' || (isTemplateActive == 'true' && (activeTemplate.getTemplateId()==template.getTemplateId()))}">
+                        <c:choose>
+                            <%--                        if Section is Started--%>
+                            <c:when test="${(isTemplateActive=='true') && (activeTemplate.getTemplateId()==template.getTemplateId())}">
+                                <button type="button" class="btn-md set-btn-outline-orange white-text" style="width: 150px" onclick="location.href='/adminCommand/${template.getTemplateId()}/stop?zoneId=${zoneId}'" >
+                                    Stop Section
                                 </button>
-                            </c:if>
-                        </c:otherwise>
-                    </c:choose>
-                </c:if>
+                                <button type="button" class="btn-md btn-white btn-rounded pauseButton" style="width: 150px" onclick="pauseCommand()">
+                                    Pause Section
+                                </button>
+                                <button type="button" class="btn-md btn-white btn-rounded resumeButton hidden" style="width: 150px" onclick="resumeCommand()">
+                                    Resume Section
+                                </button>
+                            </c:when>
+                            <%--                        else section is not started--%>
+                            <c:otherwise>
+                                <button type="submit" form="timeConfigForm" class="btn-md set-btn-outline-orange white-text" style="width: 150px" onclick="location.href='/selectExercise/${template.getTemplateId()}?zoneId=${zoneId}'" >
+                                    Save Section
+                                </button>
+                                <%--  Disabling Start Section button when a Template/Section is already started  --%>
+                                <c:if test="${isTemplateActive!='true'}">
+                                    <button type="button" class="btn-md btn-white btn-rounded" style="width: 150px" onclick="location.href='/adminCommand/${template.getTemplateId()}/start?zoneId=${zoneId}'">
+                                        Start Section
+                                    </button>
+                                </c:if>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:when>
+
+                    <c:otherwise >
+                        <button type="button" class="btn-sm btn-white btn-rounded" style="width: 150px" onclick="location.href='/selectExercise/${template.getTemplateId()}?zoneId=${zoneId}'" >
+                            Add Excercise
+                        </button>
+                    </c:otherwise>
+
+                </c:choose>
+
                 <a><img src="../img/settings.svg" class="img-fluid"></a>
             </div>
         </nav>
@@ -213,17 +218,26 @@
         <c:if test="${isZonePresent=='false'}">
             <span class="col-md-9 col-sm-5 card base-r1 "  style="margin-left: -30px;z-index: 2;">
                 <div class=" flex-center">
-                        <div class="text-center">
-                            <%--        Gym Dumbell add exercise LOGO    --%>
-                             <a type="button" href="/selectExercise/${template.getTemplateId()}?zoneId=${zoneId}">
-                                 <img src="../img/gym.svg" style="width: 40px;height: 40px;">
-                             </a>
-                            <br>
-                            <%--     Add Exercise Button   --%>
-                            <button type="button" onclick="location.href='/selectExercise/${template.getTemplateId()}?zoneId=${zoneId}'" class="set-btn-outline btn-rounded waves-effect" style="width: 180px;border: solid 1px #0d0d0d" >
-                                Add Exercise
-                            </button>
+                    <c:choose>
+                        <c:when test="${(isTemplateActive=='true') && (activeTemplate.getTemplateId()==template.getTemplateId())}">
+                            <div class="text-center">
+                                <h2>No Exercise Selected for this zone</h2>
+                            </div>
+                        </c:when>
+                        <c:otherwise>
+                             <div class="text-center">
+                                <%--        Gym Dumbell add exercise LOGO    --%>
+                                 <a type="button" href="/selectExercise/${template.getTemplateId()}?zoneId=${zoneId}">
+                                     <img src="../img/gym.svg" style="width: 40px;height: 40px;">
+                                 </a>
+                                <br>
+                                <%--     Add Exercise Button   --%>
+                                <button type="button" onclick="location.href='/selectExercise/${template.getTemplateId()}?zoneId=${zoneId}'" class="set-btn-outline btn-rounded waves-effect" style="width: 180px;border: solid 1px #0d0d0d" >
+                                    Add Exercise
+                                </button>
                         </div>
+                        </c:otherwise>
+                    </c:choose>
                 </div>
             </span>
         </c:if>

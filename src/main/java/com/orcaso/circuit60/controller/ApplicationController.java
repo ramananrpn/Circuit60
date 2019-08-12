@@ -147,9 +147,9 @@ public class ApplicationController {
 //                        Fetching Saved exercise Details List
                         List<Exercise> exerciseList = zoneDetails.getExerciseDetails();
                         model.addAttribute("exerciseList" , exerciseList);
-                        //        Checking if is any template session started and getting details
-                        model = checkAndGetActiveTemplateDetails(model);
                     }
+                    //        Checking if is any template session started and getting details
+                    model = checkAndGetActiveTemplateDetails(model);
                     return "templateDashboard";
                 }catch (Exception e){
                     logger.error("Exception Caught at /templateDashboard :: " + e);
@@ -379,6 +379,7 @@ public class ApplicationController {
         //  Checking ant template is started/active
         Boolean isTemplateActive = templateRepository.existsTemplatesByActive(1);
         model.addAttribute("isTemplateActive" , isTemplateActive);
+        logger.info("isTemplateActive : " + isTemplateActive );
         //  If template is started fetching its details
         if(isTemplateActive){
             Templates activeTemplate = templateRepository.findTemplatesByActive(1);
