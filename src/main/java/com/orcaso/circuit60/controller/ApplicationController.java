@@ -76,7 +76,6 @@ public class ApplicationController {
 //            setting session attribute - gymId
             logger.info("Login Successful");
             request.getSession().setAttribute("gymId" , admin.getGymId() );
-
 //            Redirecting to /adminDashboard
             return "redirect:/adminDashboard";
         }
@@ -93,16 +92,17 @@ public class ApplicationController {
             //      Retrieve Template
             List<Templates> templateList = getTemplates();
             Templates temporaryObject=null;
+            int duration = 0;
             logger.info("List of all templates to be passed : " + templateList);
             for(Templates templateObject: templateList) {
             	//getting the exerciseCount and the exerciseDuration and setting inside template List
             	temporaryObject=getExcerciseCountAndExerciseDuration(templateObject);
             	templateObject.setExerciseCount(temporaryObject.getExerciseCount());
-            	templateObject.setExerciseDuration(temporaryObject.getExerciseDuration());
+            	templateObject.setExerciseDuration(temporaryObject.getExerciseDuration()/60);
+            	templateObject.setExerciseDurationSeconds(temporaryObject.getExerciseDuration()%60);
             	logger.info("templateObject"+templateObject.getExerciseCount());
             }
             model.addAttribute("templateList" , templateList);
-            
             return "adminDashboard";
         }
         return "redirect:/";
@@ -122,8 +122,7 @@ public class ApplicationController {
 //    Zone Add exercise dashboard
     @RequestMapping("/templateDashboard/{templateId}")
     public String templateDashboard(@PathVariable("templateId") Long templateId , Model model,HttpServletRequest request){
-
-            if(validUser(request)!=null){
+    		if(validUser(request)!=null){
                 try{
                     currentTemplate = getTemplateById(templateId);
                     logger.info("Selected template Name = "+currentTemplate.getTemplateName());
@@ -167,6 +166,8 @@ public class ApplicationController {
         try{
             exerciseSecs += (exerciseMins*60);
             breakSecs += (breakMins*60);
+            logger.info("exerciseSecs"+exerciseSecs);
+            logger.info("exerciseSecs"+exerciseMins);
             currentTemplate = getTemplateById(templateId);
             if(currentTemplate!=null){
                 Zones zoneDetails = zoneRepository.findZonesByTemplateIdAndZone(currentTemplate , zone);
@@ -298,7 +299,8 @@ public class ApplicationController {
 
 //        To update active column in database
         switch (command){
-            case "start" : {
+            case "start" : 
+            case "resume":{
                 Templates templateToUpdate = templateRepository.findTemplatesByTemplateId(templateId);
                 templateToUpdate.setActive(1);
                 break;
