@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TemplateRepository extends CrudRepository<Templates , Long> {
     Templates findTemplatesByTemplateId(Long templateId);
+    Templates findTemplatesByActive(int active);
+    Boolean existsTemplatesByActive(int active);
 }

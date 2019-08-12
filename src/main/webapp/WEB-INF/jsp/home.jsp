@@ -38,7 +38,7 @@
 </style>
 <body>
 <!-- Full Page Intro -->
-<div class="view" style="background-image: url('img/action-athlete-barbell-841130.png'); background-repeat: no-repeat; background-size: cover; background-position: center center;">
+<div class="view" style="background-image: url('/img/action-athlete-barbell-841130.png'); background-repeat: no-repeat; background-size: cover; background-position: center center;">
     <!-- Mask & flexbox options-->
     <div class="mask rgba-gradient align-items-center">
         <!-- Content -->
@@ -49,12 +49,15 @@
                 <div class="col-md-12 white-text text-center flex-center">
                     <div class="container">
                     <img src="img/Logo.png" class="img-fluid ml-4">
-                        <form class="text-center mt-4" name="adminForm" method="post" action="/adminLogin">
+                        <form id="dummyForm" class="mt-4" onsubmit="event.preventDefault();stopSubmit()">
                             <div class="input-group-append" id="gymId" autocomplete="off">
-                                <input type="text" class="form-control form-rounded input-lg " placeholder="Gym ID" style="width: 320px" autocomplete="off" name="gymId">
-                                <span ><a type="button" style="margin-left: -40px" onclick="show()" id="gymIdSubmit"><img src="img/Next.svg" class="img-responsive next"></a></span>
+                                <input type="text" class="form-control form-rounded input-lg " placeholder="Gym ID" style="width: 320px" autocomplete="off" name="srcGymId" id="srcGymId" onkeyup="copyValue()">
+                                <span ><input type="image" src="img/Next.svg" onclick="show()" id="gymIdSubmit" class="submit img-responsive next" style="margin-left: -40px" ></span>
                             </div>
+                        </form>
+                        <form class="text-center" name="adminForm" method="post" action="/adminLogin">
                             <div class="input-group-append mb-1 hide-block-visibility" id="passwordContent">
+                                <input type = "hidden" name="gymId" id="destGymId">
                                 <input type="password"  class="form-control form-rounded input-lg " placeholder="Password" style="width: 320px" name="password">
                                 <span><input type="image" src="img/Next.svg" class="submit img-responsive next" style="margin-left: -40px" ></span>
                             </div>
@@ -84,6 +87,23 @@
             alert("Please enter Gym ID");
         }
     }
+
+//    fn to copy gym id  in hidden textBox
+    function copyValue(){
+        var src = document.getElementById('srcGymId');
+        var dest = document.getElementById('destGymId');
+        dest.value=src.value;
+    }
+    
+    function stopSubmit() {
+        return false;
+    }
+</script>
+
+<script>
+    $("#dummyForm").submit(function(event){
+        event.preventDefault();
+    });
 </script>
 <!-- JQuery -->
 <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>

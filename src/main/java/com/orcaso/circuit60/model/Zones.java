@@ -1,16 +1,19 @@
 package com.orcaso.circuit60.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.orcaso.circuit60.converter.StringMapConverter;
 
 import javax.persistence.*;
-import java.util.Map;
-import java.util.Set;
+import java.util.List;
+
 
 @Entity
 @Table(name = "template_zone_details")
 public class Zones {
     @Id
     @Column(name = "zone_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long zoneId;
 
 //    Creating relation for zoneId
@@ -25,20 +28,22 @@ public class Zones {
     @Column(name = "zone")
     private String zone;
 
-    @Column(name = "seconds")
-    private long seconds;
+    @Column(name = "seconds" , columnDefinition = "int default 00")
+    private int seconds;
 
-    @Column(name="reps")
+    @Column(name="reps" , columnDefinition = "int default 1")
     private int reps;
 
-    @Column(name = "break_time")
-    private long breakTime;
+    @Column(name = "break_time" , columnDefinition = "int default 00")
+    private int breakTime;
 
-//    USED JSON DATATYPE - MAP to store exercise
+    //    USED JSON DATATYPE - MAP to store exercise
 //    Convert is used to convert Data from entity to dbcolumn and viceversa
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "exercise_relation", joinColumns = @JoinColumn(name = "zoneId"))
     @Column(name="exercise_details")
-    @Convert(converter = StringMapConverter.class)
-    private Map<String, String> exerciseDetails;
+    @JsonIgnore
+    private List<Exercise> exerciseDetails;
 
 
     //Getters & Setters
@@ -68,11 +73,11 @@ public class Zones {
         this.zone = zone;
     }
 
-    public long getSeconds() {
+    public int getSeconds() {
         return seconds;
     }
 
-    public void setSeconds(long seconds) {
+    public void setSeconds(int seconds) {
         this.seconds = seconds;
     }
 
@@ -84,20 +89,19 @@ public class Zones {
         this.reps = reps;
     }
 
-    public long getBreakTime() {
+    public int getBreakTime() {
         return breakTime;
     }
 
-    public void setBreakTime(long breakTime) {
+    public void setBreakTime(int breakTime) {
         this.breakTime = breakTime;
     }
 
-    public Map<String, String> getExerciseDetails() {
+    public List<Exercise> getExerciseDetails() {
         return exerciseDetails;
     }
 
-    public void setExerciseDetails(Map<String, String> exerciseDetails) {
+    public void setExerciseDetails(List<Exercise> exerciseDetails) {
         this.exerciseDetails = exerciseDetails;
     }
-
 }
