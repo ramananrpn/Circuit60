@@ -410,7 +410,7 @@
   
                        <div class="row d-flex align-content-start">
 
-                         <span class="ml-4">
+                         <span class="ml-5 row d-flex align-content-start">
                            <p id="exerciseIncreasingMinutes">00</p> <p id="exerciseIncreasingSeconds">:00</p>
                           </span>
                         <div class="container-fluid" style="width: 900px" >
@@ -420,9 +420,8 @@
                                         </div>
                                  </div>
                         </div>
-                         <span class="mr-4">
+                         <span class="mr-5 row d-flex align-content-start">
                             <p id="exerciseDecreasingMinutes">00</p><p id="exerciseDecreasingSeconds">:00</p>
-                            
                          </span>
 
 
