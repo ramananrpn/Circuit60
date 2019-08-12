@@ -86,28 +86,31 @@
         </div>
     </div>
 
-<%--After Start Screen--%>
-<div id="sessionStartTimer" class="container-fluid text-center hidden mt-5" >
-    <h2>The Session will start in </h2>
-    <!--Grid column-->
+                            <%---------------------      SESSION START TIMER        ---------------------------%>
 
-        <div class="container-fluid img-fluid mt-5" style="background-image: url(/img/sessionStartBg.svg);background-repeat: no-repeat;width: auto;height: auto;background-position: center center;">
-            <div class="flex-center">
-                <span class="draw-ellipse flex-center" style="z-index: 1">
-                     <span class="draw-circle flex-center " >
-                        <h1 id="sectionStartTimerSeconds" class="white-text" ></h1>
+<%--After Start Screen - SESSION START TIMER --%>
+<div class="flex-center hidden" id="sessionStartTimer" style="height: 100vh;width: 100%">
+    <div  class="container-fluid text-center" >
+        <h2>The Session will start in </h2>
+        <!--Grid column-->
+            <div class="container-fluid img-fluid mt-5" style="background-image: url(/img/sessionStartBg.svg);background-repeat: no-repeat;width: auto;height: auto;background-position: center center;">
+                <div class="flex-center">
+                    <span class="draw-ellipse flex-center" style="z-index: 1">
+                         <span class="draw-circle flex-center " >
+                            <h1 id="sectionStartTimerSeconds" class="white-text" ></h1>
+                        </span>
                     </span>
-                </span>
 
+                </div>
             </div>
-        </div>
-    <!--Grid column-->
-<%--    <div class="card card-image img-fluid" style="background-image: url(/img/sessionStartBg.svg);">--%>
-<%--        <img src="/img/sessionStartBg.svg" alt="sessionTimer" class="img-fluid">--%>
+        <!--Grid column-->
+    <%--    <div class="card card-image img-fluid" style="background-image: url(/img/sessionStartBg.svg);">--%>
+    <%--        <img src="/img/sessionStartBg.svg" alt="sessionTimer" class="img-fluid">--%>
+    </div>
 </div>
 
 
-                <%--  ---------------------   EXERCISE DISPLAY SCREEN  ------------------------------   --%>
+                    <%--  ---------------------   EXERCISE DISPLAY SCREEN  ------------------------------   --%>
 <%--Section Video Player--%>
 
 <div class="row overflow-hidden hidden" id="exerciseDisplayScreen">
@@ -197,11 +200,12 @@
 
 
                                 <%--     -----------------------------REPS ITERATOR SCREEN ---------------------------   --%>
+
 <div style="background-color: 	#F8F8F8 ; width: 100%;height: 100vh" class="flex-center hidden" id="repsIteratorScreen">
     <div class="row d-flex align-content-start">
         <span>
             <span class="">
-             <b><p class="position-absolute text-center ml-3" style="color: #ffa700;margin-top: -18px;font-size: 23px;font-weight: 800" id="repsZoneText">ZONE 01</p></b>
+             <b><p class="position-absolute text-center ml-3" style="color: #ffa700;margin-top: -18px;font-size: 23px;font-weight: 800" id="repsZoneText"></p></b>
          </span>
         <a class="btn display-orange-button flex-center" style="width: 280px;height: 100px">
                         <span class="d-flex align-content-start">
@@ -214,7 +218,7 @@
                                         <p class="white-text" style="font-size: 15px">Circuit60's</p>
                                     </span>
                                     <span class="d-flex align-content-start">
-                                        <h5 class="black-text" style="font-size: 24px"><b id="repsTemplateNameText" style="font-weight: 800">Super Arm</b></h5>
+                                        <h5 class="black-text" style="font-size: 24px"><b id="repsTemplateNameText" style="font-weight: 800"></b></h5>
                                     </span>
                             </div>
                         </span>
@@ -224,17 +228,54 @@
             <p style="font-weight: 900;font-size: 70px">x </p>&nbsp;
         </span>
         <span class="flex-center ml-2">
-                 <p style="font-size: 81px;font-weight: 900" id="repsIteratorText"> 2 REPS</p>
+                 <p style="font-size: 81px;font-weight: 900" id="repsIteratorText"> </p>
             </span>
     </div>
 </div>
 <%----%>
+                                     <%--  ---------------------     BREAK TIMER SCREEN   --------------------      --%>
 
-<%-- ON ERROR --%>
+<%-- BREAK TIMER--%>
+<div class="flex-center hidden" id="breakTimer" style="height: 100vh;width: 100%">
+    <div  class=" text-center " >
+        <h2> Water Break end in </h2>
+        <!--Grid column-->
+        <div class=" img-fluid mt-3" style="background-image: url(/img/breakScreen.svg);background-repeat: no-repeat;width: auto;height: auto;background-position: center center;">
+            <div class="flex-center">
+                <span class="draw-ellipse flex-center" style="z-index: 1;">
+                     <span class="draw-circle flex-center " style="background-color: #00a2fe" >
+                        <h1 id="breakTimerSeconds" class="white-text" ></h1>
+                    </span>
+                </span>
+
+            </div>
+        </div>
+
+        <h2 class="mt-3">
+            <b>"Being defeated is often a temporary condition.<br>
+                Giving up is what makes it permanent."</b>
+        </h2>
+        <!--Grid column-->
+        <%--    <div class="card card-image img-fluid" style="background-image: url(/img/sessionStartBg.svg);">--%>
+        <%--        <img src="/img/sessionStartBg.svg" alt="sessionTimer" class="img-fluid">--%>
+    </div>
+</div>
+<%----%>
+
+<%----   -----------------   SWITCH SCREEN    ------  --------- ---%>
+
+<%--       SWITCH SCREEN     --%>
+
+<div class="flex-center hidden" id="switchScreen" style="height: 100vh;width: 100%">
+    <img src="/img/switch.svg" class="img-fluid">
+</div>
+
+<%----%>
+<%-- -------------      ON ERROR       -------------%>
 <div class="row flex-center hidden" id="error">
     <h5 class="black-text" id="displayErrorText"></h5>
-
 </div>
+<%----%>
 
 
 <!-- SCRIPTS -->

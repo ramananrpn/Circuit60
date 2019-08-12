@@ -28,15 +28,16 @@ public class AdminClientWebSocketController {
     TemplateRepository templateRepository;
 
 //    New Client Joins a zone
-    @MessageMapping("/newZoneClient.{destinationZone}")
-    @SendTo("/zone/client.{destinationZone}")
-    public SocketMessage newZoneClient(@DestinationVariable String destinationZone, @Payload SocketMessage clientMessage , SimpMessageHeaderAccessor headerAccessor){
+    @MessageMapping("/newZoneClient.{destinationZone}.{timestamp}")
+    @SendTo("/zone/client.{destinationZone}.{timestamp}")
+    public SocketMessage newZoneClient(@DestinationVariable String destinationZone, @DestinationVariable String timestamp,@Payload SocketMessage clientMessage , SimpMessageHeaderAccessor headerAccessor){
         try{
-            ApplicationController.connectedZones.add(destinationZone);
+            ApplicationController.connectedZones.add(destinationZone+"."+timestamp);
             headerAccessor.getSessionAttributes().put("connectedZone", clientMessage.getZone());
+            headerAccessor.getSessionAttributes().put("connectedTimestamp", timestamp);
 //        model.addAttribute("webZone" , clientMessage.getZone());
             logger.info("Message Received - " + clientMessage);
-            logger.info("**********-------------  New Client Connected for " +  destinationZone + " ----------------**********");
+            logger.info("**********-------------  New Client Connected for " +  destinationZone + " : timestamp " +timestamp+" ----------------**********");
         }
         catch(Exception e){
             logger.error("Exception Occurred at webSocket :: " + e);
@@ -45,9 +46,9 @@ public class AdminClientWebSocketController {
     }
 
 //    Exercise Display
-    @MessageMapping("/fetchExerciseDetails.{destinationZone}")
-    @SendTo("/zone/client.{destinationZone}")
-    public Display fetchExerciseDetails(@DestinationVariable String destinationZone,@Payload SocketMessage clientMessage) {
+    @MessageMapping("/fetchExerciseDetails.{destinationZone}.{timestamp}")
+    @SendTo("/zone/client.{destinationZone}.{timestamp}")
+    public Display fetchExerciseDetails(@DestinationVariable String destinationZone,@DestinationVariable String timestamp,@Payload SocketMessage clientMessage) {
         ObjectMapper mapper = new ObjectMapper();
         Display display = new Display();
         try{
@@ -66,7 +67,7 @@ public class AdminClientWebSocketController {
 //            logger.info("!!!!!!!!!----------  EXCERCISE DETAILS :: " + exerciseDetails + " ------------!!!!!!!!!! ");
             }
             else{
-                logger.info("---------------============== SENDINg DISPLAY EMPTY COMMAND =============----------------");
+                logger.info("---------------============== SENDING DISPLAY EMPTY COMMAND =============----------------");
                 display.setCommand("empty");
             }
 

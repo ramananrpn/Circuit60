@@ -1,4 +1,5 @@
 <%@ page import="java.util.ResourceBundle" %>
+<%@ page import="com.orcaso.circuit60.model.Zones" %>
 <%--Developer Notes
     Specify ../ for all static files before context path
      --%>
@@ -126,39 +127,44 @@
                         </div>
             <div class="ml-auto mr-4">
                 <%--Checking whether to show add exercise button or Start Section button--%>
-                <c:if test="${isZonePresent=='false'}">
-                    <button type="button" class="btn-sm btn-white btn-rounded" style="width: 150px" onclick="location.href='/selectExercise/${template.getTemplateId()}?zoneId=${zoneId}'" >
-                    Add Excercise
-                    </button>
-                </c:if>
-                <c:if test="${isZonePresent=='true'}">
-                    <c:choose>
-<%--                        if Section is Started--%>
-                        <c:when test="${(isTemplateActive=='true') && (activeTemplate.getTemplateId()==template.getTemplateId())}">
-                            <button type="button" class="btn-md set-btn-outline-orange white-text" style="width: 150px" onclick="location.href='/adminCommand/${template.getTemplateId()}/stop?zoneId=${zoneId}'" >
-                                Stop Section
-                            </button>
-                            <button type="button" class="btn-md btn-white btn-rounded pauseButton" style="width: 150px" onclick="pauseCommand()">
-                                Pause Section
-                            </button>
-                            <button type="button" class="btn-md btn-white btn-rounded resumeButton hidden" style="width: 150px" onclick="resumeCommand()">
-                                Resume Section
-                            </button>
-                        </c:when>
-<%--                        else section is not started--%>
-                        <c:otherwise>
-                            <button type="submit" form="timeConfigForm" class="btn-md set-btn-outline-orange white-text" style="width: 150px" onclick="location.href='/selectExercise/${template.getTemplateId()}?zoneId=${zoneId}'" >
-                                Save Section
-                            </button>
-                            <%--  Disabling Start Section button when a Template/Section is already started  --%>
-                            <c:if test="${isTemplateActive!='true'}">
-                                <button type="button" class="btn-md btn-white btn-rounded" style="width: 150px" onclick="location.href='/adminCommand/${template.getTemplateId()}/start?zoneId=${zoneId}'">
-                                    Start Section
+                <c:choose>
+                    <c:when test="${isZonePresent=='true' || (isTemplateActive == 'true' && (activeTemplate.getTemplateId()==template.getTemplateId()))}">
+                        <c:choose>
+                            <%--                        if Section is Started--%>
+                            <c:when test="${(isTemplateActive=='true') && (activeTemplate.getTemplateId()==template.getTemplateId())}">
+                                <button type="button" class="btn-md set-btn-outline-orange white-text" style="width: 150px" onclick="location.href='/adminCommand/${template.getTemplateId()}/stop?zoneId=${zoneId}'" >
+                                    Stop Section
                                 </button>
-                            </c:if>
-                        </c:otherwise>
-                    </c:choose>
-                </c:if>
+                                <button type="button" class="btn-md btn-white btn-rounded pauseButton" style="width: 150px" onclick="pauseCommand()">
+                                    Pause Section
+                                </button>
+                                <button type="button" class="btn-md btn-white btn-rounded resumeButton hidden" style="width: 150px" onclick="resumeCommand()">
+                                    Resume Section
+                                </button>
+                            </c:when>
+                            <%--                        else section is not started--%>
+                            <c:otherwise>
+                                <button type="submit" form="timeConfigForm" class="btn-md set-btn-outline-orange white-text" style="width: 150px" onclick="location.href='/selectExercise/${template.getTemplateId()}?zoneId=${zoneId}'" >
+                                    Save Section
+                                </button>
+                                <%--  Disabling Start Section button when a Template/Section is already started  --%>
+                                <c:if test="${isTemplateActive!='true'}">
+                                    <button type="button" class="btn-md btn-white btn-rounded" style="width: 150px" onclick="location.href='/adminCommand/${template.getTemplateId()}/start?zoneId=${zoneId}'">
+                                        Start Section
+                                    </button>
+                                </c:if>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:when>
+
+                    <c:otherwise >
+                        <button type="button" class="btn-sm btn-white btn-rounded" style="width: 150px" onclick="location.href='/selectExercise/${template.getTemplateId()}?zoneId=${zoneId}'" >
+                            Add Excercise
+                        </button>
+                    </c:otherwise>
+
+                </c:choose>
+
                 <a><img src="../img/settings.svg" class="img-fluid"></a>
             </div>
         </nav>
@@ -212,28 +218,53 @@
         <c:if test="${isZonePresent=='false'}">
             <span class="col-md-9 col-sm-5 card base-r1 "  style="margin-left: -30px;z-index: 2;">
                 <div class=" flex-center">
-                        <div class="text-center">
-                            <%--        Gym Dumbell add exercise LOGO    --%>
-                             <a type="button" href="/selectExercise/${template.getTemplateId()}?zoneId=${zoneId}">
-                                 <img src="../img/gym.svg" style="width: 40px;height: 40px;">
-                             </a>
-                            <br>
-                            <%--     Add Exercise Button   --%>
-                            <button type="button" onclick="location.href='/selectExercise/${template.getTemplateId()}?zoneId=${zoneId}'" class="set-btn-outline btn-rounded waves-effect" style="width: 180px;border: solid 1px #0d0d0d" >
-                                Add Exercise
-                            </button>
+                    <c:choose>
+                        <c:when test="${(isTemplateActive=='true') && (activeTemplate.getTemplateId()==template.getTemplateId())}">
+                            <div class="text-center">
+                                <h2>No Exercise Selected for this zone</h2>
+                            </div>
+                        </c:when>
+                        <c:otherwise>
+                             <div class="text-center">
+                                <%--        Gym Dumbell add exercise LOGO    --%>
+                                 <a type="button" href="/selectExercise/${template.getTemplateId()}?zoneId=${zoneId}">
+                                     <img src="../img/gym.svg" style="width: 40px;height: 40px;">
+                                 </a>
+                                <br>
+                                <%--     Add Exercise Button   --%>
+                                <button type="button" onclick="location.href='/selectExercise/${template.getTemplateId()}?zoneId=${zoneId}'" class="set-btn-outline btn-rounded waves-effect" style="width: 180px;border: solid 1px #0d0d0d" >
+                                    Add Exercise
+                                </button>
                         </div>
+                        </c:otherwise>
+                    </c:choose>
                 </div>
             </span>
         </c:if>
 
 <%--    Display Exercise CRUD screen when exercise found for the current zone   --%>
         <c:if test="${isZonePresent=='true'}">
+            <%--       Fetching Saved TIME CONFIG   --%>
+            <%
+                //exercise time
+                Zones zones = (Zones) request.getAttribute("zoneDetails");
+                int exMins = zones.getSeconds()/60;
+                String exerciseMins = exMins < 10 ? "0"+exMins : ""+exMins ;
+                int exSecs = zones.getSeconds()%60;
+                String exerciseSeconds = exSecs < 10 ? "0"+exSecs : ""+exSecs ;
+
+                // Break Time
+                int brMins = zones.getBreakTime()/60;
+                String breakMins = brMins < 10 ? "0"+brMins : ""+brMins ;
+                int brSecs = zones.getSeconds()%60;
+                String breakSeconds = brSecs < 10 ? "0"+brSecs : ""+brSecs ;
+            %>
             <span class="col-md-9 col-sm-5 card base-r1 "  style="margin-left: -30px;z-index: 2;height: auto">
                 <div class="container-fluid">
                     <br>
                     <%--         Excersie time reps brefore configure           --%>
                      <c:choose>
+<%--                         WHEN SESSION STARTED - disable time config edit--%>
                          <c:when test="${(isTemplateActive=='true') && (activeTemplate.getTemplateId()==template.getTemplateId())}">
 		                        <div class="row d-flex justify-content-center md-form">
 		                            <div class="col-md-4 ">
@@ -242,59 +273,42 @@
 		                                        <span class="flex-center">
 		                                            <img src="../img/clock.svg">
 		                                            <p class="ml-2">Seconds Per Exercise</p>
-		                                     <!--        <a class="button mt-2" onclick="decreaseExerciseSeconds()">
-		                                                <img src="../img/minusButton.svg">
-		                                            </a> -->
-		                                            <span style="color: #707070" class="flex-center ml-1">
-		                                               <p id="mins" >${zoneDetails.getSeconds()/60}</p>
-		                                                <p >:</p>
-		                                                <p id="secs">${zoneDetails.getSeconds()%60}</p>
-			                                            </span>
-		                                           <!-- <a class="button mt-2" onclick="increaseExerciseSeconds()">
-		                                               <img src="../img/plusButton.svg">
-		                                           </a> -->
+		                                            <span style="color: #707070" class="flex-center ml-2">
+		                                                <p ><%= exerciseMins%></p>
+		                                                    <p >:</p>
+		                                                <p><%= exerciseSeconds %></p>
+                                                    </span>
+
 		                                        </span>
 		                                    </div>
 		                                </span>
 		                            </div>
+<%--                                    REPS    --%>
 		                            <div class="col-md-3 d-flex justify-content-center">
 		                                <span class="card exerciseCustomise-card flex-center" style="width: 240px;" >
 		                                    <div class="row">
 		                                        <span class="flex-center">
 		                                            <img src="../img/reps.svg">
-		                                            <p class="ml-2">Reps</p>
-		                                           <!--  <a class="button mt-2" onclick="decreaseReps()">
-		                                                <img src="../img/minusButton.svg">
-		                                            </a> -->
-		                                            <span style="color: #707070" class="flex-center ml-1">
+                                                    <p class="ml-2">Reps</p>
+		                                            <span style="color: #707070" class="flex-center ml-2">
 		                                               <p>${zoneDetails.getReps()}</p>
 		                                            </span>
-		                                        <!--    <a class="button mt-2" onclick="increaseReps()">
-		                                               <img src="../img/plusButton.svg">
-		                                           </a> -->
 		                                        </span>
 		                                    </div>
 		                                </span>
 		                            </div>
+<%--                                    BREAK   --%>
 		                            <div class="col-md-3 d-flex justify-content-center">
 		                                <span class="card exerciseCustomise-card flex-center" style="width: 283px;" >
 		                                    <div class="row">
 		                                        <span class="flex-center">
 		                                            <img src="../img/break.svg">
 		                                            <p class="ml-2">Break</p>
-		                                           <!--  <a class="button mt-2" onclick="decreaseBreakSeconds()">
-		                                                <img src="../img/minusButton.svg">
-		                                            </a> -->
-		                                                <span style="color: #707070" class="flex-center ml-1">
-		                          
-		                                                  <p id="mins" >${zoneDetails.getBreakTime()/60}</p>
+		                                                <span style="color: #707070" class="flex-center ml-2">
+		                                                  <p><%=breakMins%></p>
 		                                                    <p >:</p>
-		                                                  <p id="secs" >${zoneDetails.getBreakTime()%60}</p>
-		                            
+		                                                  <p><%=breakSeconds%>s</p>
 		                                                 </span>
-		                                           <!-- <a class="button mt-2" onclick="increaseBreakSeconds()">
-		                                               <img src="../img/plusButton.svg">
-		                                           </a> -->
 		                                        </span>
 		                                    </div>
 		                                </span>
@@ -315,12 +329,10 @@
 		                                                <img src="../img/minusButton.svg">
 		                                            </a>
 		                                            <span style="color: #707070" class="flex-center ml-1">
-		                                                <input type="number" id="exerciseMins" name="exerciseMins" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="${zoneDetails.getSeconds()/60}"
+		                                                <input type="number" id="exerciseMins" name="exerciseMins" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="<%=exerciseMins%>"
 		                                                       onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
-		    <%--                                            <p id="mins" >00</p>--%>
 		                                                <p >:</p>
-		    <%--                                            <p id="secs" >45</p>--%>
-		                                                <input type="number" id="exerciseSecs" name="exerciseSecs" class="form-control form-control-sm text-center" min="00" max="60" style="width: 25px" value="${zoneDetails.getSeconds()%60}"
+		                                                <input type="number" id="exerciseSecs" name="exerciseSecs" class="form-control form-control-sm text-center" min="00" max="60" style="width: 25px" value="<%=exerciseSeconds%>"
 		                                                       onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
 		                                            </span>
 		                                           <a class="button mt-2" onclick="increaseExerciseSeconds()">
@@ -359,12 +371,10 @@
 		                                                <img src="../img/minusButton.svg">
 		                                            </a>
 		                                                <span style="color: #707070" class="flex-center ml-1">
-		                                                <input type="number" id="breakMins" name="breakMins" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="${zoneDetails.getBreakTime()/60}"
+		                                                <input type="number" id="breakMins" name="breakMins" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="<%=breakMins%>"
 		                                                       onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
-		                                                <%--   <p id="mins" >00</p>--%>
 		                                                    <p >:</p>
-		                                                <%--                                            <p id="secs" >45</p>--%>
-		                                                <input type="number" id="breakSecs" name="breakSecs" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="${zoneDetails.getBreakTime()%60}"
+		                                                <input type="number" id="breakSecs" name="breakSecs" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="<%=breakSeconds%>"
 		                                                       onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
 		                                                 </span>
 		                                           <a class="button mt-2" onclick="increaseBreakSeconds()">
@@ -399,6 +409,7 @@
 
   
                        <div class="row d-flex align-content-start">
+
                          <span class="ml-4">
                            <p id="exerciseIncreasingMinutes">00</p> <p id="exerciseIncreasingSeconds">:00</p>
                           </span>
@@ -413,6 +424,7 @@
                             <p id="exerciseDecreasingMinutes">00</p><p id="exerciseDecreasingSeconds">:00</p>
                             
                          </span>
+
 
                     </div>
 

@@ -140,6 +140,37 @@
     </div>
 </div>
 
+<%-- Water Break SCREEN --%>
+<div class="flex-center hidden" id="breakTimer" style="height: 100vh;width: 100%">
+    <div  class=" text-center " >
+        <h2> Water Break end in </h2>
+        <!--Grid column-->
+        <div class=" img-fluid mt-3" style="background-image: url(/img/breakScreen.svg);background-repeat: no-repeat;width: auto;height: auto;background-position: center center;">
+            <div class="flex-center">
+                <span class="draw-ellipse flex-center" style="z-index: 1;">
+                     <span class="draw-circle flex-center " style="background-color: #00a2fe" >
+                        <h1 id="breakTimerSeconds" class="white-text" ></h1>
+                    </span>
+                </span>
+
+            </div>
+        </div>
+
+        <h2 class="mt-3">
+            <b>"Being defeated is often a temporary condition.<br>
+                Giving up is what makes it permanent."</b>
+        </h2>
+        <!--Grid column-->
+        <%--    <div class="card card-image img-fluid" style="background-image: url(/img/sessionStartBg.svg);">--%>
+        <%--        <img src="/img/sessionStartBg.svg" alt="sessionTimer" class="img-fluid">--%>
+    </div>
+</div>
+
+<%--       SWITCH SCREEN     --%>
+
+<div class="flex-center " id="switchScreen" style="height: 100vh;width: 100%">
+    <img src="/img/switch.svg" class="img-fluid">
+</div>
 
 
 

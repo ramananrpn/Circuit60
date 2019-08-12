@@ -42,7 +42,10 @@ public class Templates {
     @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
     private Date lastUpdatedDate;
-    
+
+    @Column(name = "switch_screen_duration" , columnDefinition = "int default 15")
+    private int switchScreenDuration;
+
     private int exerciseCount;
     private int exerciseDuration;
     private int exerciseDurationSeconds;
@@ -110,6 +113,14 @@ public class Templates {
 
     public void setLastUpdatedDate(Date lastUpdatedDate) {
         this.lastUpdatedDate = lastUpdatedDate;
+    }
+
+    public int getSwitchScreenDuration() {
+        return switchScreenDuration;
+    }
+
+    public void setSwitchScreenDuration(int switchScreenDuration) {
+        this.switchScreenDuration = switchScreenDuration;
     }
 
     @Override

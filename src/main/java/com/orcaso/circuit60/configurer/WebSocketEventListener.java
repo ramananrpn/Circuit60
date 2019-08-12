@@ -39,11 +39,12 @@ public class WebSocketEventListener {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
 
         String connectedZone = (String) headerAccessor.getSessionAttributes().get("connectedZone");
-        if(connectedZone != null) {
-            logger.info("Client Disconnected : " + connectedZone);
+        String connectedTimestamp = (String) headerAccessor.getSessionAttributes().get("connectedTimestamp");
+        if(connectedZone != null &&connectedTimestamp!=null) {
+            logger.info("Client Disconnected : " + connectedZone+"."+connectedTimestamp);
             SocketMessage socketMessage = new SocketMessage();
             socketMessage.setCommand("stop");
-            messagingTemplate.convertAndSend("/zone/client."+connectedZone, socketMessage);
+            messagingTemplate.convertAndSend("/zone/client."+connectedZone+"."+connectedTimestamp, socketMessage);
             ApplicationController.connectedZones.remove(connectedZone);
         }
     }

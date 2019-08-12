@@ -108,12 +108,12 @@
                     </div>
                     <div class="row flex-center" >
                         <div class="text-center Rectangle-1379 flex-center">
-                            <div>
+                            <div class="mt-5">
                                 <p>Want to Upload Logo?</p>
                                 <br>
                                 <button type="submit" class="btn-sm set-btn-outline set-text-violet btn-rounded waves-effect" style="width: 80px;" onclick="showTemplate()">Skip</button>
                                <!--  <input type="file"  value="upload"class="btn-sm btn-rounded set-text-white" style="width: 80px;background-color: #5e31e9;"> -->
-                              <label class="btn-sm btn-rounded set-text-white" for="customFile">upload</label>
+                              <label class="btn-sm btn-rounded set-text-white" for="customFile" style="width:80px ">upload</label>
                                <div class="custom-file">
                                	  <input type="file" class="custom-file-input btn-sm btn-rounded" id="customFile" name="templateLogo">
 								</div>
