@@ -252,11 +252,10 @@
                 String exerciseMins = exMins < 10 ? "0"+exMins : ""+exMins ;
                 int exSecs = zones.getSeconds()%60;
                 String exerciseSeconds = exSecs < 10 ? "0"+exSecs : ""+exSecs ;
-
-                // Break Time
+			    // Break Time
                 int brMins = zones.getBreakTime()/60;
                 String breakMins = brMins < 10 ? "0"+brMins : ""+brMins ;
-                int brSecs = zones.getSeconds()%60;
+                int brSecs = zones.getBreakTime()%60;
                 String breakSeconds = brSecs < 10 ? "0"+brSecs : ""+brSecs ;
             %>
             <span class="col-md-9 col-sm-5 card base-r1 "  style="margin-left: -30px;z-index: 2;height: auto">
@@ -274,9 +273,9 @@
 		                                            <img src="../img/clock.svg">
 		                                            <p class="ml-2">Seconds Per Exercise</p>
 		                                            <span style="color: #707070" class="flex-center ml-2">
-		                                                <p ><%= exerciseMins%></p>
+		                                                <p ><%=exerciseMins%></p>
 		                                                    <p >:</p>
-		                                                <p><%= exerciseSeconds %></p>
+		                                                <p><%=exerciseSeconds%></p>
                                                     </span>
 
 		                                        </span>
@@ -421,8 +420,7 @@
                                  </div>
                         </div>
                          <span class="mr-4">
-                            <p id="exerciseDecreasingMinutes">00</p><p id="exerciseDecreasingSeconds">:00</p>
-                            
+                            <p id="exerciseDecreasingMinutes"><%=exerciseMins%></p><p id="exerciseDecreasingSeconds">:<%=exerciseSeconds%></p>
                          </span>
 
 
@@ -470,7 +468,7 @@
 <script type="text/javascript" src="../js/mdb.min.js"></script>
 
 <script>
-var currentSeconds='',increasingTimer='0',timePercentage=0,percentageCount=1;
+var currentSeconds='',increasingTimerMinutes='0',increasingTimerSeconds=0,timePercentage=0,percentageCount=1;
 var increaseAndDecreaseTimer='';
     <%--function changeActive(e) {--%>
     <%--    &lt;%&ndash;alert("<c:out value="${templateName}"/>");&ndash;%&gt;--%>
@@ -485,15 +483,29 @@ var increaseAndDecreaseTimer='';
     <%--    // alert(e.target.classList);--%>
     <%--}--%>
    <%-- <% if(${(isTemplateActive==true) && (activeTemplate.getTemplateId()==template.getTemplateId())})%> --%>
+   	function startTimer(totalTimeNow){
+   		int i=10;
+   		var startTimerSeconds;
+   		startTimerSeconds=setInterval(function(){
+   			if(i==0){
+   				clearInterval(startTimerSeconds);
+   				printIncreasingAndDecreasingTime(totalTimeNow);
+   			}
+   			i--;
+   		},1000);
+   	}
 	function printIncreasingAndDecreasingTime(totalTimeNow){
-		 document.getElementById('exerciseDecreasingSeconds').innerHTML = totalTimeNow%60;
+		 /* document.getElementById('exerciseDecreasingSeconds').innerHTML = totalTimeNow%60;
+		 document.getElementById('exerciseDecreasingMinutes').innerHTML=totalTimeNow/60 < 10 ? '0'+totalTimeNow/60 : totalTimeNow/60; */
 		 increaseAndDecreaseTimer = setInterval(function () {
-					if(totalTimeNow%60==0){
-						document.getElementById('exerciseIncreasingMinutes').innerHTML=increasingTimer <10 ? '0'+increasingTimer :increasingTimer;
-						document.getElementById('exerciseDecreasingMinutes').innerHTML=totalTimeNow/60 < 10 ? '0'+totalTimeNow/60 : totalTimeNow/60;
-						increasingTimer++;
-					}
-					document.getElementById('exerciseIncreasingSeconds').innerHTML = (60-totalTimeNow%60) < 10 ? '0'+(60-totalTimeNow%60) :(totalTimeNow%60==0?'00':60-totalTimeNow%60) ;
+			 			if(increasingTimerSeconds==60){
+			 				increasingTimerMinutes++;
+			 				document.getElementById('exerciseIncreasingMinutes').innerHTML=increasingTimerMinutes <10 ? '0'+increasingTimerMinutes :increasingTimerMinutes;
+			 				increasingTimerSeconds=0;
+			 				
+			 			}
+					document.getElementById('exerciseDecreasingMinutes').innerHTML=totalTimeNow/60 < 10 ? '0'+Math.floor(totalTimeNow/60) : Math.floor(totalTimeNow/60);
+					document.getElementById('exerciseIncreasingSeconds').innerHTML = increasingTimerSeconds < 10?'0'+increasingTimerSeconds:increasingTimerSeconds;
 					document.getElementById('exerciseDecreasingSeconds').innerHTML = totalTimeNow%60 < 10 ? '0'+totalTimeNow%60 : totalTimeNow%60;
 					/* console.log((60-totalTime%60 < 10) ? '0'+60-totalTime%60 :60-totalTime%60); */
 					currentSeconds=totalTimeNow;
@@ -508,6 +520,7 @@ var increaseAndDecreaseTimer='';
 	                return;
 	            }
 	            totalTimeNow--;
+	            increasingTimerSeconds++;
 	        }, 1000)
 		
 	}
@@ -637,7 +650,8 @@ function decreaseBreakSeconds() {
 </script>
 <c:if test="${(isTemplateActive=='true') && (activeTemplate.getTemplateId()==template.getTemplateId())}">
 <script>
-printIncreasingAndDecreasingTime(${zoneDetails.getSeconds()});
+startTimer(${zoneDetails.getSeconds()});
+/* printIncreasingAndDecreasingTime(${zoneDetails.getSeconds()}); */
 var totalExerciseSeconds = ${zoneDetails.getSeconds()}?${zoneDetails.getSeconds()}:'';
 document.getElementById('progressBar').style.width = '0%';
 </script>

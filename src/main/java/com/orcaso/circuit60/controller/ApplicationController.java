@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @SpringBootApplication
@@ -30,6 +31,7 @@ public class ApplicationController {
     public static List<String> connectedZones = new ArrayList<>();
 
     public static final Logger logger = LoggerFactory.getLogger(ApplicationController.class);
+    
     @Autowired
     private GymRepository gymRepository;
 
@@ -100,6 +102,8 @@ public class ApplicationController {
             	templateObject.setExerciseCount(temporaryObject.getExerciseCount());
             	templateObject.setExerciseDuration(temporaryObject.getExerciseDuration()/60);
             	templateObject.setExerciseDurationSeconds(temporaryObject.getExerciseDuration()%60);
+            	logger.info("lastUpdatedDate"+templateObject.getLastUpdatedDate());
+				/* templateObject.setLastUpdatedDate(templateObject.get); */
             	logger.info("templateObject"+templateObject.getExerciseCount());
             }
             model.addAttribute("templateList" , templateList);
@@ -114,7 +118,10 @@ public class ApplicationController {
     @PostMapping("/adminDashboard")
     public String addTemplate(Templates template){
     	logger.info("templateLogo"+template.getTemplateLogo());
+    	template.setCreatedAt(new Date());
+    	template.setLastUpdatedDate(new Date());;
     	templateRepository.save(template);
+    	logger.info("templateLogo"+template.getTemplateLogo()+"");
         logger.info("Template "+ template.getTemplateName() +" - saved successfully ");
         return "redirect:/adminDashboard";
     }
@@ -174,6 +181,8 @@ public class ApplicationController {
                 zoneDetails.setSeconds(exerciseSecs);
                 zoneDetails.setReps(repsCount);
                 zoneDetails.setBreakTime(breakSecs);
+                currentTemplate.setLastUpdatedDate(new Date());
+                templateRepository.save(currentTemplate);
                 logger.info("----- Saving template time Configuration --- Seconds - " +exerciseSecs + " ; Reps - " +repsCount+ " ; BreakTime - " + breakSecs);
                 zoneRepository.save(zoneDetails);
             }
@@ -208,7 +217,7 @@ public class ApplicationController {
                     	int i=0;
                     	for(Exercise exercise:exerciseList) {
                     		exerciseListString+="<li class=\"card sortable-card white-text row\" id=\""+exercise.getId()+"\" ><span style=\"margin-left: -10px\" class=\"mt-2\"><a onclick=\"removeSelectedExcercise('"+exercise.getId()+"')\"><img src=\"../../img/exerciseMinus.svg\" class=\"img-fluid mt-3\"></a>"
-                    	     			+"</span><span class=\"mt-3\" ><p >"+exercise.getExerciseName()+"</p></span><span class=\"row mt-2\" style=\"position: absolute;margin-left: 90px;\"><p class=\"sortable-blur-text mr-4\" style=''>"+i+"</p></span></li>";
+                    	     			+"</span><span class=\"mt-3\" ><p >"+exercise.getExerciseName()+"</p></span><span class=\"row mt-2\" style=\"position: absolute;margin-left: 90px;\"><p class=\"sortable-blur-text mr-4\" style=''>"+i+++"</p></span></li>";
                     	}
                     	ObjectMapper mapper = new ObjectMapper();
                     	logger.info(mapper.writeValueAsString(exerciseList));
@@ -256,6 +265,9 @@ public class ApplicationController {
             if(zoneRepository.existsZonesByTemplateIdAndZone(currentTemplate , zone)){
                 zoneDetails = zoneRepository.findZonesByTemplateIdAndZone(currentTemplate , zone);
                 zoneDetails.setExerciseDetails(selectedExerciseList);
+                currentTemplate.setLastUpdatedDate(new Date());
+                templateRepository.save(currentTemplate);
+                logger.info("<------------------------------------------lastUpdateId------------------------------------------------------------------------->"+currentTemplate.getLastUpdatedDate());
             }
 //            create
             else{
@@ -263,6 +275,8 @@ public class ApplicationController {
                 zoneDetails.setTemplateId(currentTemplate);
                 zoneDetails.setZone(zone);
                 zoneDetails.setExerciseDetails(selectedExerciseList);
+                currentTemplate.setLastUpdatedDate(new Date());
+                templateRepository.save(currentTemplate);
                 zoneRepository.save(zoneDetails);
             }
         } catch (Exception e) {

@@ -1,5 +1,6 @@
 package com.orcaso.circuit60.model;
 
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -40,7 +41,6 @@ public class Templates {
 
     @Column(name = "last_updated_date",nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    @CreatedDate
     private Date lastUpdatedDate;
 
     @Column(name = "switch_screen_duration" , columnDefinition = "int default 15")

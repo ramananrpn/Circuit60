@@ -16,6 +16,7 @@
     <link href="css/mdb.min.css" rel="stylesheet">
     <!--  custom styles  -->
     <link href="css/style.css" rel="stylesheet">
+    <link href="css/circle.css" rel="stylesheet">
 </head>
 <style>
     html,
@@ -45,6 +46,24 @@
         stroke-dashoffset: 440;
         transition: all 1s linear;
     }
+    
+    .circle {
+	width: 200px;
+    margin: 6px 20px 20px;
+    display: inline-block;
+    position: relative;
+    text-align: center;
+	vertical-align: top;
+	strong {
+		position: absolute;
+		top: 70px;
+		left: 0;
+		width: 100%;
+		text-align: center;
+		line-height: 45px;
+		font-size: 43px;
+	}
+}
 </style>
 
 <%--set isStarted var globally--%>
@@ -90,19 +109,28 @@
 
 <%--After Start Screen - SESSION START TIMER --%>
 <div class="flex-center hidden" id="sessionStartTimer" style="height: 100vh;width: 100%">
-    <div  class="container-fluid text-center" >
+    <div class="container-fluid text-center" >
         <h2>The Session will start in </h2>
-        <!--Grid column-->
-            <div class="container-fluid img-fluid mt-5" style="background-image: url(/img/sessionStartBg.svg);background-repeat: no-repeat;width: auto;height: auto;background-position: center center;">
+<!--         <div class="container-fluid img-fluid mt-5" style="background-image: url(/img/sessionStartBg.svg);background-repeat: no-repeat;width: auto;height: auto;background-position: center center;">
+ -->           <div class="c100 big" id="secondsTimerPercentage">
+		      <span class="flex-center"> <h1 id="sectionStartTimerSeconds" ></h1></span>
+		      <div class="slice">
+		        <div class="bar"></div>
+		        <div class="fill"></div>
+     		 </div> 
+     		 </div>
+     	<!-- 	 </div> -->
+   
+        <!--Grid column
+          <!--   <div class="container-fluid img-fluid mt-5" style="background-image: url(/img/sessionStartBg.svg);background-repeat: no-repeat;width: auto;height: auto;background-position: center center;">
                 <div class="flex-center">
                     <span class="draw-ellipse flex-center" style="z-index: 1">
                          <span class="draw-circle flex-center " >
                             <h1 id="sectionStartTimerSeconds" class="white-text" ></h1>
-                        </span>
                     </span>
-
-                </div>
-            </div>
+                    </span>
+				</div>
+            </div> -->
         <!--Grid column-->
     <%--    <div class="card card-image img-fluid" style="background-image: url(/img/sessionStartBg.svg);">--%>
     <%--        <img src="/img/sessionStartBg.svg" alt="sessionTimer" class="img-fluid">--%>
@@ -243,11 +271,10 @@
         <div class=" img-fluid mt-3" style="background-image: url(/img/breakScreen.svg);background-repeat: no-repeat;width: auto;height: auto;background-position: center center;">
             <div class="flex-center">
                 <span class="draw-ellipse flex-center" style="z-index: 1;">
-                     <span class="draw-circle flex-center " style="background-color: #00a2fe" >
+					  <span class="draw-circle flex-center " style="background-color: #00a2fe" >
                         <h1 id="breakTimerSeconds" class="white-text" ></h1>
                     </span>
                 </span>
-
             </div>
         </div>
 
@@ -293,8 +320,27 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script src="../../js/webSocket/control.js" ></script>
+<!-- 
+<script>
+var progressBarOptions = {
+		startAngle: -1.55,
+		size: 200,
+	    value: -0.1,
+	    fill: {
+			color: '#ffa500'
+		}
+	}
 
-
+	$('.circle').circleProgress(progressBarOptions).on('circle-animation-progress', function(event, progress, stepValue) {
+	});
+	
+$('#circle-a').circleProgress({
+	value : 0.25,
+	fill: {
+		color: '#FF0000'
+	}
+});
+</script> -->
 </body>
 
 </html>

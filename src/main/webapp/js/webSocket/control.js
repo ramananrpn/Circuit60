@@ -234,10 +234,13 @@ var sessionStartTimerDelay = 10;  // in seconds
     //SESSION START TIMER
     function startSessionTimer() {
         document.getElementById("sectionStartTimerSeconds").innerHTML = sessionStartTimerDelay;
-        var time = 0;
+        document.getElementById('secondsTimerPercentage').classList.add('p0');
+        var time = 0,progressBarPercentage=0;
         var i = sessionStartTimerDelay;
         var startTimer = setInterval(function () {
             $("#sectionStartTimerSeconds").text(i);
+          document.getElementById('secondsTimerPercentage').classList.remove('p'+((progressBarPercentage-1)*10));
+          document.getElementById('secondsTimerPercentage').classList.add('p'+(progressBarPercentage*10));
             if (i == time) {
                 clearInterval(startTimer);
                 sessionStartTimer.classList.add('hidden');
@@ -249,6 +252,7 @@ var sessionStartTimerDelay = 10;  // in seconds
                 return;
             }
             i--;
+            progressBarPercentage++;
         }, 1000)
     }
 

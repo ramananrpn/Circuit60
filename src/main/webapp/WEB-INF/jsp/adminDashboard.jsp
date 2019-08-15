@@ -77,7 +77,7 @@
                     </div>
                 </div>
             </div>
-            <form method="post" action="/adminDashboard">
+            <form name="adminDashboard" method="post" action="/adminDashboard">
                 <%-- Add template form --%>
                 <div class="text-center Rectangle-1378 hide-block-display" id="createForm">
                     <div class="row " >
@@ -113,7 +113,7 @@
                                 <br>
                                 <button type="submit" class="btn-sm set-btn-outline set-text-violet btn-rounded waves-effect" style="width: 80px;" onclick="showTemplate()">Skip</button>
                                <!--  <input type="file"  value="upload"class="btn-sm btn-rounded set-text-white" style="width: 80px;background-color: #5e31e9;"> -->
-                              <label class="btn-sm btn-rounded set-text-white" for="customFile" style="width:80px ">upload</label>
+                              <label class="btn-sm btn-rounded set-text-white" for="customFile" style="width:80px">upload</label>
                                <div class="custom-file">
                                	  <input type="file" class="custom-file-input btn-sm btn-rounded" id="customFile" name="templateLogo">
 								</div>
@@ -144,8 +144,17 @@
             <div class="text-center Rectangle-1378 " >
                 <div class="row " >
                     <div class="flex-center">
-                        <span class="Path-12197 ml-4 mt-3 flex-center"><img class="img-fluid" src="img/Union 5.svg"></span>
-                        <span class="add ml-3 Add-Template mt-3" >${template.templateName}</span>
+						<span class="Path-12197 ml-4 mt-3 flex-center">
+							<c:choose>
+								<c:when test="${template.getTemplateLogo() ne '' }">
+									<img class="img-fluid" src="templateLogo/${template.getTemplateLogo()}">
+								</c:when>
+								<c:otherwise>
+									<img class="img-fluid" src="img/Union 5.svg">
+								</c:otherwise>
+							</c:choose>
+						</span> 
+						<span class="add ml-3 Add-Template mt-3" >${template.templateName}</span>
                     </div>
                 </div>
                 <div class="row flex-center">
@@ -187,6 +196,8 @@
 	$(".custom-file-input").on("change", function() {
 	  var fileName = $(this).val();
 	  alert(fileName);
+	  document.adminDashboard.submit();
+	  showTemplate();
 	 /*  $(this).siblings(".custom-file-label").addClass("selected").html(fileName); */
 	});
     function show() {
