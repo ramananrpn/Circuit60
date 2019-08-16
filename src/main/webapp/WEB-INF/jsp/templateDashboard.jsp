@@ -29,6 +29,15 @@
     .view {
         background-color: #f2f5fa;
     }
+    .white{
+	margin-left:20px;
+	border-radius:5px;
+  width: 70px;
+  height: 70px;
+  box-shadow: 0 3px 6px 0 #00000029;
+  background-color: #ffffff;
+
+    }
     .view{
         margin-top: 120px;
     }
@@ -107,14 +116,15 @@
     <div class="container-fluid" style="margin-top: -15px;z-index: 2;position: absolute">
         <nav class="text-center navbar navbar-expand-lg fixed navbar-light navbar-custom white-text" style="background-color: #ffa700;">
 						<div class="nav nav-text mr-auto ">
-                            <a class="nav-item black-text  ml-4" href="/adminDashboard"><img src="../img/left.svg" class="img-fluid" style="width: 25px"></a>
+                            <a class="nav-item black-text  ml-4" href="/adminDashboard"><img src="../img/left.svg" class="img-fluid" style="width: 20px;1025px"></a><div class="white"><img style="margin-left: 10px;margin-top: 10px;width:50px;"   src="/templateLogo/${template.getTemplateLogo()}"></div>
                             <!--Template Name Dropdown -->
                             <span class="nav-item dropdown" style="margin-top: -10px"  >
+                            
                                 <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
                                    aria-haspopup="true" aria-expanded="false">${template.getTemplateName()}</a>
                                 <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
                                     <c:forEach items="${templateList}" var="template">
-                                        <%--      href condition to place redirection URL if its not current template in dropdown            --%>
+                                        <%--      href condition to place redirection URL if its not current template in dropdown            --%> 
                                     <a class="dropdown-item" href="<c:if test="${templateName!=template.templateName}">
                                                                             /templateDashboard/${template.templateId}
                                                                    </c:if>">
@@ -484,7 +494,7 @@ var increaseAndDecreaseTimer='';
     <%--}--%>
    <%-- <% if(${(isTemplateActive==true) && (activeTemplate.getTemplateId()==template.getTemplateId())})%> --%>
    	function startTimer(totalTimeNow){
-   		int i=10;
+   		var i=9;
    		var startTimerSeconds;
    		startTimerSeconds=setInterval(function(){
    			if(i==0){

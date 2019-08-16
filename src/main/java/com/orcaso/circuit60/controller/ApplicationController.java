@@ -360,6 +360,7 @@ public class ApplicationController {
     @RequestMapping("/invalidUser")
     public String error(){
         return "error";
+//      }
     }
 
 //    ------------------  UTILITIES  ---------------------------
