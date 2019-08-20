@@ -14,7 +14,7 @@
         <div class="mask d-flex justify-content-center align-items-center">
             <div class="text-center white-text mx-5">
                 <h1 class="mb-4">
-                    <strong>Circuit60</strong
+                    <strong>Circuit60</strong>
                 </h1>
                 <form name="adminForm" method="post" action="/adminLogin">
                     <div class="row">

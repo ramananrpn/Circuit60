@@ -478,7 +478,7 @@
 <script type="text/javascript" src="../js/mdb.min.js"></script>
 
 <script>
-var currentSeconds='',increasingTimerMinutes='0',increasingTimerSeconds=0,timePercentage=0,percentageCount=1;
+var currentSeconds='',increasingTimerMinutes='0',increasingTimerSeconds=0,timePercentage=0,percentageCount=1,totalExerciseSeconds=0;
 var increaseAndDecreaseTimer='';
     <%--function changeActive(e) {--%>
     <%--    &lt;%&ndash;alert("<c:out value="${templateName}"/>");&ndash;%&gt;--%>
@@ -520,11 +520,9 @@ var increaseAndDecreaseTimer='';
 					/* console.log((60-totalTime%60 < 10) ? '0'+60-totalTime%60 :60-totalTime%60); */
 					currentSeconds=totalTimeNow;
 					console.log(totalExerciseSeconds-totalTimeNow);
-					if(Math.round(totalExerciseSeconds *(percentageCount/100)) == totalExerciseSeconds-totalTimeNow){
-					  console.log('CONDITION SATISFIED'+' percentage ='+percentageCount);
-					  document.getElementById('progressBar').style.width = percentageCount+'%';
-					  percentageCount++;
-					}
+					console.log("totalExerciseSeconds"+totalExerciseSeconds);
+					console.log("divison"+Math.round((totalExerciseSeconds-totalTimeNow)/totalExerciseSeconds * 100));
+					document.getElementById('progressBar').style.width = (totalExerciseSeconds-totalTimeNow)/totalExerciseSeconds * 100+'%';
 	            if (totalTimeNow == 0) {
 	                clearInterval(increaseAndDecreaseTimer);
 	                return;
@@ -662,7 +660,7 @@ function decreaseBreakSeconds() {
 <script>
 startTimer(${zoneDetails.getSeconds()});
 /* printIncreasingAndDecreasingTime(${zoneDetails.getSeconds()}); */
-var totalExerciseSeconds = ${zoneDetails.getSeconds()}?${zoneDetails.getSeconds()}:'';
+totalExerciseSeconds = ${zoneDetails.getSeconds()}?${zoneDetails.getSeconds()}:'';
 document.getElementById('progressBar').style.width = '0%';
 </script>
 </c:if>

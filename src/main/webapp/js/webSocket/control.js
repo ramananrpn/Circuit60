@@ -24,6 +24,7 @@ var jsZone = null;
 var jsTemplateId= null;
 var loaded=0;
 var exerciseTimer;
+//totalExerciseSeconds
 var exerciseSeconds;
 var repsCount;
 var totalReps;
@@ -229,27 +230,85 @@ var sessionStartTimerDelay = 10;  // in seconds
         }, 5000);
 
     }
+    
+    function displayCanvas(endTime){
+    	 var canvas = document.getElementById('progress-bar');
+    	    canvas.width = canvas.height = 400;
+    	    var ctx = canvas.getContext('2d');
+    	    var radius = 120;
+    	    var center = {
+    	        x: canvas.width / 2,
+    	        y: canvas.height / 2
+    	    };
+
+    	    // (60).degree() // 60 градусов в радианах;
+    	    // Number.prototype.degree = function () {
+    	    //     var startPaint = 180;
+    	    //     return (this + startPaint) * Math.PI / 180;
+    	    // };
+
+    	    function clearCanvas() {
+    	        canvas.width = canvas.width;
+    	    }
+
+    	    function drawMiniCircle(x, y) {
+    	        ctx.beginPath();
+    	        ctx.arc(x, y, 5, 0, 2 * Math.PI, false);
+    	        ctx.fillStyle = '#fe5562';
+    	        ctx.fill();
+    	        ctx.lineWidth = 5;
+//    	        ctx.strokeStyle = '#003300';
+//    	        ctx.stroke()
+    	    }
+
+    	    function progress(sAngle, eAngle) {
+    	        clearCanvas();
+    	        ctx.beginPath();
+    	        ctx.strokeStyle = 'red';
+    	        ctx.lineWidth = 2;
+    	        ctx.arc(center.x, center.y, radius, sAngle, eAngle);
+    			ctx.stroke();
+    	        // mine circle
+    	        var x = center.x + Math.cos(eAngle) * radius;
+    	        var y = center.y + Math.sin(eAngle) * radius;
+    	        drawMiniCircle(x, y);
+
+    	    }
+    			
+    		progress(4.75,endTime);
+    				
+    }
 
 // Time Spinner
     //SESSION START TIMER
     function startSessionTimer() {
-        document.getElementById("sectionStartTimerSeconds").innerHTML = sessionStartTimerDelay;
-        document.getElementById('secondsTimerPercentage').classList.add('p0');
-        var time = 0,progressBarPercentage=0;
+        /*document.getElementById("sectionStartTimerSeconds").innerHTML = sessionStartTimerDelay;*/
+//        document.getElementById('secondsTimerPercentage').classList.add('p0');
+        var time = 0,progressBarPercentage=0,endTime=0;
         var i = sessionStartTimerDelay;
+        var percentage=4.75/sessionStartTimerDelay;
         var startTimer = setInterval(function () {
-            $("#sectionStartTimerSeconds").text(i);
-          document.getElementById('secondsTimerPercentage').classList.remove('p'+((progressBarPercentage-1)*10));
-          document.getElementById('secondsTimerPercentage').classList.add('p'+(progressBarPercentage*10));
+          /*  $("#sectionStartTimerSeconds").text(i);*/
+       /*   document.getElementById('secondsTimerPercentage').classList.remove('p'+((progressBarPercentage-1)*10));
+          document.getElementById('secondsTimerPercentage').classList.add('p'+(progressBarPercentage*10));*/
+        	console.log("endTime"+(4.75+endTime));
+            endTime += percentage;
+            console.log(endTime);
+            if(endTime < 2 ){
+            	displayCanvas(4.75+endTime);
+            }else{
+            	displayCanvas(endTime);	
+            }
+        	
             if (i == time) {
                 clearInterval(startTimer);
                 sessionStartTimer.classList.add('hidden');
                 exercisePlayer.classList.remove('hidden');
-                // var seconds = document.getElementById('displayExerciseSecondsTimer').innerHTML;
-                if(isPaused==0){
+               // var seconds = document.getElementById('displayExerciseSecondsTimer').innerHTML;
+              if(isPaused==0){
                     playVideoElements(exerciseSeconds);
                 }
-                return;
+               return;
             }
             i--;
             progressBarPercentage++;
@@ -284,12 +343,14 @@ var sessionStartTimerDelay = 10;  // in seconds
     //Exercise Timer
     //Start
     function startExerciseTimer(seconds , mode) {
+    	var totalTimer = seconds;
          exerciseTimer = setInterval(function () {
             $("#displayExerciseSecondsTimer").text(seconds);
+            timerPercentage((exerciseSeconds-seconds)/exerciseSeconds * 100);
             if (seconds == 0 || mode!='start') {
                 clearInterval(exerciseTimer);
                 exerciseCount--;
-                // exercise iteration - showing switch screen
+                 /*exercise iteration - showing switch screen*/
                 if(exerciseCount>0){
                     console.log("---SHOWING SWITCH SCREEN --");
                     exercisePlayer.classList.add('hidden');
@@ -337,6 +398,48 @@ var sessionStartTimerDelay = 10;  // in seconds
             }
             seconds--;
         }, 1000)
+    }
+    
+    function timerPercentage(percentage){
+    	var el = document.getElementById('graph'); // get canvas
+    	
+    	var options = {
+    	    percent: percentage,
+    	    size: 240,
+    	    lineWidth: 7,
+    	    rotate:0
+    	}
+    	var canvas = document.createElement('canvas');
+
+    	    
+    	if (typeof(G_vmlCanvasManager) !== 'undefined') {
+    	    G_vmlCanvasManager.initElement(canvas);
+    	}
+    	var ctx = canvas.getContext('2d');
+    	canvas.width = canvas.height = options.size;
+
+
+    	el.appendChild(canvas);
+
+    	ctx.translate(options.size / 2, options.size / 2); // change center
+    	ctx.rotate((-1 / 2 + options.rotate / 180) * Math.PI); // rotate -90 deg
+
+    	//imd = ctx.getImageData(0, 0, 240, 240);
+    	var radius = (options.size - options.lineWidth) / 2;
+
+    	var drawCircle = function(color, lineWidth, percent) {
+    			percent = Math.min(Math.max(0, percent || 1), 1);
+    			ctx.beginPath();
+    			ctx.arc(0
+    	            , 0, radius, 0, Math.PI * 2 * percent, false);
+    			ctx.strokeStyle = color;
+    	        ctx.lineCap = 'round'; // butt, round or square
+    			ctx.lineWidth = lineWidth
+    			ctx.stroke();
+    	};
+
+    	drawCircle('#ddd', options.lineWidth, 100 / 100);
+    	drawCircle('green', options.lineWidth, options.percent / 100);	
     }
     //pause
     function pauseExerciseTimer() {
@@ -390,4 +493,4 @@ var sessionStartTimerDelay = 10;  // in seconds
     }
 
 //Event Listeners
-selectZonePage.addEventListener('click' , connect , true)
+selectZonePage.addEventListener('click' , connect , true);
