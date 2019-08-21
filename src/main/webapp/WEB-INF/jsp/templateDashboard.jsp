@@ -1,3 +1,4 @@
+
 <%@ page import="java.util.ResourceBundle" %>
 <%@ page import="com.orcaso.circuit60.model.Zones" %>
 <%--Developer Notes
@@ -28,15 +29,6 @@
     header,
     .view {
         background-color: #f2f5fa;
-    }
-    .white{
-	margin-left:20px;
-	border-radius:5px;
-  width: 70px;
-  height: 70px;
-  box-shadow: 0 3px 6px 0 #00000029;
-  background-color: #ffffff;
-
     }
     .view{
         margin-top: 120px;
@@ -116,15 +108,14 @@
     <div class="container-fluid" style="margin-top: -15px;z-index: 2;position: absolute">
         <nav class="text-center navbar navbar-expand-lg fixed navbar-light navbar-custom white-text" style="background-color: #ffa700;">
 						<div class="nav nav-text mr-auto ">
-                            <a class="nav-item black-text  ml-4" href="/adminDashboard"><img src="../img/left.svg" class="img-fluid" style="width: 20px;1025px"></a><div class="white"><img style="margin-left: 10px;margin-top: 10px;width:50px;"   src="/templateLogo/${template.getTemplateLogo()}"></div>
+                            <a class="nav-item black-text  ml-4" href="/adminDashboard"><img src="../img/left.svg" class="img-fluid" style="width: 25px"></a>
                             <!--Template Name Dropdown -->
                             <span class="nav-item dropdown" style="margin-top: -10px"  >
-                            
                                 <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
                                    aria-haspopup="true" aria-expanded="false">${template.getTemplateName()}</a>
                                 <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
                                     <c:forEach items="${templateList}" var="template">
-                                        <%--      href condition to place redirection URL if its not current template in dropdown            --%> 
+                                        <%--      href condition to place redirection URL if its not current template in dropdown            --%>
                                     <a class="dropdown-item" href="<c:if test="${templateName!=template.templateName}">
                                                                             /templateDashboard/${template.templateId}
                                                                    </c:if>">
@@ -262,10 +253,11 @@
                 String exerciseMins = exMins < 10 ? "0"+exMins : ""+exMins ;
                 int exSecs = zones.getSeconds()%60;
                 String exerciseSeconds = exSecs < 10 ? "0"+exSecs : ""+exSecs ;
-			    // Break Time
+
+                // Break Time
                 int brMins = zones.getBreakTime()/60;
                 String breakMins = brMins < 10 ? "0"+brMins : ""+brMins ;
-                int brSecs = zones.getBreakTime()%60;
+                int brSecs = zones.getSeconds()%60;
                 String breakSeconds = brSecs < 10 ? "0"+brSecs : ""+brSecs ;
             %>
             <span class="col-md-9 col-sm-5 card base-r1 "  style="margin-left: -30px;z-index: 2;height: auto">
@@ -283,9 +275,9 @@
 		                                            <img src="../img/clock.svg">
 		                                            <p class="ml-2">Seconds Per Exercise</p>
 		                                            <span style="color: #707070" class="flex-center ml-2">
-		                                                <p ><%=exerciseMins%></p>
+		                                                <p ><%= exerciseMins%></p>
 		                                                    <p >:</p>
-		                                                <p><%=exerciseSeconds%></p>
+		                                                <p><%= exerciseSeconds %></p>
                                                     </span>
 
 		                                        </span>
@@ -419,7 +411,7 @@
   
                        <div class="row d-flex align-content-start">
 
-                         <span class="ml-4">
+                         <span class="ml-5 row d-flex align-content-start">
                            <p id="exerciseIncreasingMinutes">00</p> <p id="exerciseIncreasingSeconds">:00</p>
                           </span>
                         <div class="container-fluid" style="width: 900px" >
@@ -429,8 +421,8 @@
                                         </div>
                                  </div>
                         </div>
-                         <span class="mr-4">
-                            <p id="exerciseDecreasingMinutes"><%=exerciseMins%></p><p id="exerciseDecreasingSeconds">:<%=exerciseSeconds%></p>
+                         <span class="mr-5 row d-flex align-content-start">
+                            <p id="exerciseDecreasingMinutes">00</p><p id="exerciseDecreasingSeconds">:00</p>
                          </span>
 
 
@@ -478,7 +470,7 @@
 <script type="text/javascript" src="../js/mdb.min.js"></script>
 
 <script>
-var currentSeconds='',increasingTimerMinutes='0',increasingTimerSeconds=0,timePercentage=0,percentageCount=1,totalExerciseSeconds=0;
+var currentSeconds='',increasingTimer='0',timePercentage=0,percentageCount=1;
 var increaseAndDecreaseTimer='';
     <%--function changeActive(e) {--%>
     <%--    &lt;%&ndash;alert("<c:out value="${templateName}"/>");&ndash;%&gt;--%>
@@ -493,42 +485,29 @@ var increaseAndDecreaseTimer='';
     <%--    // alert(e.target.classList);--%>
     <%--}--%>
    <%-- <% if(${(isTemplateActive==true) && (activeTemplate.getTemplateId()==template.getTemplateId())})%> --%>
-   	function startTimer(totalTimeNow){
-   		var i=9;
-   		var startTimerSeconds;
-   		startTimerSeconds=setInterval(function(){
-   			if(i==0){
-   				clearInterval(startTimerSeconds);
-   				printIncreasingAndDecreasingTime(totalTimeNow);
-   			}
-   			i--;
-   		},1000);
-   	}
 	function printIncreasingAndDecreasingTime(totalTimeNow){
-		 /* document.getElementById('exerciseDecreasingSeconds').innerHTML = totalTimeNow%60;
-		 document.getElementById('exerciseDecreasingMinutes').innerHTML=totalTimeNow/60 < 10 ? '0'+totalTimeNow/60 : totalTimeNow/60; */
+		 document.getElementById('exerciseDecreasingSeconds').innerHTML = totalTimeNow%60;
 		 increaseAndDecreaseTimer = setInterval(function () {
-			 			if(increasingTimerSeconds==60){
-			 				increasingTimerMinutes++;
-			 				document.getElementById('exerciseIncreasingMinutes').innerHTML=increasingTimerMinutes <10 ? '0'+increasingTimerMinutes :increasingTimerMinutes;
-			 				increasingTimerSeconds=0;
-			 				
-			 			}
-					document.getElementById('exerciseDecreasingMinutes').innerHTML=totalTimeNow/60 < 10 ? '0'+Math.floor(totalTimeNow/60) : Math.floor(totalTimeNow/60);
-					document.getElementById('exerciseIncreasingSeconds').innerHTML = increasingTimerSeconds < 10?'0'+increasingTimerSeconds:increasingTimerSeconds;
+					if(totalTimeNow%60==0){
+						document.getElementById('exerciseIncreasingMinutes').innerHTML=increasingTimer <10 ? '0'+increasingTimer :increasingTimer;
+						document.getElementById('exerciseDecreasingMinutes').innerHTML=totalTimeNow/60 < 10 ? '0'+totalTimeNow/60 : totalTimeNow/60;
+						increasingTimer++;
+					}
+					document.getElementById('exerciseIncreasingSeconds').innerHTML = (60-totalTimeNow%60) < 10 ? '0'+(60-totalTimeNow%60) :(totalTimeNow%60==0?'00':60-totalTimeNow%60) ;
 					document.getElementById('exerciseDecreasingSeconds').innerHTML = totalTimeNow%60 < 10 ? '0'+totalTimeNow%60 : totalTimeNow%60;
 					/* console.log((60-totalTime%60 < 10) ? '0'+60-totalTime%60 :60-totalTime%60); */
 					currentSeconds=totalTimeNow;
 					console.log(totalExerciseSeconds-totalTimeNow);
-					console.log("totalExerciseSeconds"+totalExerciseSeconds);
-					console.log("divison"+Math.round((totalExerciseSeconds-totalTimeNow)/totalExerciseSeconds * 100));
-					document.getElementById('progressBar').style.width = (totalExerciseSeconds-totalTimeNow)/totalExerciseSeconds * 100+'%';
+					if(Math.round(totalExerciseSeconds *(percentageCount/100)) == totalExerciseSeconds-totalTimeNow){
+					  console.log('CONDITION SATISFIED'+' percentage ='+percentageCount);
+					  document.getElementById('progressBar').style.width = percentageCount+'%';
+					  percentageCount++;
+					}
 	            if (totalTimeNow == 0) {
 	                clearInterval(increaseAndDecreaseTimer);
 	                return;
 	            }
 	            totalTimeNow--;
-	            increasingTimerSeconds++;
 	        }, 1000)
 		
 	}
@@ -658,13 +637,13 @@ function decreaseBreakSeconds() {
 </script>
 <c:if test="${(isTemplateActive=='true') && (activeTemplate.getTemplateId()==template.getTemplateId())}">
 <script>
-startTimer(${zoneDetails.getSeconds()});
-/* printIncreasingAndDecreasingTime(${zoneDetails.getSeconds()}); */
-totalExerciseSeconds = ${zoneDetails.getSeconds()}?${zoneDetails.getSeconds()}:'';
+printIncreasingAndDecreasingTime(${zoneDetails.getSeconds()});
+var totalExerciseSeconds = ${zoneDetails.getSeconds()}?${zoneDetails.getSeconds()}:'';
 document.getElementById('progressBar').style.width = '0%';
 </script>
 </c:if>
 <%----%>
 </body>
 </html>
+
 
