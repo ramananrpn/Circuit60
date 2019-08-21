@@ -197,15 +197,15 @@
 }
 
 .draw-circle {
-    width: 289.4px;
-    height: 289.4px;
+    width: 220px;
+    height: 220px;
     background: #fe5562;
     border-radius: 50%
 }
 
 .draw-ellipse {
-    width: 370px;
-    height: 370px;
+    width: 260px;
+    height: 260px;
     background-color: #fafafa;
     border-radius: 50%
 }
