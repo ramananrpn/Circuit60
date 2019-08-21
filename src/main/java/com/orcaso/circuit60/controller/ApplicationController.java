@@ -78,6 +78,7 @@ public class ApplicationController {
 //            setting session attribute - gymId
             logger.info("Login Successful");
             request.getSession().setAttribute("gymId" , admin.getGymId() );
+
 //            Redirecting to /adminDashboard
             return "redirect:/adminDashboard";
         }
@@ -129,7 +130,8 @@ public class ApplicationController {
 //    Zone Add exercise dashboard
     @RequestMapping("/templateDashboard/{templateId}")
     public String templateDashboard(@PathVariable("templateId") Long templateId , Model model,HttpServletRequest request){
-    		if(validUser(request)!=null){
+
+            if(validUser(request)!=null){
                 try{
                     currentTemplate = getTemplateById(templateId);
                     logger.info("Selected template Name = "+currentTemplate.getTemplateName());
@@ -313,13 +315,20 @@ public class ApplicationController {
 
 //        To update active column in database
         switch (command){
-            case "start" : 
-            case "resume":{
+            // DB - 1 active
+//                  2 pause
+//                  3 stop/ inactive
+            case "start" :
+            case "resume": {
                 Templates templateToUpdate = templateRepository.findTemplatesByTemplateId(templateId);
                 templateToUpdate.setActive(1);
                 break;
             }
-            case "pause" :
+            case "pause" :{
+                Templates templateToUpdate = templateRepository.findTemplatesByTemplateId(templateId);
+                templateToUpdate.setActive(2);
+                break;
+            }
             case "stop" : {
                 Templates templateToUpdate = templateRepository.findTemplatesByTemplateId(templateId);
                 templateToUpdate.setActive(0);
