@@ -90,7 +90,7 @@
     <!--Navbar -->
 
     <nav class="mb-1 navbar navbar-expand-lg top-navbar" >
-        <a class="navbar-brand black-text">Circuit60</a>
+        <a class="navbar-brand black-text" href="/adminDashboard">Circuit60</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-555"
                 aria-controls="navbarSupportedContent-555" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>

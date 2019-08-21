@@ -105,7 +105,7 @@
     <%--  TopBar  --%>
     <!--Navbar -->
     <nav class="mb-1 navbar navbar-expand-lg top-navbar fixed-top" style="z-index: 2">
-        <a class="navbar-brand black-text">Circuit60</a>
+        <a class="navbar-brand black-text" href="/adminDashboard">Circuit60</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-555"
                 aria-controls="navbarSupportedContent-555" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -461,7 +461,7 @@ function addList(categoryId,objectName,objectPath,categoryName){
     
     function activeOnLoad(){
     	var str='';
-    	console.log(${exerciseArray});
+    	
     	var count = document.querySelectorAll("active").length;
     	if(count == 0){
     	  currentCategory="Chest";

@@ -274,7 +274,6 @@ var sessionStartTimerDelay = 10;  // in seconds
     	        drawMiniCircle(x, y);
 
     	    }
-    			
     		progress(4.75,endTime);
     				
     }
@@ -285,8 +284,8 @@ var sessionStartTimerDelay = 10;  // in seconds
         /*document.getElementById("sectionStartTimerSeconds").innerHTML = sessionStartTimerDelay;*/
 //        document.getElementById('secondsTimerPercentage').classList.add('p0');
         var time = 0,progressBarPercentage=0,endTime=0;
-        var i = sessionStartTimerDelay;
-        var percentage=4.75/sessionStartTimerDelay;
+        var i = 30;
+        var percentage=4.70/30;
         var startTimer = setInterval(function () {
           /*  $("#sectionStartTimerSeconds").text(i);*/
        /*   document.getElementById('secondsTimerPercentage').classList.remove('p'+((progressBarPercentage-1)*10));
@@ -295,7 +294,7 @@ var sessionStartTimerDelay = 10;  // in seconds
             endTime += percentage;
             console.log(endTime);
             if(endTime < 2 ){
-            	displayCanvas(4.75+endTime);
+            	displayCanvas(4.70+endTime);
             }else{
             	displayCanvas(endTime);	
             }
@@ -344,9 +343,15 @@ var sessionStartTimerDelay = 10;  // in seconds
     //Start
     function startExerciseTimer(seconds , mode) {
     	var totalTimer = seconds;
+    	var count =0;
          exerciseTimer = setInterval(function () {
             $("#displayExerciseSecondsTimer").text(seconds);
-            timerPercentage((exerciseSeconds-seconds)/exerciseSeconds * 100);
+           if((exerciseSeconds-seconds)/exerciseSeconds * 100 < 1){
+            	timerPercentage(1);
+            	console.log("hello");
+            }else{
+              timerPercentage((exerciseSeconds-seconds)/exerciseSeconds * 100);
+            }
             if (seconds == 0 || mode!='start') {
                 clearInterval(exerciseTimer);
                 exerciseCount--;
@@ -402,7 +407,7 @@ var sessionStartTimerDelay = 10;  // in seconds
     
     function timerPercentage(percentage){
     	var el = document.getElementById('graph'); // get canvas
-    	
+    	var parentNodes = document.getElementById('graph').parentNode;
     	var options = {
     	    percent: percentage,
     	    size: 240,
@@ -410,15 +415,16 @@ var sessionStartTimerDelay = 10;  // in seconds
     	    rotate:0
     	}
     	var canvas = document.createElement('canvas');
-
-    	    
     	if (typeof(G_vmlCanvasManager) !== 'undefined') {
     	    G_vmlCanvasManager.initElement(canvas);
     	}
+    	
     	var ctx = canvas.getContext('2d');
     	canvas.width = canvas.height = options.size;
-
-
+    	console.log(parentNodes.childNodes.length);
+    	  while (el.firstChild) {
+    		  el.removeChild(el.firstChild);
+    		  } 
     	el.appendChild(canvas);
 
     	ctx.translate(options.size / 2, options.size / 2); // change center

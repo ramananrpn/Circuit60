@@ -245,12 +245,11 @@
                     <%--    TIMER   --%>
                     <div class="view flex-center mt-5">
                         <img src="/img/watch.svg" class="img-fluid" style="positon:absolute">
-                       <div class="chart" id="graph">
-                        <div class="mask flex-center white-text">
+                       <div class="chart" id="graph"></div>
+                        <div class="mask flex-center white-text" style="position:absolute">
                             <h1 style="font-weight: 800;font-size: 50px" id="displayExerciseSecondsTimer"></h1>
                         </div>
                         </div>
-                       </div>
                   </div>
             </div>
         </div>
@@ -372,7 +371,7 @@ $('#circle-a').circleProgress({
 	}
 });
 </script> -->
-<script >
+<!-- <script >
 var el = document.getElementById('graph'); // get canvas
 
 var options = {
@@ -414,7 +413,7 @@ var drawCircle = function(color, lineWidth, percent) {
 
 drawCircle('#ddd', options.lineWidth, 100 / 100);
 drawCircle('green', options.lineWidth, options.percent / 100);
-</script>
+</script> -->
 </body>
 
 </html>
