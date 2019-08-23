@@ -32,7 +32,7 @@ public class Zones {
     private int seconds;
 
     @Column(name="reps" , columnDefinition = "int default 1")
-    private int reps;
+    private int reps = 1;
 
     @Column(name = "break_time" , columnDefinition = "int default 00")
     private int breakTime;

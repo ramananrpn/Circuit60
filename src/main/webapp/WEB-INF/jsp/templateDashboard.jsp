@@ -22,6 +22,10 @@
     <link href="../css/mdb.min.css" rel="stylesheet">
     <!-- Your custom styles (optional) -->
     <link href="../css/style.css" rel="stylesheet">
+    <!-- poppins plugin -->
+    <link href="http://fonts.googleapis.com/css?family=Poppins" rel="stylesheet" type="text/css" />
+    <!--functional tags -->
+    <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %> 
 </head>
 <style>
     html,
@@ -31,13 +35,21 @@
         background-color: #f2f5fa;
     }
     .white{
-	margin-left:20px;
-	border-radius:5px;
-  width: 70px;
-  height: 70px;
-  box-shadow: 0 3px 6px 0 #00000029;
-  background-color: #ffffff;
+    margin-left: 19px;
+    border-radius: 20px;
+    width: 70px;
+    height: 70px;
+  	box-shadow: 0 3px 6px 0 #00000029;
+  	background-color: #ffffff;
 
+    }
+    .template-logo{
+    margin-top: 8px;
+    width: 55px;
+    height: 55px;
+    margin-left: 8px;
+    object-fit: cover;
+    border-radius:20%;
     }
     .view{
         margin-top: 120px;
@@ -74,6 +86,70 @@
         /*border-left: 1px solid #9966FF;*/
         /*height : 100px;*/
     }
+    .navbar .dropdown-menu {
+	    position: absolute!important;
+	    margin-top: 0;
+	    border-radius: 5%;
+	    width: 250px;
+	    height: auto;
+	    box-shadow: 0 5px 35px 0 rgba(0, 0, 0, 0.16);
+	    background-color: #ffffff;
+	}
+	.dropdown-item {
+	    display: block;
+	    width: 100%;
+	    padding: .25rem 1.5rem;
+	    clear: both;
+	    font-weight: 400;
+	    color: #212529;
+	    text-align: inherit;
+	    white-space: nowrap;
+	    background-color: transparent;
+	    border: 0;
+	    font-family: Poppins;
+	    font-size: 20px !important;
+	    font-weight: normal;
+	    font-style: normal;
+	    font-stretch: normal;
+	    line-height: 1.56;
+	    letter-spacing: normal;
+	    text-align: left;
+	    margin-left:30px;
+	    color: #002557;
+	}
+	
+	.navbar .dropdown-menu a {
+	    padding: 10px;
+	    font-size: .9375rem;
+	    font-weight: 300;
+	    color: #000;
+	    width: 80%;
+	}
+	.templates-dropdown{
+		padding-left: 35px;
+	    font-family: Poppins;
+	    font-size: 20px;
+	    font-weight: 600;
+	    font-style: normal;
+	    font-stretch: normal;
+	    line-height: 1.5;
+	    letter-spacing: normal;
+	    text-align: left;
+	    color: #002557;
+	    padding-top: 10px;
+	}
+	.current-template{
+	  	font-family: Poppins;
+	    font-size: 20px;
+	    font-weight: normal;
+	    font-style: normal;
+	    font-stretch: normal;
+	    line-height: 1.56;
+	    letter-spacing: normal;
+	    text-align: left;
+	    color: #00c34b;
+	    padding-left: 35px;
+	}
     input[type=number]::-webkit-inner-spin-button,
     input[type=number]::-webkit-outer-spin-button {
         -webkit-appearance: none;
@@ -91,7 +167,7 @@
     <!--Navbar -->
 
     <nav class="mb-1 navbar navbar-expand-lg top-navbar" >
-        <a class="navbar-brand black-text" href="/adminDashboard">Circuit60</a>
+        <a class="navbar-brand black-text" href="/adminDashboard">Circuit<strong>60</strong></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-555"
                 aria-controls="navbarSupportedContent-555" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -117,21 +193,38 @@
     <div class="container-fluid" style="margin-top: -15px;z-index: 2;position: absolute">
         <nav class="text-center navbar navbar-expand-lg fixed navbar-light navbar-custom white-text" style="background-color: #ffa700;">
 						<div class="nav nav-text mr-auto ">
-                            <a class="nav-item black-text  ml-4" href="/adminDashboard"><img src="../img/left.svg" class="img-fluid" style="width: 20px;1025px"></a><div class="white"><img style="margin-left: 10px;margin-top: 10px;width:50px;"   src="/templateLogo/${template.getTemplateLogo()}"></div>
+                            <a class="nav-item black-text  ml-4" href="/adminDashboard"><img src="../img/left.svg" class="img-fluid" style="width: 20px;1025px"></a>
+                            <div class="white" style="margin-top:-15px">
+                            <c:choose>
+								<c:when test="${template.getTemplateLogo() ne '' }">
+									<img class="img-fluid template-logo"  src="/templateLogo/${template.getTemplateLogo()}">
+								</c:when>
+								<c:otherwise>
+									<img class="img-fluid template-logo" src="/img/templateLogo.png">
+								</c:otherwise>
+							</c:choose></div>
                             <!--Template Name Dropdown -->
                             <span class="nav-item dropdown" style="margin-top: -10px"  >
-                            
-                                <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                            	<a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
                                    aria-haspopup="true" aria-expanded="false">${template.getTemplateName()}</a>
                                 <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
-                                    <c:forEach items="${templateList}" var="template">
+                                	<p class="templates-dropdown">Choose Template</p>
+                                    <c:forEach items="${templateList}" var="templates">
                                         <%--      href condition to place redirection URL if its not current template in dropdown            --%> 
-                                    <a class="dropdown-item" href="<c:if test="${templateName!=template.templateName}">
-                                                                            /templateDashboard/${template.templateId}
-                                                                   </c:if>">
+                                    <c:choose>
+                                    	<c:when test="${template.getTemplateName() != templates.templateName.trim()}">
+                                    		<a class="dropdown-item" href="/templateDashboard/${templates.templateId}">
+                                               ${templates.templateName}                             
+                                            </a>                       
                                         <%--  Displaying Template Name --%>
-                                        ${template.templateName}
-                                    </a>
+                                       </c:when>
+                                    	<c:otherwise>
+                                    	<a class="dropdown-item" style="color: #00c34b">${templates.templateName}<img style="padding-left:90px"src="/img/tick.png"></a>
+                                    	
+                                    	</c:otherwise>
+                                    
+                                    </c:choose>
+                                    
                                     </c:forEach>
                                 </div>
                             </span>
@@ -146,10 +239,10 @@
                                 <button type="button" class="btn-md set-btn-outline-orange white-text" style="width: 150px" onclick="location.href='/adminCommand/${template.getTemplateId()}/stop?zoneId=${zoneId}'" >
                                     Stop Section
                                 </button>
-                                <button type="button" class="btn-md btn-white btn-rounded pauseButton" style="width: 150px" onclick="pauseCommand()">
+                                <button type="button" class="btn-md btn-white btn-rounded pauseButton" style="width: 150px;border:0px;" onclick="pauseCommand()">
                                     Pause Section
                                 </button>
-                                <button type="button" class="btn-md btn-white btn-rounded resumeButton hidden" style="width: 150px" onclick="resumeCommand()">
+                                <button type="button" class="btn-md btn-white btn-rounded resumeButton hidden" style="width: 150px;border:0px;" onclick="resumeCommand()">
                                     Resume Section
                                 </button>
                             </c:when>
@@ -160,7 +253,7 @@
                                 </button>
                                 <%--  Disabling Start Section button when a Template/Section is already started  --%>
                                 <c:if test="${isTemplateActive!='true'}">
-                                    <button type="button" class="btn-md btn-white btn-rounded" style="width: 150px" onclick="location.href='/adminCommand/${template.getTemplateId()}/start?zoneId=${zoneId}'">
+                                    <button type="button" class="btn-md btn-white btn-rounded" style="width: 150px;border:0px;" onclick="location.href='/adminCommand/${template.getTemplateId()}/start?zoneId=${zoneId}'">
                                         Start Section
                                     </button>
                                 </c:if>
@@ -227,7 +320,7 @@
 
 <%--      Display default Add exercide Icon and button when no exercise found for the current zone     --%>
         <c:if test="${isZonePresent=='false'}">
-            <span class="col-md-9 col-sm-5 card base-r1 "  style="margin-left: -30px;z-index: 2;">
+            <span class="col-md-9 col-sm-5 card base-r1 "  style="margin-left: -30px;z-index: 1;">
                 <div class=" flex-center">
                     <c:choose>
                         <c:when test="${(isTemplateActive=='true') && (activeTemplate.getTemplateId()==template.getTemplateId())}">
@@ -259,17 +352,19 @@
             <%
                 //exercise time
                 Zones zones = (Zones) request.getAttribute("zoneDetails");
+            	/* Integer templateList = (Integer) request.getAttribute("templateList"); */ 
                 int exMins = zones.getSeconds()/60;
                 String exerciseMins = exMins < 10 ? "0"+exMins : ""+exMins ;
                 int exSecs = zones.getSeconds()%60;
                 String exerciseSeconds = exSecs < 10 ? "0"+exSecs : ""+exSecs ;
+            	int exerciseTimerSeconds = exSecs*zones.getReps() + zones.getReps()*5;
 			    // Break Time
                 int brMins = zones.getBreakTime()/60;
                 String breakMins = brMins < 10 ? "0"+brMins : ""+brMins ;
                 int brSecs = zones.getBreakTime()%60;
                 String breakSeconds = brSecs < 10 ? "0"+brSecs : ""+brSecs ;
             %>
-            <span class="col-md-9 col-sm-5 card base-r1 "  style="margin-left: -30px;z-index: 2;height: auto">
+            <span class="col-md-9 col-sm-5 card base-r1 "  style="margin-left: -30px;z-index: 1;height: auto">
                 <div class="container-fluid">
                     <br>
                     <%--         Excersie time reps brefore configure           --%>
@@ -340,10 +435,10 @@
 		                                            </a>
 		                                            <span style="color: #707070" class="flex-center ml-1">
 		                                                <input type="number" id="exerciseMins" name="exerciseMins" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="<%=exerciseMins%>"
-		                                                       onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
+		                                                       onchange="if((''+this.value).length < 2)this.value='0'+this.value;">
 		                                                <p >:</p>
 		                                                <input type="number" id="exerciseSecs" name="exerciseSecs" class="form-control form-control-sm text-center" min="00" max="60" style="width: 25px" value="<%=exerciseSeconds%>"
-		                                                       onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
+		                                                       onchange="if((''+this.value).length < 2)this.value='0'+this.value;if(this.value > 60 )this.value='59';" >
 		                                            </span>
 		                                           <a class="button mt-2" onclick="increaseExerciseSeconds()">
 		                                               <img src="../img/plusButton.svg">
@@ -362,7 +457,7 @@
 		                                                <img src="../img/minusButton.svg">
 		                                            </a>
 		                                            <span style="color: #707070" class="flex-center ml-1">
-		                                               <input type="number" id="repsCount" name="repsCount" class="form-control form-control-sm text-center" min="0" style="width: 25px" value="${zoneDetails.getReps()}">
+		                                               <input type="number" id="repsCount" name="repsCount" class="form-control form-control-sm text-center" min="1" style="width: 25px" value="${zoneDetails.getReps()}">
 		                                            </span>
 		                                           <a class="button mt-2" onclick="increaseReps()">
 		                                               <img src="../img/plusButton.svg">
@@ -382,10 +477,10 @@
 		                                            </a>
 		                                                <span style="color: #707070" class="flex-center ml-1">
 		                                                <input type="number" id="breakMins" name="breakMins" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="<%=breakMins%>"
-		                                                       onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
+		                                                       onchange="if((''+this.value).length < 2)this.value='0'+this.value;">
 		                                                    <p >:</p>
 		                                                <input type="number" id="breakSecs" name="breakSecs" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="<%=breakSeconds%>"
-		                                                       onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
+		                                                       onchange="if((''+this.value).length < 2)this.value='0'+this.value;if(this.value > 60 )this.value='59';">
 		                                                 </span>
 		                                           <a class="button mt-2" onclick="increaseBreakSeconds()">
 		                                               <img src="../img/plusButton.svg">
@@ -419,11 +514,10 @@
 
   
                        <div class="row d-flex align-content-start">
-
-                         <span class="ml-4">
-                           <p id="exerciseIncreasingMinutes">00</p> <p id="exerciseIncreasingSeconds">:00</p>
+						 <span class="ml-4">
+                           <label id="exerciseIncreasingMinutes">00</label> <label id="exerciseIncreasingSeconds">:00</label>
                           </span>
-                        <div class="container-fluid" style="width: 900px" >
+                        <div class="container-fluid" style="width: 90%" >
                                <div class="progress " >
                                         <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="50"
                                              id="progressBar"aria-valuemin="0" aria-valuemax="100">
@@ -431,16 +525,10 @@
                                  </div>
                         </div>
                          <span class="mr-4">
-                            <p id="exerciseDecreasingMinutes"><%=exerciseMins%></p><p id="exerciseDecreasingSeconds">:<%=exerciseSeconds%></p>
+                           <label id="exerciseDecreasingMinutes">-<%=exerciseTimerSeconds/60%></label><label id="exerciseDecreasingSeconds">:<%=exerciseTimerSeconds%60%></label>
                          </span>
-
-
-                    </div>
-
-
-
-
-                    <br>
+					</div>
+					<br>
                     <hr>
                     <%--       Bottom button             --%>
                     <div class="d-flex flex-row-reverse">
@@ -494,6 +582,8 @@ var increaseAndDecreaseTimer='';
     <%--    // alert(e.target.classList);--%>
     <%--}--%>
    <%-- <% if(${(isTemplateActive==true) && (activeTemplate.getTemplateId()==template.getTemplateId())})%> --%>
+   
+  
    	function startTimer(totalTimeNow){
    		var i=9;
    		var startTimerSeconds;
@@ -515,9 +605,9 @@ var increaseAndDecreaseTimer='';
 			 				increasingTimerSeconds=0;
 			 				
 			 			}
-					document.getElementById('exerciseDecreasingMinutes').innerHTML=totalTimeNow/60 < 10 ? '0'+Math.floor(totalTimeNow/60) : Math.floor(totalTimeNow/60);
-					document.getElementById('exerciseIncreasingSeconds').innerHTML = increasingTimerSeconds < 10?'0'+increasingTimerSeconds:increasingTimerSeconds;
-					document.getElementById('exerciseDecreasingSeconds').innerHTML = totalTimeNow%60 < 10 ? '0'+totalTimeNow%60 : totalTimeNow%60;
+					document.getElementById('exerciseDecreasingMinutes').innerHTML = "-"+(totalTimeNow/60 < 10 ? '0'+Math.floor(totalTimeNow/60) : Math.floor(totalTimeNow/60));
+					document.getElementById('exerciseIncreasingSeconds').innerHTML = ":"+(increasingTimerSeconds < 10?'0'+increasingTimerSeconds:increasingTimerSeconds);
+					document.getElementById('exerciseDecreasingSeconds').innerHTML = ":"+(totalTimeNow%60 < 10 ? '0'+totalTimeNow%60 : totalTimeNow%60);
 					/* console.log((60-totalTime%60 < 10) ? '0'+60-totalTime%60 :60-totalTime%60); */
 					currentSeconds=totalTimeNow;
 					console.log(totalExerciseSeconds-totalTimeNow);
@@ -526,6 +616,9 @@ var increaseAndDecreaseTimer='';
 					document.getElementById('progressBar').style.width = (totalExerciseSeconds-totalTimeNow)/totalExerciseSeconds * 100+'%';
 	            if (totalTimeNow == 0) {
 	                clearInterval(increaseAndDecreaseTimer);
+	                startTimer(totalExerciseSeconds);
+	                increasingTimerMinutes=0;
+	                increasingTimerSeconds=0;
 	                return;
 	            }
 	            totalTimeNow--;
@@ -569,7 +662,13 @@ var increaseAndDecreaseTimer='';
                 document.getElementById('exerciseMins').value = (mins-1<10)?"0"+(mins-1):mins-1;
             }
             else {
-                document.getElementById('exerciseSecs').value = ((secs - 1 < 10) ? ( "0" + (secs - 1)) :  (secs - 1));
+            	if(mins == 1){
+            		document.getElementById('exerciseSecs').value = "59";
+            		document.getElementById('exerciseMins').value="00";
+            	}else{
+            		document.getElementById('exerciseSecs').value = ((secs-1<10) ? ( "0" + (secs - 1)) :  (secs - 1));	
+            	}
+                
             }
         }
     }
@@ -608,7 +707,12 @@ function decreaseBreakSeconds() {
                 document.getElementById('breakMins').value = (mins-1<10)?"0"+(mins-1):mins-1;
         }
         else {
-            document.getElementById('breakSecs').value = ((secs - 1 < 10) ? ( "0" + (secs - 1)) :  (secs - 1));
+        	if(mins == 1){
+        		document.getElementById('breakSecs').value = "59";
+        		document.getElementById('breakMins').value="00";
+        	}else{
+        		document.getElementById('breakSecs').value = ((secs-1<10) ? ( "0" + (secs - 1)) :  (secs - 1));	
+        	}
         }
     }
 }
@@ -654,14 +758,17 @@ function decreaseBreakSeconds() {
             }
         });
         printIncreasingAndDecreasingTime(currentSeconds);
-        
-    }
+     }
 </script>
 <c:if test="${(isTemplateActive=='true') && (activeTemplate.getTemplateId()==template.getTemplateId())}">
 <script>
-startTimer(${zoneDetails.getSeconds()});
+var timer = ${fn:length(exerciseList)}>1?(${fn:length(exerciseList)}-1) * 6+20:0;
+console.log(timer);
+timer=${zoneDetails.getSeconds()}*${zoneDetails.getReps()}*${fn:length(exerciseList)} + ${zoneDetails.getReps()} * 6 + timer;
+startTimer(timer);
+console.log();
 /* printIncreasingAndDecreasingTime(${zoneDetails.getSeconds()}); */
-totalExerciseSeconds = ${zoneDetails.getSeconds()}?${zoneDetails.getSeconds()}:'';
+totalExerciseSeconds = timer;
 document.getElementById('progressBar').style.width = '0%';
 </script>
 </c:if>

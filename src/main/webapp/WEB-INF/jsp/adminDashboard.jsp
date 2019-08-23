@@ -35,6 +35,17 @@
         font-size: 15px;
         font-weight: 600;
     }
+    
+    .mini-templateLogo{
+	    margin-top: 8px;
+	    width: 30px;
+	    height: 30px;
+	    margin-left: 10px;
+	    object-fit: cover;
+	    border-radius: 20%;
+	    margin-right: 10px;
+	    margin-bottom: 8px
+    }
 </style>
 <body>
 <header>
@@ -147,10 +158,10 @@
 						<span class="Path-12197 ml-4 mt-3 flex-center">
 							<c:choose>
 								<c:when test="${template.getTemplateLogo() ne '' }">
-									<img class="img-fluid" src="templateLogo/${template.getTemplateLogo()}">
+									<img class="img-fluid mini-templateLogo" src="/templateLogo/${template.getTemplateLogo()}">
 								</c:when>
 								<c:otherwise>
-									<img class="img-fluid" src="img/Union 5.svg">
+									<img class="img-fluid mini-templateLogo" src="/img/templateLogo.png">
 								</c:otherwise>
 							</c:choose>
 						</span> 

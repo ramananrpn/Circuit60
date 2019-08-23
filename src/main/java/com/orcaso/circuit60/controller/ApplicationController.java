@@ -139,6 +139,7 @@ public class ApplicationController {
                     List<Templates> templateList = getTemplates();
                     logger.info("List of all templates to be passed : " + templateList);
                     model.addAttribute("templateList" , templateList);
+//                    model.addAttribute("templateList",templateList.size());
 //                    getting zoneId from request query string ; if null zone1 is made active (default)
                     String zoneId= getZoneId(request);
                     logger.info("Active zone ID - " + zoneId);

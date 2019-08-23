@@ -109,7 +109,7 @@
         <div class="mask rgba-gradient align-items-center " >
             <div class="container flex-center">
                 <div class="white-text text-center">
-                      <!--     zones selection  -->    
+                       <!--    zones selection      -->
                     <div class="btn-group-vertical" role="group" aria-label="Vertical button group" id="zoneSelection">
                         <a type="button" class="btn btn-amber " id="zone1" >zone 01</a>
                         <a type="button" class="btn btn-amber " id="zone2" >zone 02</a>
@@ -118,7 +118,7 @@
                         <a type="button" class="btn btn-amber " id="zone5" >zone 05</a>
                         <a type="button" class="btn btn-amber " id="zone6" >zone 06</a>
                     </div>
-                    <!--       Zone Connection      -->   
+                 <!--          Zone Connection   -->      
                     <div id="zoneConnected" class="hidden">
                     <span>
                         <img src="img/Logo.png" class="img-fluid">
@@ -142,13 +142,13 @@
          <div class="flex-center container img-fluid">
          <img src="/img/sessionStartBg.svg">
          <span class="draw-ellipse flex-center" style="z-index: 1; position:absolute"">
+         <canvas  id="progress-wrapper"style="position:absolute"></canvas>
           <canvas id="progress-bar" style="position:absolute">
           </canvas>
           <span style="position:absolute"><span class="draw-circle flex-center " >
                             <h1 id="sectionStartTimerSeconds" class="white-text" ></h1>
                     </span></span>
                     </span>
-     			    <!-- <h1  class="white-text" ></h1> -->
              </div>
      		 </div>
    
@@ -172,12 +172,12 @@
                     <%--  ---------------------   EXERCISE DISPLAY SCREEN  ------------------------------   --%>
 <%--Section Video Player--%>
 
-<div class="row overflow-hidden hidden" id="exerciseDisplayScreen">
+<div class="row overflow-hidden hidden"  id="exerciseDisplayScreen" style="background-color: #f2f5fa;">
     <%--Videos - Exercise--%>
-    <div class="col-md-8 d-flex ">
-        <div class="row">
+    <div class="col-md-8 d-flex " >
+        <div class="row" style="background-color: #f2f5fa;">
             <%for(int i=0 ; i < 4 ; i++){%>
-            <div class="col-md-6 card text-center border-0  card-color" >
+            <div class="col-md-6 card text-center border-0  card-color" style="background-color: #f2f5fa;">
                 <div class="card-body">
                     <h3 class="card-title hidden" style="font-family: whiteOn" id="displayExerciseName-<%=i%>"></h3>
                     <p class="card-text mt-4">
@@ -298,7 +298,18 @@
     <div  class=" text-center " >
         <h2> Water Break end in </h2>
         <!--Grid column-->
-        <div class=" img-fluid mt-3" style="background-image: url(/img/breakScreen.svg);background-repeat: no-repeat;width: auto;height: auto;background-position: center center;">
+        <div class="flex-center container img-fluid">
+         <img src="/img/breakScreen.svg">
+         <span class="draw-ellipse flex-center" style="z-index: 1; position:absolute"">
+         <canvas  id="break-time-wrapper"style="position:absolute"></canvas>
+          <canvas id="water-break" style="position:absolute">
+          </canvas>
+          <span style="position:absolute"><span class="draw-circle flex-center " style="background-color: #00a2fe" >
+                            <h1 id="breakTimerSeconds" class="white-text" ></h1>
+                    </span></span>
+                    </span>
+             </div>
+       <!--  <div class=" img-fluid mt-3" style="background-image: url(/img/breakScreen.svg);background-repeat: no-repeat;width: auto;height: auto;background-position: center center;">
             <div class="flex-center">
                 <span class="draw-ellipse flex-center" style="z-index: 1;">
 					  <span class="draw-circle flex-center " style="background-color: #00a2fe" >
@@ -306,7 +317,7 @@
                     </span>
                 </span>
             </div>
-        </div>
+        </div> -->
 	    <h2 class="mt-3">
             <b>"Being defeated is often a temporary condition.<br>
                 Giving up is what makes it permanent."</b>

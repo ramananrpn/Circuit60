@@ -51,8 +51,9 @@
 <style>
     .Rectangle-21 {
         width: 180px;
-        height: 850px;
+        height: 100%;
         background-color: #5e31e9;
+        position:fixed;
     }
     .view{
         margin-top: 90px;
@@ -105,7 +106,7 @@
     <%--  TopBar  --%>
     <!--Navbar -->
     <nav class="mb-1 navbar navbar-expand-lg top-navbar fixed-top" style="z-index: 2">
-        <a class="navbar-brand black-text" href="/adminDashboard">Circuit60</a>
+        <a class="navbar-brand black-text" href="/adminDashboard">Circuit<strong>60</strong></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-555"
                 aria-controls="navbarSupportedContent-555" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -373,7 +374,8 @@ var currentCategory ='',selectedcategory='';
 	             }
 	        },
 	       error:function(){
-	        alert("error");
+	    	   document.getElementById('videofiles').innerHTML="Sorry,There are no videos to display";
+	    	   alert("Please add videos in this favorite Category");
 	       }
 
 	      });
