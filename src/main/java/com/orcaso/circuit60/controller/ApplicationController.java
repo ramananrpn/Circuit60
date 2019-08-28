@@ -126,12 +126,56 @@ public class ApplicationController {
         logger.info("Template "+ template.getTemplateName() +" - saved successfully ");
         return "redirect:/adminDashboard";
     }
+    
+    @RequestMapping("/rearrangeRooms")
+    public String rearrangeRooms() {
+    	 return "rearrange";
+    }
+    
+    @PostMapping("/templateRename")
+    public String templateRename(@RequestParam("templateName")String templateName,@RequestParam("templateId")long templateId){
+      if(templateName != null && templateName.length() > 0) {
+    	  Templates templates = templateRepository.findTemplatesByTemplateId(templateId);
+    	  templates.setTemplateName(templateName);
+    	  templateRepository.save(templates);
+      }else {
+    	  return "Please enter a name ";
+      }
+      return "success";
+    }
+    
+    @PostMapping("/clearExercise")
+    public String clearExercise(@RequestParam("templateId")long templateId,@RequestParam("zoneId")String zone) {
+      Templates template = templateRepository.findTemplatesByTemplateId(templateId);
+      Zones zones = zoneRepository.findZonesByTemplateIdAndZone(template, zone);
+      zoneRepository.delete(zones);
+      return "successfully deleted the exercise";	
+    }
+    
+    @PostMapping("/deleteTemplate")
+    public String deleteTemplate(@RequestParam("templateId")Long templateId) {
+    	logger.info("templateId"+templateId);
+    	Templates template = templateRepository.findTemplatesByTemplateId(templateId);
+    	List<Zones> zoneList = zoneRepository.findAllZonesByTemplateId(template);
+    	if(zoneList != null && zoneList.size() > 0 ) {
+    		zoneRepository.deleteAll(zoneList);
+    	}
+    	templateRepository.delete(template);
+    	return "adminDashboard";
+    }
+    
+    @PostMapping("/clearAllExercise")
+    public String clearAllExercise(@RequestParam("templateId")Long templateId) {
+    	Templates template = templateRepository.findTemplatesByTemplateId(templateId);
+    	List<Zones> zoneList = zoneRepository.findAllZonesByTemplateId(template);
+    	zoneRepository.deleteAll(zoneList);
+    	return "";
+    }
 
 //    Zone Add exercise dashboard
     @RequestMapping("/templateDashboard/{templateId}")
     public String templateDashboard(@PathVariable("templateId") Long templateId , Model model,HttpServletRequest request){
-
-            if(validUser(request)!=null){
+    	if(validUser(request)!=null){
                 try{
                     currentTemplate = getTemplateById(templateId);
                     logger.info("Selected template Name = "+currentTemplate.getTemplateName());
@@ -302,8 +346,9 @@ public class ApplicationController {
     //    When Admin start Section
     //    Mapped when admin starts session
     @RequestMapping("/adminCommand/{templateId}/{command}")
-    public String startSection(@PathVariable Long templateId , @PathVariable String command,HttpServletRequest request){
+    public String startSection(@PathVariable Long templateId , @PathVariable String command,HttpServletRequest request, Model model){
         SocketMessage adminCommand = new SocketMessage();
+        Templates templateToUpdate=null;
         logger.info("Getting templateId " + templateId);
         logger.info("--------------------:: RECEIVED COMMAND - " + command + ":: --------------------");
         adminCommand.setCommand(command);
@@ -321,22 +366,22 @@ public class ApplicationController {
 //                  3 stop/ inactive
             case "start" :
             case "resume": {
-                Templates templateToUpdate = templateRepository.findTemplatesByTemplateId(templateId);
+                templateToUpdate = templateRepository.findTemplatesByTemplateId(templateId);
                 templateToUpdate.setActive(1);
                 break;
             }
             case "pause" :{
-                Templates templateToUpdate = templateRepository.findTemplatesByTemplateId(templateId);
+                templateToUpdate = templateRepository.findTemplatesByTemplateId(templateId);
                 templateToUpdate.setActive(2);
                 break;
             }
             case "stop" : {
-                Templates templateToUpdate = templateRepository.findTemplatesByTemplateId(templateId);
+                templateToUpdate = templateRepository.findTemplatesByTemplateId(templateId);
                 templateToUpdate.setActive(0);
                 break;
             }
         }
-
+//        model.addAttribute("templateToUpdate",templateToUpdate);
         return "redirect:/templateDashboard/"+templateId+"?zoneId="+zoneId;
     }
 

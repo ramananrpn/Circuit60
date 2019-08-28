@@ -45,6 +45,8 @@ public class Templates {
 
     @Column(name = "switch_screen_duration" , columnDefinition = "int default 15")
     private int switchScreenDuration;
+    
+    
 
     private int exerciseCount;
     private int exerciseDuration;

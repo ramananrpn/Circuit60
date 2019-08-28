@@ -101,7 +101,8 @@
         var activeTemplate = "<c:out value="${activeTemplate.getTemplateId()}"></c:out>";
     }
 </script>
-<body class="overflow-hidden">
+<!-- onload="initMethod()" -->
+<body class="overflow-hidden" >
 
 <input type="hidden" id="currentZoneHidden">
 <!-- Before Start Screen -->
@@ -199,7 +200,7 @@
             <div class="mask center-block  ml-5 mt-3">
                 <div class="container-fluid mt-5">
                     <span class=" ">
-                        <b><p class="position-absolute text-center" style="color: #ffa700;margin-left: 110px;margin-top: -18px;font-size: 23px" id="displayZone"></p></b>
+                        <b><p class="position-absolute text-center" style="color: #ffa700;margin-left: 177px;margin-top: -18px;font-size: 22px" id="displayZone"></p></b>
                     </span>
                     <a class="btn display-orange-button flex-center">
                         <span class="d-flex align-content-start">

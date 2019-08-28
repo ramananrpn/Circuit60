@@ -36,7 +36,9 @@ var isPaused=0;
 var switchScreenDelay = 5000;  // in milliseconds
 
 var sessionStartTimerDelay = 10;  // in seconds
-
+    function initMethod(){
+    	isStarted = false;
+    }
 
 //connect function
     function connect(event) {
@@ -97,10 +99,9 @@ var sessionStartTimerDelay = 10;  // in seconds
             }
         }
         else if(message.command == 'stop'){
+        	stompClient.disconnect();
+            document.location.reload(true);
             isStarted=false;
-            stompClient.disconnect();
-            location.reload();
-          
         }
         else if (message.command == 'resume'){
             if(isPaused==1){
@@ -232,7 +233,7 @@ var sessionStartTimerDelay = 10;  // in seconds
 
     }
     
-    function displayCanvas(endTime,progressBarType,progressWrapperFlag){
+    function displayCanvas(endTime,progressBarType){
     	 var canvas = document.getElementById(progressBarType);
     	    canvas.width = canvas.height = 400;
     	    var ctx = canvas.getContext('2d');
@@ -296,14 +297,14 @@ var sessionStartTimerDelay = 10;  // in seconds
        /*   document.getElementById('secondsTimerPercentage').classList.remove('p'+((progressBarPercentage-1)*10));
           document.getElementById('secondsTimerPercentage').classList.add('p'+(progressBarPercentage*10));*/
             endTime += percentage;
-            console.log(endTime);
+//            console.log(endTime);
            /* if(endTime < 2 ){
             	displayCanvas((4.70+endTime),'progress-bar');
             }else{*/
             /*  }*/	
+            
             if (i == time) {
-            	var canvas = document.getElementById('progress-bar');
-            	var context = canvas.getContext('2d');
+            	displayCanvas(0,'progress-bar');
                 clearInterval(startTimer);
                 sessionStartTimer.classList.add('hidden');
                 exercisePlayer.classList.remove('hidden');
@@ -330,7 +331,8 @@ var sessionStartTimerDelay = 10;  // in seconds
         var startTimer = setInterval(function () {
             $("#breakTimerSeconds").text(seconds);
             endTime += percentage;
-             if (seconds == 0){
+             if (seconds == 0 ){
+            	displayCanvas(0,'break-time-wrapper');
                 clearInterval(startTimer);
                 document.getElementById('breakTimerSeconds').innerHTML = breakSeconds;
                 displayExerciseSecondsTimer.innerHTML = exerciseSeconds;
@@ -358,14 +360,17 @@ var sessionStartTimerDelay = 10;  // in seconds
     	var count =0;
          exerciseTimer = setInterval(function () {
             $("#displayExerciseSecondsTimer").text(seconds);
-           if((exerciseSeconds-(seconds))/exerciseSeconds * 100 < 1){
-            	timerPercentage(1);
-            }else{
-              timerPercentage((exerciseSeconds-seconds)/exerciseSeconds * 100);
-            }
+              console.log('timer',(exerciseSeconds-(seconds-1))/exerciseSeconds * 100);
+              timerPercentage((exerciseSeconds-(seconds-1))/exerciseSeconds * 100);
             if (seconds == 0 || mode!='start') {
                 clearInterval(exerciseTimer);
                 exerciseCount--;
+                if(seconds == 0){
+                	var el = document.getElementById('graph');
+                	while (el.firstChild) {
+            		 el.removeChild(el.firstChild);
+                	} 
+                }
                  /*exercise iteration - showing switch screen*/
                 if(exerciseCount>0){
                     console.log("---SHOWING SWITCH SCREEN --");
