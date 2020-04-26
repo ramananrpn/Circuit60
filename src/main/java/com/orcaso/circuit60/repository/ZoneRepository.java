@@ -13,4 +13,5 @@ import java.util.Map;
 public interface ZoneRepository extends CrudRepository<Zones , Long> {
     Boolean existsZonesByTemplateIdAndZone(Templates template , String zone);
     Zones findZonesByTemplateIdAndZone(Templates template , String zone);
+    List<Zones> findAllZonesByTemplateId(Templates template);
 }

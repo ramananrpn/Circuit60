@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @SpringBootApplication
@@ -30,6 +31,7 @@ public class ApplicationController {
     public static List<String> connectedZones = new ArrayList<>();
 
     public static final Logger logger = LoggerFactory.getLogger(ApplicationController.class);
+    
     @Autowired
     private GymRepository gymRepository;
 
@@ -93,16 +95,19 @@ public class ApplicationController {
             //      Retrieve Template
             List<Templates> templateList = getTemplates();
             Templates temporaryObject=null;
+            int duration = 0;
             logger.info("List of all templates to be passed : " + templateList);
             for(Templates templateObject: templateList) {
             	//getting the exerciseCount and the exerciseDuration and setting inside template List
             	temporaryObject=getExcerciseCountAndExerciseDuration(templateObject);
             	templateObject.setExerciseCount(temporaryObject.getExerciseCount());
-            	templateObject.setExerciseDuration(temporaryObject.getExerciseDuration());
+            	templateObject.setExerciseDuration(temporaryObject.getExerciseDuration()/60);
+            	templateObject.setExerciseDurationSeconds(temporaryObject.getExerciseDuration()%60);
+            	logger.info("lastUpdatedDate"+templateObject.getLastUpdatedDate());
+				/* templateObject.setLastUpdatedDate(templateObject.get); */
             	logger.info("templateObject"+templateObject.getExerciseCount());
             }
             model.addAttribute("templateList" , templateList);
-            
             return "adminDashboard";
         }
         return "redirect:/";
@@ -114,16 +119,63 @@ public class ApplicationController {
     @PostMapping("/adminDashboard")
     public String addTemplate(Templates template){
     	logger.info("templateLogo"+template.getTemplateLogo());
+    	template.setCreatedAt(new Date());
+    	template.setLastUpdatedDate(new Date());;
     	templateRepository.save(template);
+    	logger.info("templateLogo"+template.getTemplateLogo()+"");
         logger.info("Template "+ template.getTemplateName() +" - saved successfully ");
         return "redirect:/adminDashboard";
+    }
+    
+    @RequestMapping("/rearrangeRooms")
+    public String rearrangeRooms() {
+    	 return "rearrange";
+    }
+    
+    @PostMapping("/templateRename")
+    public String templateRename(@RequestParam("templateName")String templateName,@RequestParam("templateId")long templateId){
+      if(templateName != null && templateName.length() > 0) {
+    	  Templates templates = templateRepository.findTemplatesByTemplateId(templateId);
+    	  templates.setTemplateName(templateName);
+    	  templateRepository.save(templates);
+      }else {
+    	  return "Please enter a name ";
+      }
+      return "success";
+    }
+    
+    @PostMapping("/clearExercise")
+    public String clearExercise(@RequestParam("templateId")long templateId,@RequestParam("zoneId")String zone) {
+      Templates template = templateRepository.findTemplatesByTemplateId(templateId);
+      Zones zones = zoneRepository.findZonesByTemplateIdAndZone(template, zone);
+      zoneRepository.delete(zones);
+      return "successfully deleted the exercise";	
+    }
+    
+    @PostMapping("/deleteTemplate")
+    public String deleteTemplate(@RequestParam("templateId")Long templateId) {
+    	logger.info("templateId"+templateId);
+    	Templates template = templateRepository.findTemplatesByTemplateId(templateId);
+    	List<Zones> zoneList = zoneRepository.findAllZonesByTemplateId(template);
+    	if(zoneList != null && zoneList.size() > 0 ) {
+    		zoneRepository.deleteAll(zoneList);
+    	}
+    	templateRepository.delete(template);
+    	return "adminDashboard";
+    }
+    
+    @PostMapping("/clearAllExercise")
+    public String clearAllExercise(@RequestParam("templateId")Long templateId) {
+    	Templates template = templateRepository.findTemplatesByTemplateId(templateId);
+    	List<Zones> zoneList = zoneRepository.findAllZonesByTemplateId(template);
+    	zoneRepository.deleteAll(zoneList);
+    	return "";
     }
 
 //    Zone Add exercise dashboard
     @RequestMapping("/templateDashboard/{templateId}")
     public String templateDashboard(@PathVariable("templateId") Long templateId , Model model,HttpServletRequest request){
-
-            if(validUser(request)!=null){
+    	if(validUser(request)!=null){
                 try{
                     currentTemplate = getTemplateById(templateId);
                     logger.info("Selected template Name = "+currentTemplate.getTemplateName());
@@ -131,6 +183,7 @@ public class ApplicationController {
                     List<Templates> templateList = getTemplates();
                     logger.info("List of all templates to be passed : " + templateList);
                     model.addAttribute("templateList" , templateList);
+//                    model.addAttribute("templateList",templateList.size());
 //                    getting zoneId from request query string ; if null zone1 is made active (default)
                     String zoneId= getZoneId(request);
                     logger.info("Active zone ID - " + zoneId);
@@ -167,12 +220,16 @@ public class ApplicationController {
         try{
             exerciseSecs += (exerciseMins*60);
             breakSecs += (breakMins*60);
+            logger.info("exerciseSecs"+exerciseSecs);
+            logger.info("exerciseSecs"+exerciseMins);
             currentTemplate = getTemplateById(templateId);
             if(currentTemplate!=null){
                 Zones zoneDetails = zoneRepository.findZonesByTemplateIdAndZone(currentTemplate , zone);
                 zoneDetails.setSeconds(exerciseSecs);
                 zoneDetails.setReps(repsCount);
                 zoneDetails.setBreakTime(breakSecs);
+                currentTemplate.setLastUpdatedDate(new Date());
+                templateRepository.save(currentTemplate);
                 logger.info("----- Saving template time Configuration --- Seconds - " +exerciseSecs + " ; Reps - " +repsCount+ " ; BreakTime - " + breakSecs);
                 zoneRepository.save(zoneDetails);
             }
@@ -207,7 +264,7 @@ public class ApplicationController {
                     	int i=0;
                     	for(Exercise exercise:exerciseList) {
                     		exerciseListString+="<li class=\"card sortable-card white-text row\" id=\""+exercise.getId()+"\" ><span style=\"margin-left: -10px\" class=\"mt-2\"><a onclick=\"removeSelectedExcercise('"+exercise.getId()+"')\"><img src=\"../../img/exerciseMinus.svg\" class=\"img-fluid mt-3\"></a>"
-                    	     			+"</span><span class=\"mt-3\" ><p >"+exercise.getExerciseName()+"</p></span><span class=\"row mt-2\" style=\"position: absolute;margin-left: 90px;\"><p class=\"sortable-blur-text mr-4\" style=''>"+i+"</p></span></li>";
+                    	     			+"</span><span class=\"mt-3\" ><p >"+exercise.getExerciseName()+"</p></span><span class=\"row mt-2\" style=\"position: absolute;margin-left: 90px;\"><p class=\"sortable-blur-text mr-4\" style=''>"+i+++"</p></span></li>";
                     	}
                     	ObjectMapper mapper = new ObjectMapper();
                     	logger.info(mapper.writeValueAsString(exerciseList));
@@ -255,6 +312,9 @@ public class ApplicationController {
             if(zoneRepository.existsZonesByTemplateIdAndZone(currentTemplate , zone)){
                 zoneDetails = zoneRepository.findZonesByTemplateIdAndZone(currentTemplate , zone);
                 zoneDetails.setExerciseDetails(selectedExerciseList);
+                currentTemplate.setLastUpdatedDate(new Date());
+                templateRepository.save(currentTemplate);
+                logger.info("<------------------------------------------lastUpdateId------------------------------------------------------------------------->"+currentTemplate.getLastUpdatedDate());
             }
 //            create
             else{
@@ -262,6 +322,8 @@ public class ApplicationController {
                 zoneDetails.setTemplateId(currentTemplate);
                 zoneDetails.setZone(zone);
                 zoneDetails.setExerciseDetails(selectedExerciseList);
+                currentTemplate.setLastUpdatedDate(new Date());
+                templateRepository.save(currentTemplate);
                 zoneRepository.save(zoneDetails);
             }
         } catch (Exception e) {
@@ -284,8 +346,9 @@ public class ApplicationController {
     //    When Admin start Section
     //    Mapped when admin starts session
     @RequestMapping("/adminCommand/{templateId}/{command}")
-    public String startSection(@PathVariable Long templateId , @PathVariable String command,HttpServletRequest request){
+    public String startSection(@PathVariable Long templateId , @PathVariable String command,HttpServletRequest request, Model model){
         SocketMessage adminCommand = new SocketMessage();
+        Templates templateToUpdate=null;
         logger.info("Getting templateId " + templateId);
         logger.info("--------------------:: RECEIVED COMMAND - " + command + ":: --------------------");
         adminCommand.setCommand(command);
@@ -298,19 +361,27 @@ public class ApplicationController {
 
 //        To update active column in database
         switch (command){
-            case "start" : {
-                Templates templateToUpdate = templateRepository.findTemplatesByTemplateId(templateId);
+            // DB - 1 active
+//                  2 pause
+//                  3 stop/ inactive
+            case "start" :
+            case "resume": {
+                templateToUpdate = templateRepository.findTemplatesByTemplateId(templateId);
                 templateToUpdate.setActive(1);
                 break;
             }
-            case "pause" :
+            case "pause" :{
+                templateToUpdate = templateRepository.findTemplatesByTemplateId(templateId);
+                templateToUpdate.setActive(2);
+                break;
+            }
             case "stop" : {
-                Templates templateToUpdate = templateRepository.findTemplatesByTemplateId(templateId);
+                templateToUpdate = templateRepository.findTemplatesByTemplateId(templateId);
                 templateToUpdate.setActive(0);
                 break;
             }
         }
-
+//        model.addAttribute("templateToUpdate",templateToUpdate);
         return "redirect:/templateDashboard/"+templateId+"?zoneId="+zoneId;
     }
 
@@ -344,6 +415,7 @@ public class ApplicationController {
     @RequestMapping("/invalidUser")
     public String error(){
         return "error";
+//      }
     }
 
 //    ------------------  UTILITIES  ---------------------------

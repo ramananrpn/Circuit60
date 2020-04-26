@@ -28,13 +28,13 @@ public class Zones {
     @Column(name = "zone")
     private String zone;
 
-    @Column(name = "seconds" , columnDefinition = "int default 00")
+    @Column(name = "seconds" , columnDefinition = "integer default 10")
     private int seconds;
 
-    @Column(name="reps" , columnDefinition = "int default 1")
-    private int reps;
+    @Column(name="reps" , columnDefinition = "integer default 1")
+    private int reps=1;
 
-    @Column(name = "break_time" , columnDefinition = "int default 00")
+    @Column(name = "break_time" , columnDefinition = "integer default 10")
     private int breakTime;
 
     //    USED JSON DATATYPE - MAP to store exercise

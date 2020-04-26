@@ -1,3 +1,4 @@
+
 <%@ page import="java.util.ResourceBundle" %>
 <%@ page import="com.orcaso.circuit60.model.Zones" %>
 <%--Developer Notes
@@ -21,6 +22,10 @@
     <link href="../css/mdb.min.css" rel="stylesheet">
     <!-- Your custom styles (optional) -->
     <link href="../css/style.css" rel="stylesheet">
+    <!-- poppins plugin -->
+    <link href="http://fonts.googleapis.com/css?family=Poppins" rel="stylesheet" type="text/css" />
+    <!--functional tags -->
+    <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %> 
 </head>
 <style>
     html,
@@ -28,6 +33,23 @@
     header,
     .view {
         background-color: #f2f5fa;
+    }
+    .white{
+    margin-left: 19px;
+    border-radius: 20px;
+    width: 70px;
+    height: 70px;
+  	box-shadow: 0 3px 6px 0 #00000029;
+  	background-color: #ffffff;
+
+    }
+    .template-logo{
+	    margin-top: 8px;
+	    width: 55px;
+	    height: 55px;
+	    margin-left: 8px;
+	    object-fit: cover;
+	    border-radius:20%;
     }
     .view{
         margin-top: 120px;
@@ -64,6 +86,121 @@
         /*border-left: 1px solid #9966FF;*/
         /*height : 100px;*/
     }
+    .navbar .dropdown-menu {
+	    position: absolute!important;
+	    margin-top: 0;
+	    border-radius: 5%;
+	    width:275px;
+	    height: auto;
+	    box-shadow: 0 5px 35px 0 rgba(0, 0, 0, 0.16);
+	    background-color: #ffffff;
+	}
+	.renameTemplate{
+	    width: 300px;
+	    height: 65px;
+	    border-radius: 20px;
+	    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+	    border: solid 1px #5e31e9;
+	}
+	.dropdown-item {
+	    display: block;
+	    width: 100%;
+	    padding: .25rem 1.5rem;
+	    clear: both;
+	    font-weight: 400;
+	    color: #212529;
+	    text-align: inherit;
+	    white-space: nowrap;
+	    background-color: transparent;
+	    border: 0;
+	    font-family: Poppins;
+	    font-size: 20px !important;
+	    font-weight: normal;
+	    font-style: normal;
+	    font-stretch: normal;
+	    line-height: 1.56;
+	    letter-spacing: normal;
+	    text-align: left;
+	    margin-left:30px;
+	    color: #002557;
+	}
+	.Rectangle-39 {
+	  width: 500px;
+	  height: 209px;
+	  border-radius: 20px;
+	  box-shadow: 0 5px 35px 0 rgba(0, 0, 0, 0.16);
+	  background-color: #ffffff;
+	}
+	.navbar .dropdown-menu a {
+	    padding: 10px;
+	    font-size: .9375rem;
+	    font-weight: 300;
+	    color: #000;
+	    width: 85%;
+	}
+	.renameTemplateModal{
+		width: 500px;
+  		height: 209px;
+  		border-radius: 20px;
+  		box-shadow: 0 5px 35px 0 rgba(0, 0, 0, 0.16);
+  		background-color: #ffffff;
+  		pointer-events: auto;
+	}
+	.templates-dropdown{
+		padding-left: 35px;
+	    font-family: Poppins;
+	    font-size: 20px;
+	    font-weight: 600;
+	    font-style: normal;
+	    font-stretch: normal;
+	    line-height: 1.5;
+	    letter-spacing: normal;
+	    text-align: left;
+	    color: #002557;
+	    padding-top: 10px;
+	}
+	.current-template{
+	  	font-family: Poppins;
+	    font-size: 20px;
+	    font-weight: normal;
+	    font-style: normal;
+	    font-stretch: normal;
+	    line-height: 1.56;
+	    letter-spacing: normal;
+	    text-align: left;
+	    color: #00c34b;
+	    padding-left: 35px;
+	}
+	.done{
+		 width: 140px;
+		 height: 44px;
+		 border-radius: 22px;
+		 box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+		 background-color: #5e31e9;
+		 border:0;
+		 font-family: Poppins;
+  		 font-size: 14px;
+  		 font-weight: 100;
+  		 color: #ffffff;
+	}
+	.nameLabel{
+		margin-left: 23%;
+	    margin-top: 2%;
+	    position: absolute;
+	    background: white;
+	    font-family: poppins;
+	}
+	.closeButton{
+		 width: 140px;
+		 height: 44px;
+		 border-radius: 22px;
+		 box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+		 background-color: #ffffff;
+		 border:solid 1px #5e31e9;
+		 font-family: Poppins;
+  		 font-size: 14px;
+  		 font-weight: 100;
+	}
     input[type=number]::-webkit-inner-spin-button,
     input[type=number]::-webkit-outer-spin-button {
         -webkit-appearance: none;
@@ -74,20 +211,19 @@
 </style>
 
 <body onload="changeActiveOnload()">
-
 <header>
 <%--  TopBar  --%>
     <!--Navbar -->
 
     <nav class="mb-1 navbar navbar-expand-lg top-navbar" >
-        <a class="navbar-brand black-text">Circuit60</a>
+        <a class="navbar-brand black-text" href="/adminDashboard">Circuit<strong>60</strong></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-555"
                 aria-controls="navbarSupportedContent-555" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent-555">
+        <%-- <div class="collapse navbar-collapse" id="navbarSupportedContent-555">
             <ul class="navbar-nav ml-auto nav-flex-icons" >
-                <%-- BELL--%>
+                BELL
                 <li class="nav-item">
                     <a class="nav-link waves-effect waves-light">
                         <img src="../img/notification.svg">
@@ -100,76 +236,172 @@
                     </a>
                 </li>
             </ul>
-        </div>
+        </div> --%>
     </nav>
     <%--   Navbar     --%>
     <div class="container-fluid" style="margin-top: -15px;z-index: 2;position: absolute">
         <nav class="text-center navbar navbar-expand-lg fixed navbar-light navbar-custom white-text" style="background-color: #ffa700;">
-
-                        <div class="nav nav-text mr-auto ">
-                            <a class="nav-item black-text  ml-4" href="/adminDashboard"><img src="../img/left.svg" class="img-fluid" style="width: 25px"></a>
+						<div class="nav nav-text mr-auto" style="width:500px">
+                            <a class="nav-item black-text  ml-4" href="/adminDashboard"><img src="../img/left.svg" class="img-fluid" style="width: 20px;1025px"></a>
+                            <div class="white" style="margin-top:-15px">
+                            <c:choose>
+								<c:when test="${template.getTemplateLogo() ne '' }">
+									<img class="img-fluid template-logo"  src="/templateLogo/${template.getTemplateLogo()}">
+								</c:when>
+								<c:otherwise>
+									<img class="img-fluid template-logo" src="/img/templateLogo.png">
+								</c:otherwise>
+							</c:choose></div>
                             <!--Template Name Dropdown -->
                             <span class="nav-item dropdown" style="margin-top: -10px"  >
-                                <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                            	<a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
                                    aria-haspopup="true" aria-expanded="false">${template.getTemplateName()}</a>
                                 <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
-                                    <c:forEach items="${templateList}" var="template">
-                                        <%--      href condition to place redirection URL if its not current template in dropdown            --%>
-                                    <a class="dropdown-item" href="<c:if test="${templateName!=template.templateName}">
-                                                                            /templateDashboard/${template.templateId}
-                                                                   </c:if>">
+                                	<p class="templates-dropdown">Choose Template</p>
+                                    <c:forEach items="${templateList}" var="templates">
+                                        <%--      href condition to place redirection URL if its not current template in dropdown            --%> 
+                                    <c:choose>
+                                    	<c:when test="${template.getTemplateName() != templates.templateName.trim()}">
+                                    		<a class="dropdown-item" href="/templateDashboard/${templates.templateId}">
+                                               ${templates.templateName}                             
+                                            </a>                       
                                         <%--  Displaying Template Name --%>
-                                        ${template.templateName}
-                                    </a>
-                                    </c:forEach>
+                                       </c:when>
+                                    	<c:otherwise>
+                                    	<a class="dropdown-item" style="color: #00c34b">${templates.templateName}<img style="float: right;"src="/img/tick.png"></a>
+                                    	</c:otherwise>
+                                    </c:choose>
+                                  </c:forEach>
                                 </div>
                             </span>
                         </div>
             <div class="ml-auto mr-4">
                 <%--Checking whether to show add exercise button or Start Section button--%>
                 <c:choose>
-                    <c:when test="${isZonePresent=='true' || (isTemplateActive == 'true' && (activeTemplate.getTemplateId()==template.getTemplateId()))}">
+                    <c:when test="${isZonePresent=='true' || (isTemplateActive == 'true' && (activeTemplate.getTemplateId()==template.getTemplateId())) or templateToUpdate.getActive() == 2}">
                         <c:choose>
-                            <%--                        if Section is Started--%>
+                            <%--if Section is Started--%>
                             <c:when test="${(isTemplateActive=='true') && (activeTemplate.getTemplateId()==template.getTemplateId())}">
                                 <button type="button" class="btn-md set-btn-outline-orange white-text" style="width: 150px" onclick="location.href='/adminCommand/${template.getTemplateId()}/stop?zoneId=${zoneId}'" >
                                     Stop Section
                                 </button>
-                                <button type="button" class="btn-md btn-white btn-rounded pauseButton" style="width: 150px" onclick="pauseCommand()">
+                                <button type="button" class="btn-md btn-white btn-rounded pauseButton" style="width: 150px;border:0px;" onclick="pauseCommand()">
                                     Pause Section
                                 </button>
-                                <button type="button" class="btn-md btn-white btn-rounded resumeButton hidden" style="width: 150px" onclick="resumeCommand()">
+                                <button type="button" class="btn-md btn-white btn-rounded resumeButton hidden" style="width: 150px;border:0px;" onclick="resumeCommand()">
                                     Resume Section
                                 </button>
                             </c:when>
-                            <%--                        else section is not started--%>
+                            <%--else section is not started--%>
                             <c:otherwise>
                                 <button type="submit" form="timeConfigForm" class="btn-md set-btn-outline-orange white-text" style="width: 150px" onclick="location.href='/selectExercise/${template.getTemplateId()}?zoneId=${zoneId}'" >
                                     Save Section
                                 </button>
                                 <%--  Disabling Start Section button when a Template/Section is already started  --%>
                                 <c:if test="${isTemplateActive!='true'}">
-                                    <button type="button" class="btn-md btn-white btn-rounded" style="width: 150px" onclick="location.href='/adminCommand/${template.getTemplateId()}/start?zoneId=${zoneId}'">
+                                    <button type="button" class="btn-md btn-white btn-rounded" style="width: 150px;border:0px;" onclick="location.href='/adminCommand/${template.getTemplateId()}/start?zoneId=${zoneId}'">
                                         Start Section
                                     </button>
                                 </c:if>
                             </c:otherwise>
                         </c:choose>
                     </c:when>
-
-                    <c:otherwise >
+					<c:otherwise >
                         <button type="button" class="btn-sm btn-white btn-rounded" style="width: 150px" onclick="location.href='/selectExercise/${template.getTemplateId()}?zoneId=${zoneId}'" >
                             Add Excercise
                         </button>
                     </c:otherwise>
-
-                </c:choose>
-
-                <a><img src="../img/settings.svg" class="img-fluid"></a>
-            </div>
+                    </c:choose>
+                    <span class="dropdown">
+					 <span  class=""  id="dropdownMenu1" data-toggle="dropdown">
+	    				<img src="../img/settings.svg" class="img-fluid">
+	    			 </span>
+	    			 	<span class="dropdown-menu" style="margin-left:-260px;margin-top: 10px;">
+    						<a class="dropdown-item" data-toggle="modal" data-target="#renameModal">Rename template</a>
+						    <a class="dropdown-item" href="/rearrangeRooms">Rearrange rooms</a>
+						    <a class="dropdown-item" data-toggle="modal" data-target="#clearRoomModal">Clear this room</a>
+						    <a class="dropdown-item" data-toggle="modal" data-target="#clearAllModal">Clear all exercises</a>
+						    <a class="dropdown-item" data-toggle="modal" data-target="#deleteTemplate">Delete template</a>
+					    </span>
+	    			 </span>
+	    			 
+				</div>
         </nav>
     </div>
 </header>
+			<!-- Rename Modal -->
+<div class="modal fade" id="renameModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="renameTemplateModal">
+      <div class="modal-body">
+      	<label for="renameTemplate" class="nameLabel">Name</label>
+      <div class="flex-center " style="padding:5%">
+      		<input type="text" id="renameTemplate" class="form-control renameTemplate form-rounded">
+        </div>
+        <div class="flex-center" style="padding:2%">
+	    	<button type="button" class="form-rounded closeButton " data-dismiss="modal" >Close</button>
+	        <button type="button" class="form-rounded done">Done</button>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
+			<!--clear this room Modal-->		
+			
+<div class="modal fade" id="clearRoomModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="renameTemplateModal">
+      <div class="modal-body">
+      <div class="flex-center " style="padding-top:5%">
+      		<p style="font-family:Poppins; font-size:17px;color:#434343">Are you sure,Do you want to clear this room?</p>
+        </div>
+        <div class="flex-center" style="padding:7%">
+        	<span style="padding-right:5%">
+	    	<button type="button" class="form-control form-rounded closeButton" data-dismiss="modal" style="border-color:#434343">Close</button>
+	    	</span>
+	        <button type="button" class="form-control form-rounded done" style="background-color:#434343" onclick="clearThisRoom('${templates.templateId}','${zoneId}')">clear</button>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+		<!--clear this Template-->
+<div class="modal fade" id="deleteTemplate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="renameTemplateModal">
+      <div class="modal-body">
+      <div class="flex-center " style="padding-top:5%">
+      		<p style="font-family:Poppins; font-size:17px;color:red">Are you sure,Do you want to delete this template?</p>
+        </div>
+        <div class="flex-center" style="padding:7%">
+        	<span style="padding-right:5%">
+	    	<button type="button" class="closeButton form-control form-rounded" data-dismiss="modal" style="border-color:red">Close</button>
+	    	</span>
+	        <button type="button" class="done form-control form-rounded" style="background-color:red" onclick="deleteTemplate('${template.getTemplateId()}')" data-dismiss="modal">Delete</button>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
+	<!-- clear all room -->
+<div class="modal fade" id="clearAllModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="renameTemplateModal">
+      <div class="modal-body">
+      <div class="flex-center " style="padding-top:5%">
+      		<p style="font-family:Poppins; font-size:17px;color:#434343">Are you sure,Do you want to clear all exercises?</p>
+        </div>
+        <div class="flex-center" style="padding:7%">
+        	<span style="padding-right:5%">
+	    	<button type="button" class="closeButton form-control form-rounded" data-dismiss="modal" style="border-color:#434343">Close</button>
+	    	</span>
+	        <button type="button" class="done form-control form-rounded" style="background-color:#434343">Clear All</button>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="view text-center container-fluid" style="">
     <div class="row ml-3 jumbotron-fluid flex-center">
         <span class="col-md-2 col-sm-2 card navbar Rectangle-9 white-text d-flex justify-content-center " >
@@ -181,8 +413,7 @@
                    String val = resource.getString("zone.count");
 //                   System.out.println(val);
                     for(int zoneCount = 1 ; zoneCount<=Integer.parseInt(val) ; zoneCount++){
-
-                %>
+				%>
                     <li class="nav-item">
                         <a class="nav-link zone " style="margin-top: -20px"  href="<c:out value="${url}"/>?zoneId=zone<%=zoneCount%>" onclick="changeActive(event)" id="zone<%=zoneCount%>">
                             Zone <%if(zoneCount<10){%><%=0%><%}%><%=zoneCount%>
@@ -216,7 +447,7 @@
 
 <%--      Display default Add exercide Icon and button when no exercise found for the current zone     --%>
         <c:if test="${isZonePresent=='false'}">
-            <span class="col-md-9 col-sm-5 card base-r1 "  style="margin-left: -30px;z-index: 2;">
+            <span class="col-md-9 col-sm-5 card base-r1 "  style="margin-left: -30px;z-index: 1;">
                 <div class=" flex-center">
                     <c:choose>
                         <c:when test="${(isTemplateActive=='true') && (activeTemplate.getTemplateId()==template.getTemplateId())}">
@@ -248,18 +479,19 @@
             <%
                 //exercise time
                 Zones zones = (Zones) request.getAttribute("zoneDetails");
+            	/* Integer templateList = (Integer) request.getAttribute("templateList"); */ 
                 int exMins = zones.getSeconds()/60;
                 String exerciseMins = exMins < 10 ? "0"+exMins : ""+exMins ;
                 int exSecs = zones.getSeconds()%60;
                 String exerciseSeconds = exSecs < 10 ? "0"+exSecs : ""+exSecs ;
-
-                // Break Time
+            	int exerciseTimerSeconds = exSecs*zones.getReps() + zones.getReps()*5;
+			    // Break Time
                 int brMins = zones.getBreakTime()/60;
                 String breakMins = brMins < 10 ? "0"+brMins : ""+brMins ;
-                int brSecs = zones.getSeconds()%60;
+                int brSecs = zones.getBreakTime()%60;
                 String breakSeconds = brSecs < 10 ? "0"+brSecs : ""+brSecs ;
             %>
-            <span class="col-md-9 col-sm-5 card base-r1 "  style="margin-left: -30px;z-index: 2;height: auto">
+            <span class="col-md-9 col-sm-5 card base-r1 "  style="margin-left: -30px;z-index: 1;height: auto">
                 <div class="container-fluid">
                     <br>
                     <%--         Excersie time reps brefore configure           --%>
@@ -274,12 +506,11 @@
 		                                            <img src="../img/clock.svg">
 		                                            <p class="ml-2">Seconds Per Exercise</p>
 		                                            <span style="color: #707070" class="flex-center ml-2">
-		                                                <p ><%= exerciseMins%></p>
+		                                                <p ><%=exerciseMins%></p>
 		                                                    <p >:</p>
-		                                                <p><%= exerciseSeconds %></p>
+		                                                <p><%=exerciseSeconds%></p>
                                                     </span>
-
-		                                        </span>
+                                                </span>
 		                                    </div>
 		                                </span>
 		                            </div>
@@ -314,8 +545,7 @@
 		                                </span>
 		                            </div>
 		                        </div>
-		                    
-						</c:when>
+		                 </c:when>
 						<c:otherwise>
 						<form id="timeConfigForm" method="post" action="/templateDashboard/${template.getTemplateId()}/${zoneId}">
 		                        <div class="row d-flex justify-content-center md-form">
@@ -330,10 +560,10 @@
 		                                            </a>
 		                                            <span style="color: #707070" class="flex-center ml-1">
 		                                                <input type="number" id="exerciseMins" name="exerciseMins" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="<%=exerciseMins%>"
-		                                                       onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
+		                                                       onchange="if((''+this.value).length < 2)this.value='0'+this.value;">
 		                                                <p >:</p>
 		                                                <input type="number" id="exerciseSecs" name="exerciseSecs" class="form-control form-control-sm text-center" min="00" max="60" style="width: 25px" value="<%=exerciseSeconds%>"
-		                                                       onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
+		                                                       onchange="if((''+this.value).length < 2)this.value='0'+this.value;if(this.value > 60 )this.value='59';" >
 		                                            </span>
 		                                           <a class="button mt-2" onclick="increaseExerciseSeconds()">
 		                                               <img src="../img/plusButton.svg">
@@ -352,7 +582,7 @@
 		                                                <img src="../img/minusButton.svg">
 		                                            </a>
 		                                            <span style="color: #707070" class="flex-center ml-1">
-		                                               <input type="number" id="repsCount" name="repsCount" class="form-control form-control-sm text-center" min="0" style="width: 25px" value="${zoneDetails.getReps()}">
+		                                               <input type="number" id="repsCount" name="repsCount" class="form-control form-control-sm text-center" min="1" style="width: 25px" value="${zoneDetails.getReps() > 0 ? zoneDetails.getReps() : 1}">
 		                                            </span>
 		                                           <a class="button mt-2" onclick="increaseReps()">
 		                                               <img src="../img/plusButton.svg">
@@ -372,10 +602,10 @@
 		                                            </a>
 		                                                <span style="color: #707070" class="flex-center ml-1">
 		                                                <input type="number" id="breakMins" name="breakMins" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="<%=breakMins%>"
-		                                                       onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
+		                                                       onchange="if((''+this.value).length < 2)this.value='0'+this.value;">
 		                                                    <p >:</p>
 		                                                <input type="number" id="breakSecs" name="breakSecs" class="form-control form-control-sm text-center" min="00" style="width: 25px" value="<%=breakSeconds%>"
-		                                                       onchange="if(parseInt(this.value,10)<10)this.value='0'+this.value;">
+		                                                       onchange="if((''+this.value).length < 2)this.value='0'+this.value;if(this.value > 60 )this.value='59';">
 		                                                 </span>
 		                                           <a class="button mt-2" onclick="increaseBreakSeconds()">
 		                                               <img src="../img/plusButton.svg">
@@ -409,31 +639,25 @@
 
   
                        <div class="row d-flex align-content-start">
-                             <span class="ml-4">
-                               <p >00:00</p>
-                            </span>
-                            <div class="container-fluid" style="width: 900px" >
-                                   <div class="progress " >
-                                            <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="40"
-                                                 aria-valuemin="0" aria-valuemax="100" style="width:70%;">
-                                            </div>
-                                   </div>
-                            </div>
-                             <span class="mr-4">
-                                <p >00:00</p>
-                             </span>
-
-                    </div>
-
-
-
-
-                    <br>
+						 <span class="ml-4">
+                           <label id="exerciseIncreasingMinutes">00</label> <label id="exerciseIncreasingSeconds">:00</label>
+                          </span>
+                        <div class="container-fluid" style="width: 90%" >
+                           <div class="progress " >
+                              <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="50" id="progressBar"aria-valuemin="0" aria-valuemax="100">
+                              </div>     
+                        	</div>		 
+                        </div>
+                         <span class="mr-4">
+                           <label id="exerciseDecreasingMinutes">-<%=exerciseTimerSeconds/60%></label><label id="exerciseDecreasingSeconds">:<%=exerciseTimerSeconds%60%></label>
+                         </span>
+					</div>
+					<br>
                     <hr>
                     <%--       Bottom button             --%>
                     <div class="d-flex flex-row-reverse">
                         <c:choose>
-                            <c:when test="${(isTemplateActive=='true') && (activeTemplate.getTemplateId()==template.getTemplateId())}">
+                            <c:when test="${(isTemplateActive=='true') && (activeTemplate.getTemplateId()==template.getTemplateId()) or templateToUpdate.getActive() == 2}">
                                 <button type="button" class="btn-sm set-text-violet pauseButton set-btn-outline" style="width: 180px;" onclick="pauseCommand()">
                                     Pause Section
                                 </button>
@@ -467,7 +691,8 @@
 <script type="text/javascript" src="../js/mdb.min.js"></script>
 
 <script>
-
+var currentSeconds='',increasingTimerMinutes='0',increasingTimerSeconds=0,timePercentage=0,percentageCount=1,totalExerciseSeconds=0;
+var increaseAndDecreaseTimer='';
     <%--function changeActive(e) {--%>
     <%--    &lt;%&ndash;alert("<c:out value="${templateName}"/>");&ndash;%&gt;--%>
     <%--    alert("<c:out value="${templateName}"/> " + e.target.id);--%>
@@ -480,8 +705,84 @@
     <%--    e.target.classList.add('active');--%>
     <%--    // alert(e.target.classList);--%>
     <%--}--%>
-
-
+   <%-- <% if(${(isTemplateActive==true) && (activeTemplate.getTemplateId()==template.getTemplateId())})%> --%>
+   
+   function clearExercise(templateId,zoneId){
+	   $.ajax({
+           url:"/deleteTemplate",
+           method:"POST",
+           data:{
+           	templateId:templateId
+           },
+       	success: function(response) {
+				/* alert("Template is deleted successfully"); */
+				location.href="/adminDashboard";
+           },
+	        error : function(err){
+	        	alert(err);
+	        }
+       });  
+   }
+   function deleteTemplate(templateId){
+	    
+	     $.ajax({
+	            url:"/deleteTemplate",
+	            method:"POST",
+	            data:{
+	            	templateId:templateId
+	            },
+	        	success: function(response) {
+					/* alert("Template is deleted successfully"); */
+					location.href="/adminDashboard";
+	            },
+		        error : function(err){
+		        	alert(err);
+		        }
+	        });  
+   }
+  
+   	function startTimer(totalTimeNow){
+   		var i=9;
+   		var startTimerSeconds;
+   		startTimerSeconds=setInterval(function(){
+   			if(i==0){
+   				clearInterval(startTimerSeconds);
+   				printIncreasingAndDecreasingTime(totalTimeNow);
+   			}
+   			i--;
+   		},1000);
+   	}
+	function printIncreasingAndDecreasingTime(totalTimeNow){
+		 /* document.getElementById('exerciseDecreasingSeconds').innerHTML = totalTimeNow%60;
+		 document.getElementById('exerciseDecreasingMinutes').innerHTML=totalTimeNow/60 < 10 ? '0'+totalTimeNow/60 : totalTimeNow/60; */
+		 increaseAndDecreaseTimer = setInterval(function () {
+			 			if(increasingTimerSeconds==60){
+			 				increasingTimerMinutes++;
+			 				document.getElementById('exerciseIncreasingMinutes').innerHTML=increasingTimerMinutes <10 ? '0'+increasingTimerMinutes :increasingTimerMinutes;
+			 				increasingTimerSeconds=0;
+			 				
+			 			}
+					document.getElementById('exerciseDecreasingMinutes').innerHTML = "-"+(totalTimeNow/60 < 10 ? '0'+Math.floor(totalTimeNow/60) : Math.floor(totalTimeNow/60));
+					document.getElementById('exerciseIncreasingSeconds').innerHTML = ":"+(increasingTimerSeconds < 10?'0'+increasingTimerSeconds:increasingTimerSeconds);
+					document.getElementById('exerciseDecreasingSeconds').innerHTML = ":"+(totalTimeNow%60 < 10 ? '0'+totalTimeNow%60 : totalTimeNow%60);
+					/* console.log((60-totalTime%60 < 10) ? '0'+60-totalTime%60 :60-totalTime%60); */
+					currentSeconds=totalTimeNow;
+					console.log(totalExerciseSeconds-totalTimeNow);
+					console.log("totalExerciseSeconds"+totalExerciseSeconds);
+					console.log("divison"+Math.round((totalExerciseSeconds-totalTimeNow)/totalExerciseSeconds * 100));
+					document.getElementById('progressBar').style.width = (totalExerciseSeconds-totalTimeNow)/totalExerciseSeconds * 100+'%';
+	            if (totalTimeNow == 0) {
+	                clearInterval(increaseAndDecreaseTimer);
+	                startTimer(totalExerciseSeconds);
+	                increasingTimerMinutes=0;
+	                increasingTimerSeconds=0;
+	                return;
+	            }
+	            totalTimeNow--;
+	            increasingTimerSeconds++;
+	        }, 1000)
+		
+	}
 <%--Function get called on page load to make corresponding zone active--%>
     function changeActiveOnload(){
         var activeZone = "<c:out value="${zoneId}"/>";
@@ -498,7 +799,6 @@
     function increaseExerciseSeconds() {
         var secs = parseInt(document.getElementById('exerciseSecs').value);
         var mins = parseInt(document.getElementById('exerciseMins').value);
-        // alert(secs +" "+mins);
         if(secs==59){
             document.getElementById('exerciseSecs').value = "00";
             document.getElementById('exerciseMins').value = (mins+1<10)?"0"+(mins+1):mins+1;
@@ -512,13 +812,13 @@
         var mins = parseInt(document.getElementById('exerciseMins').value);
         // alert(secs +" "+mins);
         if(secs>0 || mins>0){
-            if(secs==1){
-                document.getElementById('exerciseSecs').value = "00";
+            if(secs==0){
+                document.getElementById('exerciseSecs').value = "59";
                 if(mins>0)
                 document.getElementById('exerciseMins').value = (mins-1<10)?"0"+(mins-1):mins-1;
             }
             else {
-                document.getElementById('exerciseSecs').value = ((secs - 1 < 10) ? ( "0" + (secs - 1)) :  (secs - 1));
+            	document.getElementById('exerciseSecs').value = ((secs-1<10) ? ( "0" + (secs - 1)) :  (secs - 1));	
             }
         }
     }
@@ -551,20 +851,19 @@ function decreaseBreakSeconds() {
     var mins = parseInt(document.getElementById('breakMins').value);
     // alert(secs +" "+mins);
     if(secs>0 || mins>0){
-        if(secs==1){
-            document.getElementById('breakSecs').value = "00";
+        if(secs==0){
+            document.getElementById('breakSecs').value = "59";
             if(mins>0)
                 document.getElementById('breakMins').value = (mins-1<10)?"0"+(mins-1):mins-1;
         }
         else {
-            document.getElementById('breakSecs').value = ((secs - 1 < 10) ? ( "0" + (secs - 1)) :  (secs - 1));
+        		document.getElementById('breakSecs').value = ((secs-1<10) ? ( "0" + (secs - 1)) :  (secs - 1));	
         }
     }
 }
 
 //TOGGLE PAUSE and RESUME Button
     function pauseCommand() {
-        alert
         $.ajax({
             url:"/adminCommand/${template.getTemplateId()}/pause?zoneId=${zoneId}",
             method:"GET",
@@ -576,11 +875,13 @@ function decreaseBreakSeconds() {
             var resume = document.querySelectorAll(".resumeButton");
             [].forEach.call(resume, function (resumeButton) {
                 resumeButton.classList.toggle('hidden');
-            });
+            }); 
+            
         },
         error : function(){
         }
         });
+        clearInterval(increaseAndDecreaseTimer);
     }
 
     function resumeCommand() {
@@ -600,9 +901,24 @@ function decreaseBreakSeconds() {
             error : function(){
             }
         });
-    }
+        printIncreasingAndDecreasingTime(currentSeconds);
+     }
 </script>
+<c:if test="${(isTemplateActive=='true') && (activeTemplate.getTemplateId()==template.getTemplateId())}">
+<script>
+var timer = ${fn:length(exerciseList)}>1?(${fn:length(exerciseList)}-1) * 6+20:0;
+console.log(timer);
+timer=${zoneDetails.getSeconds()}*${zoneDetails.getReps()}*${fn:length(exerciseList)} + ${zoneDetails.getReps()} * 6 + timer;
+startTimer(timer);
+console.log();
+/* printIncreasingAndDecreasingTime(${zoneDetails.getSeconds()}); */
+totalExerciseSeconds = timer;
+document.getElementById('progressBar').style.width = '0%';
+</script>
+</c:if>
 <%----%>
 </body>
 </html>
+
+
 

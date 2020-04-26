@@ -10,12 +10,17 @@
     <title>Circuit |Welcome|</title>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+    <!-- jQuery -->
+    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="js/jQuery-plugin-progressbar.js"></script>
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <!-- Material Design Bootstrap -->
     <link href="css/mdb.min.css" rel="stylesheet">
     <!--  custom styles  -->
+    <link href="css/jQuery-plugin-progressbar.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
+    <link href="css/circle.css" rel="stylesheet">
 </head>
 <style>
     html,
@@ -45,6 +50,48 @@
         stroke-dashoffset: 440;
         transition: all 1s linear;
     }
+    
+    .circle {
+	width: 200px;
+    margin: 6px 20px 20px;
+    display: inline-block;
+    position: relative;
+    text-align: center;
+	vertical-align: top;
+	strong {
+		position: absolute;
+		top: 70px;
+		left: 0;
+		width: 100%;
+		text-align: center;
+		line-height: 45px;
+		font-size: 43px;
+	}
+	
+}
+
+
+.chart {
+    position:absolute;
+    display:inline-block;
+    padding-top: 10px; 
+    canvas {
+      display: block;
+      position:absolute;
+      top:0;
+      left:0;
+    }
+  
+    span {
+     
+    }
+  
+   
+}
+
+
+
+
 </style>
 
 <%--set isStarted var globally--%>
@@ -54,15 +101,16 @@
         var activeTemplate = "<c:out value="${activeTemplate.getTemplateId()}"></c:out>";
     }
 </script>
-<body class="overflow-hidden">
+<!-- onload="initMethod()" -->
+<body class="overflow-hidden" >
 
 <input type="hidden" id="currentZoneHidden">
-<%-- Before Start Screen --%>
+<!-- Before Start Screen -->
     <div class="view " style="background-image: url('../../img/action-athlete-barbell-841130.png'); background-repeat: no-repeat; background-size: cover; background-position: center center;" id="beforeStart">
         <div class="mask rgba-gradient align-items-center " >
             <div class="container flex-center">
                 <div class="white-text text-center">
-                    <%--       zones selection      --%>
+                       <!--    zones selection      -->
                     <div class="btn-group-vertical" role="group" aria-label="Vertical button group" id="zoneSelection">
                         <a type="button" class="btn btn-amber " id="zone1" >zone 01</a>
                         <a type="button" class="btn btn-amber " id="zone2" >zone 02</a>
@@ -71,7 +119,7 @@
                         <a type="button" class="btn btn-amber " id="zone5" >zone 05</a>
                         <a type="button" class="btn btn-amber " id="zone6" >zone 06</a>
                     </div>
-                    <%--       Zone Connection         --%>
+                 <!--          Zone Connection   -->      
                     <div id="zoneConnected" class="hidden">
                     <span>
                         <img src="img/Logo.png" class="img-fluid">
@@ -88,37 +136,49 @@
 
                             <%---------------------      SESSION START TIMER        ---------------------------%>
 
-<%--After Start Screen - SESSION START TIMER --%>
+<!-- After Start Screen - SESSION START TIMER -->
 <div class="flex-center hidden" id="sessionStartTimer" style="height: 100vh;width: 100%">
-    <div  class="container-fluid text-center" >
+    <div class="text-center" >
         <h2>The Session will start in </h2>
+         <div class="flex-center container img-fluid">
+         <img src="/img/sessionStartBg.svg">
+         <span class="draw-ellipse flex-center" style="z-index: 1; position:absolute"">
+         <canvas  id="progress-wrapper"style="position:absolute"></canvas>
+          <canvas id="progress-bar" style="position:absolute">
+          </canvas>
+          <span style="position:absolute"><span class="draw-circle flex-center " >
+                            <h1 id="sectionStartTimerSeconds" class="white-text" ></h1>
+                    </span></span>
+                    </span>
+             </div>
+     		 </div>
+   
         <!--Grid column-->
-            <div class="container-fluid img-fluid mt-5" style="background-image: url(/img/sessionStartBg.svg);background-repeat: no-repeat;width: auto;height: auto;background-position: center center;">
+        <!--     <div class="container-fluid img-fluid mt-5" style="background-image: url(/img/sessionStartBg.svg);background-repeat: no-repeat;width: auto;height: auto;background-position: center center;">
                 <div class="flex-center">
                     <span class="draw-ellipse flex-center" style="z-index: 1">
                          <span class="draw-circle flex-center " >
                             <h1 id="sectionStartTimerSeconds" class="white-text" ></h1>
-                        </span>
                     </span>
-
-                </div>
-            </div>
+                    </span>
+				</div>
+            </div> -->
         <!--Grid column-->
-    <%--    <div class="card card-image img-fluid" style="background-image: url(/img/sessionStartBg.svg);">--%>
-    <%--        <img src="/img/sessionStartBg.svg" alt="sessionTimer" class="img-fluid">--%>
-    </div>
+      <!--  <div class="card card-image img-fluid" style="background-image: url(/img/sessionStartBg.svg);">
+           <img src="/img/sessionStartBg.svg" alt="sessionTimer" class="img-fluid">
+    </div> -->
 </div>
 
 
                     <%--  ---------------------   EXERCISE DISPLAY SCREEN  ------------------------------   --%>
 <%--Section Video Player--%>
 
-<div class="row overflow-hidden hidden" id="exerciseDisplayScreen">
+<div class="row overflow-hidden hidden"  id="exerciseDisplayScreen" style="background-color: #f2f5fa;">
     <%--Videos - Exercise--%>
-    <div class="col-md-8 d-flex ">
-        <div class="row">
+    <div class="col-md-8 d-flex " >
+        <div class="row" style="background-color: #f2f5fa;">
             <%for(int i=0 ; i < 4 ; i++){%>
-            <div class="col-md-6 card text-center border-0  card-color" >
+            <div class="col-md-6 card text-center border-0  card-color" style="background-color: #f2f5fa;">
                 <div class="card-body">
                     <h3 class="card-title hidden" style="font-family: whiteOn" id="displayExerciseName-<%=i%>"></h3>
                     <p class="card-text mt-4">
@@ -140,7 +200,7 @@
             <div class="mask center-block  ml-5 mt-3">
                 <div class="container-fluid mt-5">
                     <span class=" ">
-                        <b><p class="position-absolute text-center" style="color: #ffa700;margin-left: 110px;margin-top: -18px;font-size: 23px" id="displayZone"></p></b>
+                        <b><p class="position-absolute text-center" style="color: #ffa700;margin-left: 177px;margin-top: -18px;font-size: 22px" id="displayZone"></p></b>
                     </span>
                     <a class="btn display-orange-button flex-center">
                         <span class="d-flex align-content-start">
@@ -148,7 +208,7 @@
                                 <span class="Path-12197 flex-center" style="width: 57px;height: 57px;box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);border-radius: 20px;margin-left: -10px"><img class="img-fluid" src="img/templateLogo.png" ></span>
                             </div>
                             &nbsp;
-                            <div class="mt-2  ">
+                            <div class="mt-2">
                                     <span class="d-flex align-content-start">
                                         <p class="white-text">Circuit60's</p>
                                     </span>
@@ -185,16 +245,15 @@
 
                     <%--    TIMER   --%>
                     <div class="view flex-center mt-5">
-                        <img src="/img/watch.svg" class="img-fluid">
-                        <div class="mask flex-center white-text">
+                        <img src="/img/watch.svg" class="img-fluid" style="positon:absolute">
+                       <div class="chart" id="graph"></div>
+                        <div class="mask flex-center white-text" style="position:absolute">
                             <h1 style="font-weight: 800;font-size: 50px" id="displayExerciseSecondsTimer"></h1>
                         </div>
-                    </div>
-
-                </div>
+                        </div>
+                  </div>
             </div>
         </div>
-
     </div>
 </div>
 
@@ -240,18 +299,27 @@
     <div  class=" text-center " >
         <h2> Water Break end in </h2>
         <!--Grid column-->
-        <div class=" img-fluid mt-3" style="background-image: url(/img/breakScreen.svg);background-repeat: no-repeat;width: auto;height: auto;background-position: center center;">
+        <div class="flex-center container img-fluid">
+         <img src="/img/breakScreen.svg">
+         <span class="draw-ellipse flex-center" style="z-index: 1; position:absolute"">
+         <canvas  id="break-time-wrapper"style="position:absolute"></canvas>
+          <canvas id="water-break" style="position:absolute">
+          </canvas>
+          <span style="position:absolute"><span class="draw-circle flex-center " style="background-color: #00a2fe" >
+                            <h1 id="breakTimerSeconds" class="white-text" ></h1>
+                    </span></span>
+                    </span>
+             </div>
+       <!--  <div class=" img-fluid mt-3" style="background-image: url(/img/breakScreen.svg);background-repeat: no-repeat;width: auto;height: auto;background-position: center center;">
             <div class="flex-center">
                 <span class="draw-ellipse flex-center" style="z-index: 1;">
-                     <span class="draw-circle flex-center " style="background-color: #00a2fe" >
+					  <span class="draw-circle flex-center " style="background-color: #00a2fe" >
                         <h1 id="breakTimerSeconds" class="white-text" ></h1>
                     </span>
                 </span>
-
             </div>
-        </div>
-
-        <h2 class="mt-3">
+        </div> -->
+	    <h2 class="mt-3">
             <b>"Being defeated is often a temporary condition.<br>
                 Giving up is what makes it permanent."</b>
         </h2>
@@ -294,7 +362,70 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script src="../../js/webSocket/control.js" ></script>
 
+<!-- 
+<script>
+var progressBarOptions = {
+		startAngle: -1.55,
+		size: 200,
+	    value: -0.1,
+	    fill: {
+			color: '#ffa500'
+		}
+	}
 
+	$('.circle').circleProgress(progressBarOptions).on('circle-animation-progress', function(event, progress, stepValue) {
+	});
+	
+$('#circle-a').circleProgress({
+	value : 0.25,
+	fill: {
+		color: '#FF0000'
+	}
+});
+</script> -->
+<!-- <script >
+var el = document.getElementById('graph'); // get canvas
+
+var options = {
+    percent: 0,
+    size: el.getAttribute('data-size') || 240,
+    lineWidth: el.getAttribute('data-line') || 7,
+    rotate: el.getAttribute('data-rotate') || 0
+}
+
+var canvas = document.createElement('canvas');
+
+    
+if (typeof(G_vmlCanvasManager) !== 'undefined') {
+    G_vmlCanvasManager.initElement(canvas);
+}
+
+var ctx = canvas.getContext('2d');
+canvas.width = canvas.height = options.size;
+
+
+el.appendChild(canvas);
+
+ctx.translate(options.size / 2, options.size / 2); // change center
+ctx.rotate((-1 / 2 + options.rotate / 180) * Math.PI); // rotate -90 deg
+
+//imd = ctx.getImageData(0, 0, 240, 240);
+var radius = (options.size - options.lineWidth) / 2;
+
+var drawCircle = function(color, lineWidth, percent) {
+		percent = Math.min(Math.max(0, percent || 1), 1);
+		ctx.beginPath();
+		ctx.arc(0
+            , 0, radius, 0, Math.PI * 2 * percent, false);
+		ctx.strokeStyle = color;
+        ctx.lineCap = 'round'; // butt, round or square
+		ctx.lineWidth = lineWidth
+		ctx.stroke();
+};
+
+drawCircle('#ddd', options.lineWidth, 100 / 100);
+drawCircle('green', options.lineWidth, options.percent / 100);
+</script> -->
 </body>
 
 </html>

@@ -51,8 +51,9 @@
 <style>
     .Rectangle-21 {
         width: 180px;
-        height: 850px;
+        height: 100%;
         background-color: #5e31e9;
+        position:fixed;
     }
     .view{
         margin-top: 90px;
@@ -105,14 +106,14 @@
     <%--  TopBar  --%>
     <!--Navbar -->
     <nav class="mb-1 navbar navbar-expand-lg top-navbar fixed-top" style="z-index: 2">
-        <a class="navbar-brand black-text">Circuit60</a>
+        <a class="navbar-brand black-text" href="/adminDashboard">Circuit<strong>60</strong></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-555"
                 aria-controls="navbarSupportedContent-555" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent-555">
+    <%--     <div class="collapse navbar-collapse" id="navbarSupportedContent-555">
             <ul class="navbar-nav ml-auto nav-flex-icons" >
-                <%-- BELL--%>
+                BELL
                 <li class="nav-item">
                     <a class="nav-link waves-effect waves-light">
                         <img src="../../img/notification.svg">
@@ -125,7 +126,7 @@
                     </a>
                 </li>
             </ul>
-        </div>
+        </div> --%>
     </nav>
     <%--   Navbar     --%>
 </header>
@@ -308,11 +309,7 @@ var currentCategory ='',selectedcategory='';
 			array.splice(i,1);//removing the object in the matching index
 			console.log(array);
 			
-		}/* else{
-			 str+= '<li class="card sortable-card white-text row" id="'+array[i].id+'" ><span style="margin-left: -10px" class="mt-2"><a onclick="removeSelectedExcercise('+"'"+array[i].id+"'"+')"><img src="img/exerciseMinus.svg" class="img-fluid mt-3"></a>'
-			+'</span><span class=" mt-3" style="z-index: 1"><p >'+array[i].exerciseName+'</p></span><span class="row mt-2" style="position: absolute;margin-left: 90px;"><p class="sortable-blur-text mr-4 " style="">'+i+'</p></span></li>';
-			console.log(str);
-		} */
+		}
 	}  
 	//checking condition 
 	for(var i=0;i<array.length;i++){
@@ -373,7 +370,8 @@ var currentCategory ='',selectedcategory='';
 	             }
 	        },
 	       error:function(){
-	        alert("error");
+	    	   document.getElementById('videofiles').innerHTML="Sorry,There are no videos to display";
+	    	   alert("Please add videos in this favorite Category");
 	       }
 
 	      });
@@ -405,6 +403,7 @@ var currentCategory ='',selectedcategory='';
         },
         success:function(response) {
          alert("Saved Successfully !!");
+         location.href ='/templateDashboard/${template.getTemplateId()}?zoneId=${zoneId}';
        },
        error:function(){
         alert("Error Occured while saving. Please try again.");
@@ -461,7 +460,7 @@ function addList(categoryId,objectName,objectPath,categoryName){
     
     function activeOnLoad(){
     	var str='';
-    	console.log(${exerciseArray});
+    	
     	var count = document.querySelectorAll("active").length;
     	if(count == 0){
     	  currentCategory="Chest";

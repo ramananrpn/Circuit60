@@ -24,6 +24,7 @@ var jsZone = null;
 var jsTemplateId= null;
 var loaded=0;
 var exerciseTimer;
+//totalExerciseSeconds
 var exerciseSeconds;
 var repsCount;
 var totalReps;
@@ -35,7 +36,9 @@ var isPaused=0;
 var switchScreenDelay = 5000;  // in milliseconds
 
 var sessionStartTimerDelay = 10;  // in seconds
-
+    function initMethod(){
+    	isStarted = false;
+    }
 
 //connect function
     function connect(event) {
@@ -96,9 +99,9 @@ var sessionStartTimerDelay = 10;  // in seconds
             }
         }
         else if(message.command == 'stop'){
+        	stompClient.disconnect();
+            document.location.reload(true);
             isStarted=false;
-            stompClient.disconnect();
-            location.reload();
         }
         else if (message.command == 'resume'){
             if(isPaused==1){
@@ -229,26 +232,91 @@ var sessionStartTimerDelay = 10;  // in seconds
         }, 5000);
 
     }
+    
+    function displayCanvas(endTime,progressBarType){
+    	 var canvas = document.getElementById(progressBarType);
+    	    canvas.width = canvas.height = 400;
+    	    var ctx = canvas.getContext('2d');
+    	    var radius = 130;
+    	    var center = {
+    	        x: canvas.width / 2,
+    	        y: canvas.height / 2
+    	    };
+
+    	    // (60).degree() // 60 градусов в радианах;
+    	    // Number.prototype.degree = function () {
+    	    //     var startPaint = 180;
+    	    //     return (this + startPaint) * Math.PI / 180;
+    	    // };
+
+    	    function clearCanvas() {
+    	        canvas.width = canvas.width;
+    	    }
+
+    	    function drawMiniCircle(x, y) {
+    	        ctx.beginPath();
+    	        ctx.arc(x, y, 5, 0, 2 * Math.PI, false);
+    	        ctx.fillStyle = progressBarType == 'progress-bar'?'#fe5562':'#00a2fe';
+    	        ctx.fill();
+    	        ctx.lineWidth = 5;
+//    	        ctx.strokeStyle = '#003300';
+//    	        ctx.stroke()
+    	    }
+
+    	    function progress(sAngle, eAngle) {
+    	        clearCanvas();
+    	        ctx.beginPath();
+    	        ctx.strokeStyle =  (progressBarType == 'progress-bar'?'#fe5562':(progressBarType == 'water-break'?'#00a2fe':(progressBarType == 'progress-wrapper'?'#ffe5e7':'#c7ebff'))) ;
+    	        ctx.lineWidth = 5;
+    	        ctx.arc(center.x, center.y, radius, sAngle,4.75+eAngle);
+    			ctx.stroke();
+    	        // mine circle
+    	        var x = center.x + Math.cos(4.75+eAngle) * radius;
+    	        var y = center.y + Math.sin(4.75+eAngle) * radius;
+    	        if(progressBarType == 'progress-bar' || progressBarType == 'water-break'){
+    	          drawMiniCircle(x, y);
+    	        }
+    	        
+
+    	    }
+    		progress(4.7,endTime);
+    				
+    }
 
 // Time Spinner
     //SESSION START TIMER
     function startSessionTimer() {
         document.getElementById("sectionStartTimerSeconds").innerHTML = sessionStartTimerDelay;
-        var time = 0;
-        var i = sessionStartTimerDelay;
+        displayCanvas(6.3,'progress-wrapper');
+//        document.getElementById('secondsTimerPercentage').classList.add('p0');
+        var time = 0,progressBarPercentage=0,endTime=0;
+        var i =sessionStartTimerDelay;
+        var percentage=6.2/sessionStartTimerDelay;
         var startTimer = setInterval(function () {
             $("#sectionStartTimerSeconds").text(i);
+       /*   document.getElementById('secondsTimerPercentage').classList.remove('p'+((progressBarPercentage-1)*10));
+          document.getElementById('secondsTimerPercentage').classList.add('p'+(progressBarPercentage*10));*/
+            endTime += percentage;
+//            console.log(endTime);
+           /* if(endTime < 2 ){
+            	displayCanvas((4.70+endTime),'progress-bar');
+            }else{*/
+            /*  }*/	
+            
             if (i == time) {
+            	displayCanvas(0,'progress-bar');
                 clearInterval(startTimer);
                 sessionStartTimer.classList.add('hidden');
                 exercisePlayer.classList.remove('hidden');
-                // var seconds = document.getElementById('displayExerciseSecondsTimer').innerHTML;
-                if(isPaused==0){
+               // var seconds = document.getElementById('displayExerciseSecondsTimer').innerHTML;
+              if(isPaused==0){
                     playVideoElements(exerciseSeconds);
                 }
-                return;
+               return;
             }
+            displayCanvas(endTime,'progress-bar');	
             i--;
+            progressBarPercentage++;
         }, 1000)
     }
 
@@ -257,10 +325,14 @@ var sessionStartTimerDelay = 10;  // in seconds
     function showWaterBreakScreen(seconds) {
         exercisePlayer.classList.add('hidden');
         breakTimer.classList.remove('hidden');
+        displayCanvas(6.2,'break-time-wrapper');	
         //BREAK TIMER
+        var percentage=6.2/breakSeconds,endTime=0;
         var startTimer = setInterval(function () {
             $("#breakTimerSeconds").text(seconds);
-            if (seconds == 0){
+            endTime += percentage;
+             if (seconds == 0 ){
+            	displayCanvas(0,'break-time-wrapper');
                 clearInterval(startTimer);
                 document.getElementById('breakTimerSeconds').innerHTML = breakSeconds;
                 displayExerciseSecondsTimer.innerHTML = exerciseSeconds;
@@ -271,8 +343,12 @@ var sessionStartTimerDelay = 10;  // in seconds
                 breakTimer.classList.add('hidden');
                 sessionStartTimer.classList.remove('hidden');
                 startSessionTimer();
-                return;
+            /*    isStarted=false;
+                stompClient.disconnect();
+                location.reload();
+                return;*/
             }
+            displayCanvas(endTime,'water-break');
             seconds--;
         }, 1000)
     }
@@ -280,12 +356,22 @@ var sessionStartTimerDelay = 10;  // in seconds
     //Exercise Timer
     //Start
     function startExerciseTimer(seconds , mode) {
+    	var totalTimer = seconds;
+    	var count =0;
          exerciseTimer = setInterval(function () {
             $("#displayExerciseSecondsTimer").text(seconds);
+              console.log('timer',(exerciseSeconds-(seconds-1))/exerciseSeconds * 100);
+              timerPercentage((exerciseSeconds-(seconds-1))/exerciseSeconds * 100);
             if (seconds == 0 || mode!='start') {
                 clearInterval(exerciseTimer);
                 exerciseCount--;
-                // exercise iteration - showing switch screen
+                if(seconds == 0){
+                	var el = document.getElementById('graph');
+                	while (el.firstChild) {
+            		 el.removeChild(el.firstChild);
+                	} 
+                }
+                 /*exercise iteration - showing switch screen*/
                 if(exerciseCount>0){
                     console.log("---SHOWING SWITCH SCREEN --");
                     exercisePlayer.classList.add('hidden');
@@ -333,6 +419,49 @@ var sessionStartTimerDelay = 10;  // in seconds
             }
             seconds--;
         }, 1000)
+    }
+    
+    function timerPercentage(percentage){
+    	var el = document.getElementById('graph'); // get canvas
+    	var parentNodes = document.getElementById('graph').parentNode;
+    	var options = {
+    	    percent: percentage,
+    	    size: 245,
+    	    lineWidth:7,
+    	    rotate:0
+    	}
+    	var canvas = document.createElement('canvas');
+    	if (typeof(G_vmlCanvasManager) !== 'undefined') {
+    	    G_vmlCanvasManager.initElement(canvas);
+    	}
+    	
+    	var ctx = canvas.getContext('2d');
+    	canvas.width = canvas.height = options.size;
+    	console.log(parentNodes.childNodes.length);
+    	  while (el.firstChild) {
+    		  el.removeChild(el.firstChild);
+    		  } 
+    	el.appendChild(canvas);
+
+    	ctx.translate(options.size / 2, options.size / 2); // change center
+    	ctx.rotate((-1 / 2 + options.rotate / 180) * Math.PI); // rotate -90 deg
+
+    	//imd = ctx.getImageData(0, 0, 240, 240);
+    	var radius = (options.size - options.lineWidth) / 2;
+
+    	var drawCircle = function(color, lineWidth, percent) {
+    			percent = Math.min(Math.max(0, percent || 1), 1);
+    			ctx.beginPath();
+    			ctx.arc(0
+    	            , 0, radius, 0, Math.PI * 2 * percent, false);
+    			ctx.strokeStyle = color;
+    	        ctx.lineCap = 'round'; // butt, round or square
+    			ctx.lineWidth = lineWidth
+    			ctx.stroke();
+    	};
+
+    	drawCircle('#3b3b67', options.lineWidth, 100 / 100);
+    	drawCircle('#1cea36', options.lineWidth, options.percent / 100);	
     }
     //pause
     function pauseExerciseTimer() {
@@ -386,4 +515,4 @@ var sessionStartTimerDelay = 10;  // in seconds
     }
 
 //Event Listeners
-selectZonePage.addEventListener('click' , connect , true)
+selectZonePage.addEventListener('click' , connect , true);
