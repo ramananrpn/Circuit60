@@ -1,0 +1,29 @@
+version: '3.1'
+
+services:
+  redis32:
+    image: redis:3.2-alpine #https://hub.docker.com/r/library/redis/tags/
+    network_mode: "bridge"
+    ports:
+      - '6379:6379'
+    container_name: redis32    
+
+  mysql:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    container_name: mysql
+
+#  localstack:
+#    image: localstack/localstack:latest
+#    restart: always
+#    ports:
+#      - "4578:4578"
+#      - "4569:4569"
+#      - "4572:4572"
+#      - "4576:4576"
+#      - "4577:4577"
+#      - "4570:4570"
