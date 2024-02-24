@@ -17,7 +17,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaAuditing
 @EnableJpaRepositories("com.orcaso.circuit60.repository")
 //@EntityScan("com.orcaso.circuit60.model")
-//@ComponentScan({"com.orcaso.circuit60", "com.orcaso.circuit60.repository"})
+@ComponentScan({"com.orcaso.circuit60", "com.orcaso.circuit60.repository"})
 public class Circuit60Application{
 
 
